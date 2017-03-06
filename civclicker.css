@@ -1,0 +1,514 @@
+/**
+    CivClicker
+    Copyright (C) 2014; see the AUTHORS file for authorship.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program in the LICENSE file.
+    If it is not there, see <http://www.gnu.org/licenses/>.
+**/
+@import url('fonts/OpenSans-CondLight.css');
+
+body{
+    font-family: sans-serif;
+    /*font-weight:600;*/
+    /*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
+    text-shadow:none;
+}
+
+/* You can't easily apply opacity to a background image.  This does it by
+ * placing the background image on a layer beneath the item, and setting
+ * opacity on the entire layer. */
+.hasBackground::after {
+    content : "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    background: url('images/constableLandscapeRetouched.jpg') no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0.18;
+}
+
+#strip{
+    text-shadow:none;
+}
+
+.icon-lg{
+    height:42px;
+    width:42px;
+}
+.icon-sm{
+    height:16px;
+    width:16px;
+    margin: 2px 0 -2px 0;
+}
+
+#header{
+    position:relative;
+}
+
+h1{
+    float:left;
+    bottom:0;
+}
+#ruler{
+    position:absolute;
+    float:left;
+    padding-left:1em;
+    bottom:0;
+}
+
+#impexp{
+    display:none;
+    position:absolute;
+    top:0;
+    right:0;
+    width:40%;
+    border:1px solid black;
+    background-color:#fff;
+    z-index:1;
+}
+#impexpField{
+    display:block;
+    width:90%;
+    height:10em;
+    margin:1em auto;
+}
+#expButton{
+    width:7em;
+    float:left;
+    margin-left:5%;
+    margin-bottom:1em;
+}
+#expSelect{
+    width:7em;
+    float:left;
+    margin-left:1em;
+    margin-bottom:1em;
+}
+#impButton{
+    width:7em;
+    float:right;
+    margin-right:1em;
+    margin-bottom:1em;
+}
+#impexpClose{
+    width:7em;
+    float:right;
+    margin-right:5%;
+    margin-bottom:1em;
+}
+
+.net{
+    padding-left:1em;
+}
+
+h3{
+    clear:both;
+}
+button{
+    width:190px;
+    border:2px solid black;
+    background-color:#fff;
+    margin-right:0.8em;
+    padding:0.1em;
+    font-size:1.0em;
+    font-weight:500;
+    border-radius:0.5em;
+}
+button:hover:enabled{
+    background-color:#eee;
+}
+button:disabled{
+    border-color:#ccc;
+    font-weight:normal;
+}
+
+/* Use two columns on large displays */
+@media screen and (min-width: 800px) {
+.mainContent {
+    /* Two-column display */
+    column-count: 2;
+    -moz-column-count: 2;
+}
+}
+
+/* Don't allow column breaks inside sections */
+/*xxx Unfortunately, support for these properties is very sketchy. */
+.civColumn,
+.civSection {
+    break-inside: avoid;
+    -webkit-break-inside: avoid;
+    -moz-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+}
+
+/* Put the column breaks where we want them */
+/*xxx Unfortunately, support for these properties is very sketchy. */
+#rightColumn {
+    break-before: column;
+    -webkit-break-before: column;
+    -moz-break-before: column;
+    -webkit-column-break-before: always;
+    -moz-column-break-before: always;
+}
+
+.paneSelector{
+    float:left;
+    text-align:center;
+    margin:1em 0;
+    padding:0 0.5em;
+    line-height:2em;
+    border:2px solid black;
+    background-color:#fff;
+    border-top-left-radius:0.5em;
+    border-top-right-radius:0.5em;
+}
+.paneSelector:hover{
+    text-decoration:underline;
+    text-shadow: none;
+    cursor:pointer;
+}
+
+#deitySelect,
+#conquestSelect,
+#tradeSelect{ 
+    display: none; 
+}
+
+.paneSelector.selected{
+    border-bottom:none;
+    background:none;
+    color:white;
+    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+.paneSelector.selected:hover{
+    text-decoration:none;
+    cursor:auto;
+    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+.selectPane {
+    display: none;
+}
+.selectPane.selected {
+    /* Note that this will cause a problem for non-block elements */
+    /* We should use 'default', but it's not sufficiently supported yet */
+    display: block; 
+}
+
+.devcost{
+    padding-right:1em;
+}
+
+
+#conquest{
+    display:none;
+}
+.note{
+    /*width: 380px;*/
+    text-align:right;
+    font-style:italic;
+    color:#555;
+    padding-left:1em;
+    width:35em;
+}
+.cost{
+    white-space:nowrap;
+    text-align:right;
+    font-style:italic;
+    color:#555;
+    padding-left:1em;
+    margin-right:-1em;
+}
+.number{
+    text-align:right;
+    padding-right:0.3em;
+}
+.icon{
+    padding-right:10px;
+}
+
+.deityDomain{
+    padding-right:2em;
+}
+#oldDeities{
+    display:none;
+}
+#oldDeities td{
+    padding-right:1em;
+}
+#deityDomains{
+    display:none;
+}
+#deityDomains .purchaseRow{
+    /* We control the display of these through #deityDomains, so */
+    /*   suppress the usual .purchaseRow display:none */
+    display:inline;
+}
+
+#battleUpgrades,
+#fieldsUpgrades,
+#underworldUpgrades,
+#catsUpgrades{
+    display:none;
+}
+.enemy{
+    color:red;
+    font-weight:bold;
+}
+
+#customJobQuantity,
+#customBuildQuantity,
+#customPartyQuantity,
+#customSpawnQuantity{
+    display:none;
+}
+#customBuildQuantity{
+    margin-left:1em;
+}
+
+.purchaseRow{
+    display:none;
+}
+
+#victoryGroup{
+    display:none;
+}
+
+.itemname{
+    padding-left:0.3em;
+    text-transform:capitalize;
+}
+
+/*
+button.build{
+    text-transform:capitalize;
+	width: 4em;
+}
+*/
+
+#basicResources button {
+    text-transform:capitalize;
+}
+
+#textSize button,
+#jobs button,
+#party button,
+#buildings button,
+#deityPane button.xInfinity, /* Needed for Raise Dead */
+#deityPane button.x100{
+    width:3.5em;
+    text-shadow:none;
+    font-weight:normal;
+    font-size:0.9em;
+    margin-right:0.3em;
+    text-transform:capitalize;
+}
+
+.buycustom button{
+    width:7.5em !important; /* Need to make this override the above */
+}
+
+.building10,
+.building100,
+.building1000,
+.buildingInfinity,
+.unit10,
+.unit100,
+.unit1000,
+.unitInfinity,
+.buycustom {
+    display:none;
+}
+
+
+#zombieWorkers{
+    display:none;
+}
+
+.Pupgrade {
+    display:none;
+}
+
+#logTable td{
+    padding-right:20px;
+}
+
+#graveTotal{
+    display:none;
+}
+#settings{
+}
+
+#strip{
+    width:100%;
+    height:1.5em;
+    margin-bottom:-2em;
+    text-align:right;
+}
+#stripInner{
+    position:relative;
+    z-index:1;
+    width:100%;
+}
+
+.achievement{
+    display:block;
+    float:left;
+    width:50px;
+    height:50px;
+    border:2px solid black;
+    background-color:#aaa;
+    background-image:url('images/achLocked.jpg');
+}
+.break{
+    display:block;
+    width:20px;
+}
+.unlockedAch{
+    box-sizing:border-box;
+    -moz-box-sizing:border-box; /* Firefox needs a nonstandard name */
+    width:100%;
+    height:100%;
+    padding:0.2em;
+    font-size:0.9em;
+    text-shadow:none;
+    font-weight:normal;
+    background-color:#fff;
+    display:none; /* Initially */
+}
+
+#gloryGroup{
+    display:none;
+}
+#morale{
+    color:#0d0;
+}
+#wondersContainer{
+    display:none;
+    padding-bottom:0.3em;
+}
+#startWonderLine{
+    display:none;
+}
+
+#pastWonders td {
+    padding-right:1em;
+}
+.wonderTitle{
+    font-weight:bold;
+    margin-bottom:1em;
+}
+#renameWonder{
+    width:5em;
+}
+#progressContainer{
+    border:1px solid black;
+}
+#progressBar{
+    height:1em;
+    background-color:green;
+    width:0%;
+}
+#wonderInProgress{
+    display:none;
+}
+#speedWonderGroup{
+    display:none;
+}
+#wonderCompleted{
+    padding-top:1em;
+    display:none;
+}
+.wonderCompleted button {
+    width:5em;
+}
+#lowResources{
+    display:none;
+    color:red;
+}
+#goldRow{
+    display:none;
+}
+#tradeContainer{
+    display:none;
+    padding:0.3em 0 0.5em 0;
+    margin:0.5em 0;
+    text-align:center;
+    background-color:#9d9;
+    border-radius:1.5em;
+}
+#trader{
+    height:2em;
+    width:70%;
+}
+#tradeUpgradeContainer{
+    display:none;
+}
+#iconoclasmGroup{
+    display:none;
+}
+#iconoclasmList{
+    padding-left:2em;
+}
+#versionAlert{
+    display:none;
+}
+#newVersionText{
+    color:#f00;
+    text-decoration:underline;
+}
+#newVersionText:hover{
+    cursor:pointer;
+}
+
+#basicResources{
+    margin-left:0.3em;
+}
+#basicResources button{
+    padding:0.3em;
+}
+#specialResourcesContainer{
+    margin-bottom:0.3em;
+}
+#specialResourcesContainer .number{
+    padding:0 0.3em 0.3em 0.3em;
+}
+#specialResourcesContainer img{
+    padding-right:5em;
+}
+
+#walkGroup{
+    display:none;
+}
+
+
+#purchasedUpgrades, #purchasedPantheon{
+    margin-left:1em;
+}
+#purchasedUpgrades *, #purchasedPantheon * {
+    line-height:1.5em;
+}
+
+#resetNote,
+#resetDeity,
+#resetBoth,
+#resetWonder{
+    display:none;
+}
+
+

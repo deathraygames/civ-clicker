@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb">
+<head>
+    <title>CivClicker Updates</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="canonical" href="http://civclicker.sourceforge.net/civclicker/civUpdates.html" />
+    <style type="text/css">
+        .hasBackground::after {  /* Apply semi-translucent background */
+            content: ""; position: fixed; z-index: -1;
+            top: 0; left: 0; bottom: 0; right: 0; opacity: 0.18;
+            background: url("images/constableLandscapeRetouched.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+        dt {
+            font-weight:bold;
+            margin-bottom:0.5em;
+        }
+        dd{
+            margin-bottom:1.5em;
+        }
+    </style>
+</head>
+<body class="hasBackground">
+<h1>CivClicker Updates</h1>
+    <h2>2014-10-23: v1.1.59(alpha)</h2>
+    <p>
+        Major update to the save game format and data structures for wonders
+        and raids.
+    </p><p>
+        Legacy save games should now import properly.
+    </p><p>
+        The state of the trader is now saved and restored (Original bug).
+    </p><p>
+        Wonder bonus selection menu now dynamically generated.
+    </p>
+    <h2>2014-10-13: v1.1.58(alpha)</h2>
+    <p>
+        Auto-generate the basic resources sections.
+    </p><p>
+        Delegate event handling to a smaller number of dispatch handlers, so
+        that we're not setting up a handler for every button.
+    </p><p>
+        Fix a few bugs in the noun tense code.
+    </p>
+    <h2>2014-10-06: v1.1.57(alpha)</h2>
+    <p>
+        Improve usage of plural vs. singular nouns.
+    </p><p>
+        Zombies are no longer ignored when calculating wolf attacks (Original bug).
+    </p><p>
+        Fix a bug triggered when sick people starved.
+    </p>
+    <h2>2014-09-29: v1.1.56(alpha)</h2>
+    <p>
+        Fix a bug in the cat reset code.
+    </p><p>
+        Reduce the number of direct accesses to the low-level data storage structure.
+    </p>
+    <h2>2014-09-29: v1.1.55(alpha)</h2>
+    <p>
+        Only put a multiplier on log entries when it's &gt; 1.
+    </p><p>
+        An assortment of internal cleanup.
+    </p>
+    <h2>2014-09-15: v1.1.54(alpha)</h2>
+    <p>
+        Generalize the combat code so that new combat units will (in theory)
+        fight each other properly.
+    </p><p>
+        Player and mob siege engines now play by the same rules (Original Bug).
+    </p>
+    <h2>2014-09-07: v1.1.53(alpha)</h2>
+    <p>
+        Fix a bug introduced in v1.1.15a that prevented the trade button from
+        being enabled properly.
+    </p>
+    <h2>2014-08-25: v1.1.52(alpha)</h2>
+    <p>
+        Bugfixes and bullet-proofing.
+    </p>
+    <h2>2014-08-25: v1.1.51(alpha)</h2>
+    <p>
+        A lot of under-the-hood generalization to how things are bought and
+        updated.
+    </p><p>
+        Some UI tweaks to make cats and remaining land more visible.
+    </p>
+    <h2>2014-08-17: v1.1.50(alpha)</h2>
+    <p>
+        Clerics are now higher-priority targets for healers than farmers.
+        Previously, they could get hung up healing farmers and never heal the
+        clerics needed to bury the bodies causing the plague.  This is a change
+        from the original CC.
+    </p><p>
+        The display now collapses to single-column when narrower than 800px.
+    </p><p>
+        Columns are now implemented using CSS column properties instead of
+        floats.
+    </p><p>
+        Used async and defer tags to accelerate JS loading.
+    </p><p>
+        Fixed the error handling for save/load failures so it no longer aborts
+        the game (Original bug).
+    </p><p>
+        Generalized the achievement code to work smoothly with new
+        achievements.
+    </p>
+    <h2>2014-08-12: v1.1.49(alpha)</h2>
+    <p>
+        The effect of houses now updates properly when slums or tenements are
+        purchased (Original bug).
+    </p><p>
+        Icon toggle setting now implemented.
+    </p><p>
+        Settings are now restored properly on load.
+    </p>
+    <h2>2014-08-11: v1.1.48(alpha)</h2>
+    <p>
+        Buttons and tabs now have rounded edges.
+    </p><p>
+        Boolean game settings now use checkboxes.
+    </p><p>
+        Text shadow and Notes settings are now saved properly (Original Bug).
+    </p><p>
+        Refactored the pane selector and game settings code.
+    </p>
+    <h2>2014-08-03: v1.1.47(alpha)</h2>
+    <p>
+        Consolidate the UI and update code for Buildings and Units.
+    </p><p>
+        Generalize the kill, steal, and sack code so that it will work properly
+        with units, buildings, and resources added in the future.
+    </p><p>
+        Clean up the button text a bit.
+    </p>
+    <h2>2014-07-27: v1.1.46(alpha)</h2>
+    <p>
+        Convert most of the layout to use ems instead of pixels, to be more flexible.
+    </p><p>
+        Consolidate the resource limit code.
+    </p><p>
+        Split the population statistics code from the population UI code.
+    </p><p>
+        More work on getting the cost system to cleanly handle variable costs.
+    </p><p>
+        Generalize the upgrade UI to handle new upgrades automatically.
+    </p><p>
+        Generalize the sickness code to handle new units automatically.
+    </p>
+    <h2>2014-07-14: v1.1.45(alpha)</h2>
+    <p>
+        Fix a bug in v1.1.44 that applied building-based limits to deploying units.
+    </p>
+    <h2>2014-07-13: v1.1.44(alpha)</h2>
+    <p>
+        A lot of under-the-hood refactoring of the job and party code.
+    </p>
+    <h2>2014-07-09: v1.1.43(alpha)</h2>
+    <p>
+        Make the building display more compact, to help mobile users.
+    </p><p>
+        Make disabled buttons more evident (less visible).
+    </p>
+    <h2>2014-07-07: v1.1.42(alpha)</h2>
+    <p>
+        Make the upgrade display more compact.
+    </p><p>
+        Add description text to a few units that were missing it.
+    </p><p>
+        Move the pantheon display under the Deity tab.
+    </p><p>
+        Move the wonder construction button to the Wonders section.
+    </p><p>
+        The Deity and Wonders display areas are hidden until they are applicable.
+    </p><p>
+        Fix a bug that made plagues too severe.
+    </p><p>
+        Graveyards now require Construction, since they are useless until you
+        can build Temples anyway.
+    </p>
+    <h2>2014-07-02: v1.1.41(alpha)</h2>
+    <p>
+        Move a lot of the initialization code into the new framework.
+    </p><p>
+        Fix a bug introduced in 1.1.38 that kept achievements from being
+        preserved on reset.
+    </p>
+    <h2>2014-06-30: v1.1.40(alpha)</h2>
+    <p>
+        Fix a bug that kept sick workers from starving.
+    </p><p>
+        Fix a bug that prevented the deity UI from loading after a full reset.
+    </p><p>
+        Convert the civ asset data into an object-oriented framework.
+    </p>
+    <h2>2014-06-25: v1.1.39(alpha)</h2>
+    <p>
+        It is now possible to worship a deity already in the pantheon.  The old
+        deity's domain is automatically selected at no cost.  Devotion (altars)
+        still need to be repurchased.
+    </p><p>
+        Number delimiter settings are now saved. (Original Bug)
+    </p><p>
+        A number of timers and counters that used to be lost on a reload are
+        now saved and restored properly.  This includes effects for Pest
+        Control, Throne of Bones, partially completed healing, and the timers
+        for attack and trade. (Original Bug)
+    </p><p>
+        Rulers may not name themselves after an existing deity.  They may, 
+        however, name a deity after themselves when first creating it.
+    </p><p>
+        Raid plunder is now set when the raid is started.
+    </p><p>
+        Deities must now have at least one devotion to survive a reset.
+    </p><p>
+        Fix a bug that caused mill/fortification costs not to be reset after
+        being sacked by barbarians.
+    </p><p>
+        Excise removeDeity() code that was never implemented. (Original)
+    </p>
+    <h2>2014-06-16: v1.1.38(alpha)</h2>
+    <p>
+        If a large quantity building purchase causes overcrowding, only cause
+        overcrowding for the ones that exceeded the available land. (Original bug)
+    </p><p>
+        Major refactoring of the save game format and primary game data structures.  
+    </p><p>
+        Game settings are now presumed to be tied to the device the game is
+        played on, and not to a particular save game.  Consequently, importing
+        a save string will no longer affect: autosave, custom increments active, 
+        font size, use of icons, and work-safe mode.
+    </p>
+    <h2>2014-06-08: v1.1.37(alpha)</h2>
+    <p>
+        Move achievements and settings into subpanels to conserve space.
+    </p><p>
+        Fix a bug that caused NaNs in special resource generation.
+    </p>
+    <h2>2014-06-07: v1.1.36(alpha)</h2>
+    <p>
+        Fix a few bugs from 1.1.35.
+    </p>
+    <h2>2014-06-06: v1.1.35(alpha)</h2>
+    <p>
+        Fix a bug in the sick worker display code.
+    </p><p>
+        Fix a bug in shade combat that was introduced around v1.1.26 or 1.1.27.
+    </p><p>
+        Major redesign of the game data structures.
+    </p><p>
+        CivClicker will now refuse to load games saved from newer versions,
+        since there's no way to be sure of doing it right.
+    </p><p>
+        Save games are now stored in a single variable (they were only split to
+        permit the use of cookies).
+    </p><p>
+        Recalculate most efficiency mods on the fly so that they don't need to
+        be stored in the savegame.
+    </p><p>
+        Game version now displayed via JS.
+    </p>
+    <h2>2014-05-31: v1.1.34(alpha)</h2>
+    <p>
+        Numbers are now formatted using the system locale.
+    </p><p>
+        Dynamically generate the activated pantheon power controls.
+    </p><p>
+        Note: Saved games updated to this version from prior versions may show
+        (e.g.) "Battle Altar" on the "Build Altar" button.  This is harmless,
+        and should not appear in new games created on this version.
+    </p>
+    <h2>2014-05-31: v1.1.33(alpha)</h2>
+    <p>
+        Dynamically generate the purchased pantheon upgrades.
+    </p><p>
+        Dynamically generate the raid buttons.
+    </p><p>
+        Refactor the Achievement system.
+    </p><p>
+        More refactoring of the Upgrade system.
+    </p>
+    <h2>2014-05-27: v1.1.32(alpha)</h2>
+    <p>
+        Replace the fractional-casualty carryover with a probabilistic casualty
+        system.  This produces the same casualty numbers on average, but
+        requires a lot less bookkeeping (and therefore generates fewer bugs).
+    </p>
+    <h2>2014-05-26: v1.1.31(alpha)</h2>
+    <p>
+        Deity upgrades don't appear until the player has enough devotion
+        to unlock them.
+    </p><p>
+        Deity domains now disable properly if the player can't afford
+        them. (Original Bug)
+    </p><p>
+        Flensing, Macerating, and Trade are now properly removed after a reset
+        (Original Bug).
+    </p><p>
+        Labourer controls are now properly removed after a reset (Original Bug).
+    </p><p>
+        Start implementing a prerequisite system.
+    </p><p>
+        More major refactoring to the upgrade system.
+    </p>
+    <h2>2014-05-24: v1.1.30(alpha)</h2>
+    <p>
+        Generate the upgrade purchase buttons dynamically.
+    </p><p>
+        Add in-code definitions for the upgrades and their purchase costs.
+    </p><p>
+        Fix a bug that caused traded resources to overwrite the resource's
+        master definition.  Added temporary code to repair the corruption 
+        when the game is loaded.
+    </p><p>
+        Fix a bug that caused siege engines to stop working.
+    </p>
+    <h2>2014-05-22: v1.1.29(alpha)</h2>
+    <p>
+        Refactor the upgrade code.
+    </p><p>
+        Fix some bugs in the migration code.
+    </p>
+    <h2>2014-05-21: v1.1.28(alpha)</h2>
+    <p>
+        Discontinue cookie-based saves; they were deprecated four months ago,
+        and the risk of losing data by running into the 4k limit makes it risky
+        to add more fields to the savegame structures.  HTML5 localStorage is 
+        supported by all major browsers back to IE8, and we're already using
+        other constructs that require at least IE9.  The game will still try to
+        load from cookies as a last-ditch attempt if the localStorage load fails,
+        but it will delete the cookie saves on save to clean them up.
+    </p><p>
+        Refactor the labourer and trader code.
+    </p><p>
+        Ensure that the autosave button is properly captioned on load (Original Bug).
+    </p><p>
+        Consistently use double quotes for JS strings (except for HTML), and
+        tabs for indentation.
+    </p>
+    <h2>2014-05-21: v1.1.27(alpha)</h2>
+    <p>
+        More major refactoring of the combat code.
+    </p>
+    <h2>2014-05-18: v1.1.26(alpha)</h2>
+    <p>
+        Fixed the timing of resource UI updates so that combat results and
+        wonder construction are included. (Original Bug)
+    </p><p>
+        Authors list moved to AUTHORS file per FSF standard.
+    </p><p>
+        FAQ Updated.
+    </p><p>
+        Major refactoring of the combat code.
+    </p><p>
+        Efficiencies for all combat units moved to the efficiency struct.
+    </p>
+    <h2>2014-05-16: v1.1.25(alpha)</h2>
+    <p>
+        Fix a bug that caused raid plunder to be lost.
+    </p><p>
+        Fix a bug in the enabling of soldier allocation when custom increments
+        are active.
+    </p><p>
+        Consolidate CSS rules where possible.
+    </p><p>
+        Rearrange JS functions to be better grouped.
+    </p>
+
+    <h2>2014-05-15: v1.1.24(alpha)</h2>
+    <p>
+        Make the worker allocation buttons properly count sick and deployed
+        workers when enabling/disabling.  (Original Bug)
+    </p><p>
+        Disable various buttons properly when custom increments is
+        active.  (Original Bug)
+    </p><p>
+        Fix a bug introduced in v1.1.23a that generated too many cats.
+    </p><p>
+        Refactor the update code for the worker allocation buttons.
+    </p><p>
+        Refactor the custom increment toggle code.
+    </p>
+    <h2>2014-05-12: v1.1.23(alpha)</h2>
+    <p>
+        Dynamically generate the job controls (major refactoring).
+    </p><p>
+        Fix a bug that prevented the writing-based upgrades from being
+        offered.
+    </p><p>
+        Fix a bug that prevented the 'Cease Walk' button from enabling.
+    </p>
+    <h2>2014-05-09: v1.1.22(alpha)</h2>
+    <p>
+        Fix a bug in the healing code, introduced in v1.1.21.
+    </p><p>
+        Major refactoring of the main game loop, breaking it into functions.
+    </p><p>
+        Significant refactoring of the mob, starvation, and healing code.
+    </p><p>
+        Made a variety of in-code identifiers more consistent to facilitate further refactoring.
+    </p>
+    <h2>2014-05-08: v1.1.21(alpha)</h2>
+    <p>
+        The 'Plagued' achievement is tested more frequently, instead of only
+        when someone gets sick.
+    </p><p>
+        Refactor the code for plague and healing.
+    </p>
+    <h2>2014-05-05: v1.1.20(alpha)</h2>
+    <p>
+        Fix a bug in isValid(), which affected the loading of Object-type data.
+    </p><p>
+        Fix a bug in the conquest pane display.
+    </p>
+    <h2>2014-05-01: v1.1.19 (alpha)</h2>
+    <p>
+        Fix a bug in the building code introduced in v1.1.18.
+    </p><p>
+        Some more refactoring of the hire/fire routine.
+    </p>
+    <h2>2014-04-30: v1.1.18 (alpha)</h2>
+    <p>
+        Make the requirements and building devotion handling code more robust,
+        so that buildings don't have to specify them if they are zero.
+    </p><p>
+        Fix some more dataset related bugs.
+    </p>
+    <h2>2014-04-29: v1.1.17 (alpha)</h2>
+    <p>
+        Apothecaries (the profession) renamed to 'Healers' to avoid confusion with
+        Apothecary (the building).
+    </p><p>
+        Save games now have embedded version information.
+    </p><p>
+        Put in a polyfill for the HTML dataset API so IE &lt; 11 doesn't break.
+    </p><p>
+        Fix a bug introduced in v1.1.16 that prevented the +10 Workers from
+        appearing properly.
+    </p>
+    <h2>2014-04-29: v1.1.16 (alpha)</h2>
+    <p>
+        The Deity, Conquest, and Trade panels are now hidden until they
+        become useful.
+    </p><p>
+        Refactor the upgrade code to less than 20% its former size.
+    </p>
+    <h2>2014-04-27: v1.1.15 (alpha)</h2>
+    <p>
+        Wonder progress is now displayed to two decimal places.
+    </p><p>
+        Trader message now makes it clear that the trader gives 1 gold in
+        exchange.
+    </p><p>
+        There is now a log message for manual discovery of special resources.
+    </p><p>
+        Battle Standard, Worship, and Trade buttons are now properly disabled
+        when the player cannot afford them (Original Bug)
+    </p><p>
+        Refactored the combat party code and some of the tab panel code.
+    </p>
+    <h2>2014-04-25: v1.1.14 (alpha)</h2>
+    <p>
+        Raid buttons are now disabled when you have no combat troops deployed.
+    </p><p>
+        Civilisation and ruler names are no longer left undefined after
+        resetting (Original Bug)
+    </p><p>
+        Simplify the reset and saved game loading routines.
+    </p>
+    <h2>2014-04-24: v1.1.13 (alpha)</h2>
+    <p>
+        Worker (and zombie) spawn buttons now include a 'Max' option (which
+        operates in O(lg(n)) time, which should be acceptably responsive)
+    </p><p>
+        Corpses are now treated as a resource, rather than a population unit.
+        Unfortunately, this slightly breaks compatibility with prior versions;
+        v1.1.13+ will load prior save games, but prior versions will lose their
+        corpses if they try to load a v1.1.13+ save game.
+    </p><p>
+        Moved the displays for happiness, free land, and zombies to be in more 
+        useful places.
+    </p><p>
+        Removed the panel subheadings; they were taking up space, and not
+        conveying useful information.
+    </p><p>
+        All costs are now calculated to full precision, although the display is
+        rounded to the nearest integer.  Button enable/disable is also now
+        performed on the unrounded values, so users may occasionally see that
+        button enable/disable effects are not perfectly synchronized with the
+        number displayed.  This is because the enable/disable uses the exact
+        value, whereas the number displayed is rounded off first.
+    </p><p>
+        Fix the dynamic cost updates broken by 1.1.12 changes.
+    </p><p>
+        Fix the background so it stretches to cover again.
+    </p><p>
+        Raise Dead buttons now enable and disable properly.
+    </p><p>
+        Replaced the worker and zombie cost iterative calculator with a
+        constant-time formula version.  This should improve responsiveness
+        with large numbers.
+    </p><p>
+        Consolidated all of the assorted hire/fire functions into one.
+    </p>
+    <h2>2014-04-06: v1.1.12 (alpha)</h2>
+    <p>
+        Dynamically generate the building controls.
+    </p>
+    <h2>2014-04-06: v1.1.11 (alpha)</h2>
+    <p>
+        Fix a bug that caused the food display to be incorrectly colourized.
+    </p>
+    <h2>2014-04-06: v1.1.10 (alpha)</h2>
+    <p>
+        Fix a bug that caused the food display to display gross food production instead of
+        net food.
+    </p>
+    <h2>2014-04-06: v1.1.9 (alpha)</h2>
+    <p>
+        Fix a bug that allowed people to get absurd numbers of zombies.
+    </p>
+    <h2>2014-04-06: v1.1.8 (alpha)</h2>
+    <p>
+        Adjust the stat display system to use HTML custom data attributes.
+    </p>
+    <h2>2014-04-04: v1.1.7 (alpha)</h2>
+    <p>
+        Fix some typos in the last few checkins.
+    </p>
+    <h2>2014-04-04: v1.1.6 (alpha)</h2>
+    <p>
+        Switch the background from using a pre-faded original to using CSS
+        opacity.
+    </p>
+    <h2>2014-04-03: v1.1.5 (alpha)</h2>
+    <p>
+        More syntactic refactoring; no functional change.
+    </p>
+    <h2>2014-03-30: v1.1.4 (alpha)</h2>
+    <p>
+        Removed 'Max' siege engine creation button 
+        (it was too easy to accidentally click).
+    </p>
+    <h2>2014-03-30: v1.1.3 (alpha)</h2>
+    <p>
+        Refactored civilisation size code.
+    </p>
+    <h2>2014-03-23: v1.1.2 (alpha)</h2>
+    <p>
+        Numerous minor JavaScript syntax fixes.
+    </p>
+    <h2>2014-02-15: v1.1.1 (alpha)</h2>
+    <p>
+        New workers now start as farmers.  This should prevent them from
+        starving before starting to feed themselves, and save a lot of tedious
+        clicking while growing population in the late game.
+    </p><p>
+        Secondary resource collection should happen more smoothly as your
+        empire grows.
+    </p><p>
+        Soldiers and cavalry now return their equipment resources when
+        reallocated (not when killed).
+    </p><p>
+        Fixed a bug where if you used the +All button for Cavalry, it only
+        deducted half the normal food and leather price. (Original Bug)
+    </p>
+    <h2>2014-02-15: v1.1.0</h2>
+    <p>
+        I'm going to call this version 1.1 to denote the hosting change, even
+        though the changes are relatively minor.
+    </p><p>
+        Updated references to the web hosting location to point to the new
+        site.
+    </p><p>
+        Ran all the HTML and CSS through the W3C validator, and fixed the
+        issues it found.
+    </p><p>
+        Removed the Google tracking code.
+    </p>
+    <h2>2014-02-13: v1.0.0</h2>
+    <p>
+        Migrated CivClicker to its new home on SourceForge.
+    </p>
+    <h2><a href="civUpdates_OLD.html">Older Updates</a></h2>
+</body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CivClicker Updates</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link rel="canonical" href="http://civclicker.sourceforge.net/civclicker/civUpdates_OLD.html" />
+	<style>
+		dt {
+			font-weight:bold;
+			margin-bottom:0.5em;
+		}
+		dd{
+			margin-bottom:1.5em;
+		}
+	</style>
+</head>
+<body>
+<h1>CivClicker Updates</h1>
+	<h2>2014-02-12</h2>
+	<p>
+		Okay, it's been a long time coming, delayed by illness and a lack of motivation, but I'm willing to call a line under what I've got and call it v1.0. To mark this point I'm releasing CivClicker under the terms of the GPL (see the source code for further details). This likely marks the end of development on CivClicker as it stands, at least from me, but I'm going to be working on new projects so keep an eye out for those. Thanks for playing, it's been a hell of a ride! :)
+	</p>
+	<h2>2014-02-02</h2>
+	<p>
+		Fixed a bug where sick tanners didn't contribute towards your population of tanners when you were using the Max button.
+	</p>
+	<h2>2014-01-31</h2>
+	<p>
+		And to cap off today's glut of QoL improvements, there's now a note down near Reset which will tell you whether you can get another deity and/or another wonder by resetting. Hopefully this will encourage people to realise that they can get more than one of each. Basically once I've done a little more code optimisation and sorted the bugs that people will inevitably report, we're good to call this the v1.0 release!
+	</p>
+	<p>
+		Improved various updating mechanics to make things act more consistently.
+	</p>
+	<p>
+		Improved conquest notifications to tell you what kind of nation you just plundered.
+	</p>
+	<p>
+		Minor layout change to get rid of errant &lt;br&gt; tags, introduces minor quibbles of its own but probably not a big deal in the grand scheme of things.
+	</p>
+	<p>
+		Corrected an import-related bug which could cause upgrades for multiple deities to appear at once.
+	</p>
+	<p>
+		Costs are now separate from notes and are not hidden when "Disable Notes" is used.
+	</p>
+	<h2>2014-01-30</h2>
+	<p>
+		Minor bugfix/tweak to the way that siege engines work.
+	</p>
+	<h2>2014-01-29</h2>
+	<p>
+		By popular request, sick workers will now display even if you don't have any (to stop the interface jumping around).
+	</p>
+	<p>
+		More bugfixing; in particular resource clicks will display properly on page load (previously they weren't getting updated until you clicked one of the resources).
+	</p>
+	<p>
+		Purchased upgrades now show up in a list below the purchasable upgrades.
+	</p>
+	<p>
+		Various bugfixing, and an easter egg for those of you who have a Deity of the Underworld.
+	</p>
+	<h2>2014-01-27</h2>
+	<p>
+		And, in addition, the Create Worker buttons should now also activate/deactivate based on food levels as well as space under the population cap.
+	</p>
+	<p>
+		Continuing with the interface updating changes, job and army assignments should now activate/deactivate based on worker (and building) numbers.
+	</p>
+	<p>
+		Bugfix: When resetting the game, Mill costs were resetting but not displaying correctly - this should now be fixed.
+	</p>
+	<h2>2014-01-26</h2>
+	<p>
+		Bugfix: traders now appear properly even if you don't have the Trade upgrade.
+	</p>
+	<p>
+		Yet more work on interface updating. This time building buttons will enable/disable based on whether you can afford them. It seems to work surprisingly well, which is a clear sign that I've screwed this up somewhere.
+	</p>
+	<h2>2014-01-25</h2>
+	<p>
+		Some more work on the updating. Upgrades should now be disabled when you can't afford them, enabled when you can, and hidden when you've purchased them. More work needs to be done to clean up the layout, as there are some &lt;br&gt; tags being left behind. Various other parts of the game will be getting the same treatment soon: purchasing buildings, creating workers, and assigning workers to jobs being the main ones.
+	</p>
+	<p>
+		CivClicker has been featured on quite a few large websites recently and has enjoyed a massive explosion in traffic. Welcome, new players! Please <a href="http://www.reddit.com/r/civclicker">drop by the subreddit</a>, and feel free to email me with bugs, suggestions and comments. On a related note, if you've enjoyed the game and would like to contribute towards the hosting costs, I've stuck some donation links up.
+	</p>
+	<h2>2014-01-24</h2>
+	<p>
+		Laid the groundwork for an overhaul of the way that the game updates the interface, which should hopefully facilitate buttons being disabled/enabled based on whether you can actually use them or not (for example, whether or not you can afford an upgrade).
+	</p>
+	<p>
+		Some balance tweaks. Overcrowding is now slightly less harsh, and Cavalry don't die as quickly when facing infantry.
+	</p>
+	<h2>2014-01-23</h2>
+	<p>
+		Rebalancing: Farmers now collect about 25% more skins (this compensates for the fact that you now need fewer farmers at endgame than you used to).
+	</p>
+	<h2>2014-01-22</h2>
+	<p>
+		Quick bugfix to handle an odd edge case of wonder limiting resources where it wouldn't display the correct resource.
+	</p>
+	<p>
+		Slightly improved save handling to try to let Firefox users with corrupted localStorage keep playing (because this is a browser-based bug, this can only ever be a partial fix - if you are using Firefox and things aren't working properly, try flushing your browser's localStorage or switching browsers).
+	</p>
+	<p>
+		Zombies can no longer operate Mills (that is, the Mill food bonus is reduced by the proportion of zombies in the population).
+	</p>
+	<p>
+		Nationalism now includes Cavalry.
+	</p>
+	<p>
+		Did some code streamlining by cutting out cruft from frequently-run functions (it also had the side benefit of reducing save file sizes). Main loop runtime now ~1/2ms, topping out at &lt;10ms when there's lots of stuff to handle. This could be improved further, but is probably good enough for the moment.
+	</p>
+	<h2>2014-01-17</h2>
+	<p>
+		Due to some bug reports with saves not storing people's buildings/land/wonders properly (due to a limitation of the way cookies work) I have finally updated the save system to use localStorage, with cookies as a fallback. What should now happen is that the browser will set the cookies as normal and will also write the same data to localStorage. When loading, it will first attempt to load in from localStorage and then if it fails will attempt to find a cookie. This should work fine, but obviously has the potential to do screwy things to saves, so please let me know if anything unusual happens. The cookie save system is now deprecated, and I will be altering or removing it after 30 days (the duration of the cookies), so if you have a reason for me not to remove it, please let me know before then.
+	</p>
+	<h2>2014-01-14</h2>
+	<p>
+		Minor bugfixing, including a fix for the underline on a hovered tab obscuring the text.
+	</p>
+	<p>
+		The second big update is Cavalry. Research Horseback Riding and you'll be able to create Stables, which support Cavalry. Cavalry are more powerful than regular soldiers, but are more expensive and take more casualties.
+	</p>
+	<p>
+		Two big updates today. The first is the addition of Mills, which you can build once you have The Wheel. Each mill directly improves your food output, but their costs scale (much like fortifications).
+	</p>
+	<h2>2014-01-12</h2>
+	<p>
+		Fixed bugs where the game would tell you that barbarians were killing soldiers even if you didn't have any, and the game would tell you that bandits/barbarians were stealing resources you didn't have.
+	</p>
+	<p>
+		Enemies will now leave faster if there is nothing for them to eat/steal/destroy.
+	</p>
+	<p>
+		Walk Behind The Rows marginally buffed, other bits and pieces tweaked slightly.
+	</p>
+	<p>
+		Much requested feature: if you are limited by resources, the Wonder now tells you which resource it's lacking.
+	</p>
+	<p>
+		Fixed longstanding bug where if the enemy had lots of fortifications, you would try to fire more siege engines than you had.
+	</p>
+	<p>
+		Changed the way that workers unlock to be predicated on having at least one building of the requisite type. This should hopefully eliminate a little confusion.
+	</p>
+	<h2>2014-01-07</h2>
+	<p>
+		Two new trade-related achievements: Merchant, and Rushed.
+	</p>
+	<p>
+		Traders are now more visually obvious.
+	</p>
+	<p>
+		Locked achievement names are now visible as title text (hover over locked achievements to see their names).
+	</p>
+	<p>
+		Back for the New Year, and getting ever closer to v1.0. Onclick events are now almost universally onmousedowns, meaning that you can't spam clicks or trade with traders who have left using the keyboard. I'm fairly sure everything still works correctly but please let me know if it seems not to work for some reason (especially if you're on a mobile device).
+	</p>
+	<h2>2013-12-30</h2>
+	<p>
+		By popular request, added a "worksafe" mode which disables the background image and icons.
+	</p>
+	<p>
+		Event log now condenses trades properly.
+	</p>
+	<h2>2013-12-28</h2>
+	<p>
+		Fixed bug where resetting would make traders ask for "undefined" (though the trading actually worked fine, just the name was wrong).
+	</p>
+	<p>
+		Whole new tech tree related to increasing the benefits of clicking.
+	</p>
+	<p>
+		Fixed some reset-related bugs (things not being hidden properly, etc).
+	</p>
+	<p>
+		Fixed long-standing bug with Raise Dead where it would tell you it was low on piety when in fact it was low on corpses.
+	</p>
+	<h2>2013-12-24</h2>
+	<p>
+		A few last presents before the holidays - undid a lot of the Walk Behind The Rows nerf (should now be just about balanced), and changed the "Summon Wolves" power to "Smite Invaders".
+	</p>
+	<h2>2013-12-23</h2>
+	<p>
+		Orteil tells me that text shadows can cause performance issues for some people, so you can now disable/enable them as well.
+	</p>
+	<p>
+		Another much-requested feature: (most) numbers should now be delimited by thousands to make them easier to read. I did it without using a regex (since I do not really understand them), but that means it's probably inefficient - if it slows down your game too much you can turn it off in the settings. Before people ask, I am using spaces rather than commas because a) they are the ISO standard, and b) I have a lot of players from lots of different countries and need an unambiguous delimiter.
+	</p>
+	<h2>2013-12-22</h2>
+	<p>
+		By request, there are now buttons to increase or decrease the text size (your preference will be saved).
+	</p>
+	<p>
+		Some more bugfixing.
+	</p>
+	<p>
+		Added three new farmer upgrades: Crop Rotation, Selective Breeding, and Fertilisers. Nerfed Walk Behind The Rows slightly to take this into account (may rebalance it again later if necessary).
+	</p>
+	<p>
+		Rearranged farming upgrades to unlock at different construction tiers (partially to make the early game slightly more challenging, and partly to streamline the new player experience.
+	</p>
+	<p>
+		CSS overhauled. This will probably be improved further, if you have strong feelings about it or suggestions for how I could improve it, please let me know - I would really appreciate feedback on this one.
+	</p>
+	<h2>2013-12-21</h2>
+	<p>
+		Added in some icons, because why not? Once I've figured out how to do it in a manageable way, there'll probably be an option to toggle between words and icons for costs and such.
+	</p>
+	<h2>2013-12-20</h2>
+	<p>
+		General bugfixing, including the trader upgrades reset bug.
+	</p>
+	<h2>2013-12-18</h2>
+	<p>
+		Hopefully fixed some browser cacheing issues with the update notifications.
+	</p>
+	<p>
+		Displayed some more stats (resources clicked, the current Walk count).
+	</p>
+	<p>
+		CSS tweaks. Changed font to sans-serif for readability, shuffled Special Resources for compactness.
+	</p>
+	<p>
+		Road to v1.0: filled out the rest of the 50 devotion deity bonuses and swapped things around. Comfort of the Hearthfires now increases trader frequency. Underworld gets Secrets of the Tombs, Fields gets Stay With Us, and Battle gets Lament of the Defeated.
+	</p>
+	<h2>2013-12-17</h2>
+	<p>
+		Started on the road to a v1.0 release. <a href="http://www.reddit.com/r/CivClicker/comments/1t4an9/the_road_to_v10/">Read here for more details</a>.
+	</p>
+	<h2>2013-12-13</h2>
+	<p>
+		Added new achievement: Neverclick - since you'd never get this in the course of normal play, I'll give you a hint: you have to build a wonder, after having only clicked on the resource buttons a maximum of 22 times.
+	</p>
+	<h2>2013-12-10</h2>
+	<p>
+		Deities of the Underworld get a new active power (Raise Shades). These will temporarily animate a number of shades to fight for you, based on your Enemies Slain.
+	</p>
+	<p>
+		A bunch of new deity upgrades. Deities of Cats now have a new active boost (Grace) and a new permanent passive boost (Comfort of the Hearthfires), while Deities of the Fields have a new active boost (Walk Behind The Rows).
+	</p>
+	<p>
+		Trader bugfixing.
+	</p>
+	<h2>2013-12-09</h2>
+	<p>
+		Implemented a system using XMLHttpRequest which should automatically notify the user when there's a new version available, provided I update the version numbers correctly.
+	</p>
+	<p>
+		General bugfixing.
+	</p>
+	<h2>2013-12-06</h2>
+	<p>
+		Sorry about the lack of updates; I'm taking a break to reflect on where I want to go next with the game, and to work on <a href="http://dhmholley.co.uk/ksplanner/">another project</a> for a few days. In the meantime, it's Feedback Friday over on /r/incremental_games. <a href="http://www.reddit.com/r/incremental_games/comments/1s8el3/feedback_friday_megathread_20131206/">Drop by, try some new games, and help some aspiring developers</a>!
+	</p>
+	<h2>2013-12-04</h2>
+	<p>
+		Trade- and Iconoclasm-related bugfixing.
+	</p>
+	<p>
+		Iconoclasm allows you to remove old deities for the cost of 1000 piety, and will give you a small amount of gold based on the devotion you had to that deity. You currently keep all your Pantheon Upgrades (even if you get rid of all your old deities).
+	</p>
+	<p>
+		Slight fix to speeding wonders using gold, to make the amount of progress given scale with the number of wonders you have in the same way as progress from labourers.
+	</p>
+	<h2>2013-12-03</h2>
+	<p>
+		Fixed major bug where gold wouldn't save properly. Sorry about that! If you lost a lot of gold as a result of refreshing, type <code>gold.total = number</code> into your browser console (where <code>number</code> is the amount of gold you previously had).
+	</p>
+	<p>
+		Initial trading system is live. Traders will occasionally show up and ask for resources. Trade with them to get gold. Use gold to buy other resources, or to speed along your wonder's progress.
+	</p>
+	<h2>2013-12-02</h2>
+	<p>
+		Preliminary work on trading.
+	</p>
+	<p>
+		New upgrade: Aesthetics. Creating temples when you have aesthetics will increase happiness.
+	</p>
+	<p>
+		This will make people happy - added two more upgrades: Flensing and Macerating. These increase the chance of finding skins and ore respectively (and so should make getting wonders less of a grind).
+	</p>
+	<h2>2013-12-01</h2>
+	<p>
+		Minor interface tweaks, balance tweaks (after some lengthy playtesting, made butchering very slightly better again).
+	</p>
+	<p>
+		Not dead! Just taking a short break to stop myself getting burned out on the game. :)
+	</p>
+	<h2>2013-11-26</h2>
+	<p>
+		Yet more bugfixing and interface tweaks.
+	</p>
+	<p>
+		Introducing the long-requested, much-sought-after, semi-mythical savegame import/export feature! Exporting your save should give you a base64 string which you can save to a file, or post to the internet, or whatever. Please let me know if you have any problems. :)
+	</p>
+	<h2>2013-11-25</h2>
+	<p>
+		Old deities table will now only show when you have them.
+	</p>
+	<p>
+		Indicator will now tell you when your wonder production is being slowed/halted by a lack of available resources.
+	</p>
+	<h2>2013-11-23</h2>
+    <p>
+        Rebalancing: a 25% boost to skins production with butchering.
+    </p>
+    <h2>2013-11-22</h2>
+	<p>
+		New wonder-related achievements: Wonder, and Seven!.
+	</p>
+	<p>
+		You can now rename your wonder while it's in progress.
+	</p>
+	<p>
+		More wonder bugfixing.
+	</p>
+	<p>
+		Improvement to siege engines to better support CivHelper's expanded raid targets.
+	</p>
+	<h2>2013-11-21</h2>
+	<p>
+		Made wonder costs scale on the maximum of any one resource, rather on total of all wonders. Hopefully this now means it's better to spread your wonders around rather than just beeline for Food.
+	</p>
+	<p>
+		The inevitable wonder bugfixing begins.
+	</p>
+	<p>
+		Wonders are go! Standard caveat: new feature, bugs may happen, please report them. A Wonder is hard to build (and will suck up a huge chunk of resources), but gives a 10% boost to the production of one specific resource forever. You can build one Wonder per reset, and each one will cost more than the last.
+	</p>
+	<h2>2013-11-20</h2>
+	<p>
+		Rebuilding the way that old deities are stored so that they're easier to access programmatically (opens things up for future updates) and don't take up as much space in the save. This may have caused bugs - if you notice anything go horribly wrong, please let me know.
+	</p>
+	<p>
+		More work on Wonders.
+	</p>
+	<h2>2013-11-19</h2>
+	<p>
+		Preliminary work for Wonders, getting variables into the save system and a framework in place for the basic mechanics.
+	</p>
+	<h2>2013-11-18</h2>
+	<p>
+		Some more achievements for deities, and some more bugfixing.
+	</p>
+	<p>
+		Two new achievements: Hated, and Loved.
+	</p>
+	<p>
+		Happiness is a go. Currently it applies a modifier to the production of all your workers, ranging from 50% (most angry) to 150% (most blissful), subject to later balancing. For farmers, happiness modifiers only affect the excess food they create after they feed themselves (so your population won't all starve to death as soon as they get unhappy).
+	</p>
+	<p>
+		Fixed bug where raiding a smaller civilisation than the largest available and then refreshing the page would reset the available civilisations down to that size category.
+	</p>
+	<p>
+		Completely rescaled happiness to reduce calculations later (your populations will probably all be blissful for a while).
+	</p>
+	<p>
+		Fixed display of recalculated fortification costs after reset.
+	</p>
+	<h2>2013-11-15</h2>
+	<p>
+		Enemy civilisations can now have fortifications of their own (this can make fights against Large Nations and Empires significantly harder). The new Mathematics upgrade lets you build or capture siege weapons of your own and use them against your enemies.
+	</p>
+	<p>
+		Tweaked happiness to better take into account zombies.
+	</p>
+	<p>
+		Bandits and Barbarians will now attack civs that are primarily populated by zombies just as they would civs that are populated by the living. Wolves will still show up in reduced numbers.
+	</p>
+	<p>
+		Fortification and siege bugfixing, as well as some reworking of some error handling. Thanks for the feedback so far, would still appreciate any more that people have. :)
+	</p>
+	<h2>2013-11-14</h2>
+	<p>
+		Big update this one - the start of sieges. You can now build fortifications - it's expensive to buy a lot of them, but each one you own directly reduces all damage your soldiers take when you get raided. However, enemy forces will now occasionally turn up with siege engines - which have a chance of destroying your fortifications and making you more vulnerable. <em>Please note: I've done my best but this update might be slightly unbalanced. I would very much appreciate feedback so I can get the numbers right.</em>
+	</p>
+	<h2>2013-11-13</h2>
+	<p>
+		New upgrade in the Writing tree: Code of Laws - reduces unhappiness from overcrowding.
+	</p>
+	<p>
+		New upgrade in the Writing tree: Administration - increases the amount of land gained from raiding.
+	</p>
+	<p>
+		Slight nerf to cleric piety generation, made up for by a new upgrade: Writing - increases piety generation (and in future will unlock a bunch of other techs).
+	</p>
+	<p>
+		New upgrade: Slums - Adds two max. population for every house.
+	</p>
+	<p>
+		By request, added a new "free land" stat which tracks how much land you have left.
+	</p>
+	<p>
+		Happiness rewards from raiding increase depending on the size of the civilisation you're raiding.
+	</p>
+	<h2>2013-11-12</h2>
+	<p>
+		Needed a change of pace today, so wrote <a href="incrementals.html">a very basic tutorial for making incremental games</a>.
+	</p>
+	<h2>2013-11-11</h2>
+	<p>
+		Enabled custom increments for creating workers.
+	</p>
+	<p>
+		Added a new Land system. If you don't have enough spare land when you build additional buildings, you will make your population unhappy. You can get more land from raiding.
+	</p>
+	<p>
+		Added a few more hooks for stylesheets.
+	</p>
+	<h2>2013-11-07</h2>
+	<p>
+		Winning raids makes your people happy. Starvation makes them unhappy (until they're all dead, of course).
+	</p>
+	<p>
+		Basics of a happiness system are in place. Nothing can yet make your population happy or unhappy, but future updates may change that.
+	</p>
+	<p>
+		Added a toggle to turn off Notes fields so if you're on a small screen and don't mind not being able to see costs you can more easily see everything at once.
+	</p>
+	<p>
+		Enemies now hang around properly if there's nothing else for them to do (e.g. they have killed all your dudes), and various related bugs fixed.
+	</p>
+	<p>
+		Fixed a pernicious bug where enemies would disappear as normal after they defeat you, but then reappear when you acquire more soldiers.
+	</p>
+	<h2>2013-11-06</h2>
+	<p>
+		Long-requested interface update: custom numbers of workers and buildings. Just click the custom increment toggle in settings.
+	</p>
+	<p>
+		Two new achievements: Raider, and Domination.
+	</p>
+	<p>
+		General bugfixing and an interface update or two.
+	</p>
+	<p>
+		Not dead! Just a quick break. Back on the updates train woooo
+	</p>
+	<h2>2013-10-28</h2>
+	<p>
+		Layout improvements to support later deity upgrades / make mechanics more obvious.
+	</p>
+	<p>
+		New power for Deities of Battle: For Glory! - temporarily makes raiding twice as hard, quadruples rewards.
+	</p>
+	<p>
+		Lots and lots of conquest bugfixing. Most things should now be ironed out.
+	</p>
+	<h2>2013-10-27</h2>
+	<p>
+		Lots and lots of raiding bugfixes.
+	</p>
+	<p>
+		Added an new Conquest mechanic: you can build an army and send them off raiding other civilisations for loot and plunder. Not quite finished - lots and lots of updates to come for this one.
+	</p>
+	<p>
+		Added Total Buildings stat
+	</p>
+	<h2>2013-10-26</h2>
+	<p>
+		Add a "max" button to Raise Dead, to reduce clicking
+	</p>
+	<p>
+		Added a new achievement: Ghost Town
+	</p>
+	<p>
+		Various debugging and fixes
+	</p>
+	<h2>2013-10-25</h2>
+	<p>
+		First part of the tech tree - construction tiers. Now you can only build certain buildings and get certain upgrades if you have the requisite construction-related upgrade.
+	</p>
+	<p>
+		Worked on implementing the start of a proper tech tree.
+	</p>
+	<h2>2013-10-24</h2>
+	<p>
+		Barbarians can now attack larger civilisations. They are stronger and can cause significantly more havoc if they slip past.
+	</p>
+	<p>
+		Increased costs for reusable deity powers, fixed bug where sometimes you wouldn't spend the piety
+	</p>
+	<p>
+		Another achievement, "Plagued" - you... probably don't want to get this one.
+	</p>
+	<h2>2013-10-23</h2>
+	<p>
+		Bugfixing achievements, now you can get one for each of the civilisation sizes, and there are three for numbers of cats. More achievements are on the way, but if you have suggestions please feel free to send them to me.
+	</p>
+	<p>
+		Implemented the basics of an achievements system. Not particularly flashy (and may be buggy), but will improve.
+	</p>
+	<p>
+		Not dead! Just moving house. Internet access is currently sporadic.
+	</p>
+	<h2>2013-10-17</h2>
+	<p>
+		New upgrade for Deities of the Fields: Abide No Waste (your workers will eat corpses if they run out of food).
+	</p>
+	<p>
+		New upgrade for Deities of Cats: Warmth of the Companion (your cats will help heal the sick).
+	</p>
+	<p>
+		In light of the new disease system, changed A Feast For Crows. Corpses now reset (and therefore don't make it impossible to get past the early stages without everyone getting ill); instead, the upgrade halves the chance of sickness.
+	</p>
+	<h2>2013-10-16</h2>
+	<p>
+		More disease bugfixing, squashed an old reset bug.
+	</p>
+	<p>
+		Hopefully made the plague() function slightly less intensive, as it appeared to be lagging/crashing some browsers by calling updatePopulation() over and over again.
+	</p>
+	<h2>2013-10-15</h2>
+	<p>
+		Added the much-requested +1k buttons for buildings, probably the last +10^n button I add before implementing cost scaling though.
+	</p>
+	<p>
+		Lots of disease bugfixing/balancing. In particular, various things can now kill sick people without driving population negative, and you need a minimum population before people start getting sick (to stop the "I just reset with loads of corpses and now all my farmers get sick and starve" issue).
+	</p>
+	<p>
+		Implemented disease. Your workers will now start getting sick if you leave unburied corpses lying around the place. Apothecaries use herbs to cure sick workers.
+	</p>
+	<h2>2013-10-14</h2>
+	<p>
+		Excised legacy save system.
+	</p>
+	<p>
+		Commented code more extensively (the code is still terrible, but at least now you might be able to tell what I've tried to do).
+	</p>
+	<p>
+		Bugfixing corpses and graveyards.
+	</p>
+	<h2>2013-10-13</h2>
+	<p>
+		Changed the way graveyards work to support the upcoming disease mechanic (also to be more intuitive). Now graveyards give you unfilled graves, which clerics will fill with corpses.
+	</p>
+	<p>
+		Nerfed Throne of Skulls by a factor of ten, as it was getting a bit silly.
+	</p>
+	<p>
+		The larger your population, the more workers will starve to death if you have no food.
+	</p>
+	<p>
+		Moved resource/second counters next to the relevant resource totals to make it easier to see what's going on.
+	</p>
+	<h2>2013-10-10</h2>
+	<p>
+		Say hello to bandits. They would like to say hello to your resources.
+	</p>
+	<h2>2013-10-08</h2>
+	<p>
+		Added -All buttons (perfect for those times when you want to starve everyone to death, but can't be bothered to click several hundred times)
+	</p>
+	<p>
+		A few more event logs here and there.
+	</p>
+	<p>
+		Minor interface overhaul to stop everything getting insanely messy.
+	</p>
+	<p>
+		Added an autosave (currently set to save once per minute).
+	</p>
+	<p>
+		Zombie soldiers no longer push population numbers negative when killed in sufficient quantities. You can also now raise zombies in multiples of 100.
+	</p>
+	<h2>2013-10-07</h2>
+    <p>
+        Added basic event logs for save-related stuff, and some combat events.
+    </p>
+    <p>
+        Added a framework for event logging. Actual logs to come shortly.
+    </p>
+    <h2>2013-10-06</h2>
+	<p>
+		Added x10 button to Raise Dead. May add x10 buttons to other deity powers as well.
+	</p>
+	<h2>2013-10-05</h2>
+	<p>
+		Deities of Battle now have a new permanent bonus: Throne of Skulls. Kill enough enemies, and you'll build temples from their remains.
+	</p>
+	<p>
+		New upgrade: Granaries, make your barns store twice as much food.
+	</p>
+	<p>
+		New combat-related upgrade: Palisades now reduce the amount of damage enemies deal.
+	</p>
+	<p>
+		Worker costs now scale as you acquire more (currently +1 food per hundred workers, this may be adjusted in the future). Feedback on this change is especially welcome.
+	</p>
+	<h2>2013-10-04</h2>
+	<p>
+		Some more fixes applied to combat calculations which are occasionally buggy for reasons I don't quite understand.
+	</p>
+	<p>
+		Those who worship a Deity of Cats can unlock a new reusable power - Pest Control (temporary bonus to food production).
+	</p>
+	<p>
+		New Soldier upgrade, Basic Shields.
+	</p>
+	<p>
+		Added x100 buttons to buildings.
+	</p>
+	<p>
+		Added net wood and net stone indicators.
+	</p>
+	<p>
+		Made Altars for Deities of Cats scale less.
+	</p>
+	<h2>2013-10-03</h2>
+	<p>
+		Changed the way that the +All buttons worked, now Max (will attempt to assign all unemployed, but if they can't then they will just assign as many as possible instead).
+	</p>
+	<h2>2013-10-02</h2>
+	<p>
+		After many many many requests, added a net food indicator.
+	</p>
+	<p>
+		First of a number of Soldier upgrades, starting with Basic Weaponry.
+	</p>
+	<p>
+		Wolves now show up in greater numbers (up to twice as many), and will take more people if they get past your soldiers.
+	</p>
+	<p>
+		Lowered the threshold for +10, +100 etc. buttons, and added a new +All button which will attempt to assign all unemployed workers to a job.
+	</p>
+	<p>
+		Corrected cleric/priest confusion.
+	</p>
+	<h2>2013-10-01</h2>
+	<p>
+		Adjusted some altar costs downwards.
+	</p>
+	<p>
+		New "Burn Wicker Man" power for Deities of the Fields. Burn a random worker alive to get bonus resources!
+	</p>
+	<p>
+		More Underworld love with the permanent bonus "A Feast for Crows" - making Hunt Wolves marginally more useful.
+	</p>
+	<p>
+		Added "Hunt Wolves" power for Deities of Battle, which summons wolves to attack you. Not particularly useful yet, but it will tie into other things later.
+	</p>
+	<h2>2013-09-29</h2>
+	<p>
+		Further reduced costs for underworld altars, finally added "Raise Dead" power. More unique powers for other gods to come, along with some rebalancing of devotion costs.
+	</p>
+	<p>
+		Fixed issues with save files being larger than can fit into a single HTTP cookie.
+	</p>
+	<p>
+		Altered Altar costs so that they increase with each purchase.
+	</p>
+	<p>
+		Corrected error where resetting set the cost of underworld altars too high.
+	</p>
+	<p>
+		Started update log.
+	</p>
+</body>
+</html>
