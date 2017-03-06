@@ -33,10 +33,13 @@ function ifValid(variable, defVal) {
 
 // Evaluates and returns variable if it's a function, otherwise just returns it.
 // Passes surplus arguments on to the function.
-//xxx argument forwarding needs testing.
-function valOf(variable) { return (typeof variable == "function") 
-                            ? variable.apply(this, Array.slice.call(arguments,1)) 
-                            : variable;
+// TODO: xxx argument forwarding needs testing.
+function valOf (variable) { 
+    if (typeof variable == "function") {
+        return variable.apply(this, Array.prototype.slice.call(arguments,1));
+    } else {
+        return variable;
+    }
 }
 
 

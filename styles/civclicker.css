@@ -16,34 +16,40 @@
     along with this program in the LICENSE file.
     If it is not there, see <http://www.gnu.org/licenses/>.
 **/
-@import url('fonts/OpenSans-CondLight.css');
+@import url('../fonts/OpenSans-CondLight.css');
 
 body{
-    font-family: sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
     /*font-weight:600;*/
     /*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
     text-shadow:none;
+    background: #D0CFCC;
 }
 
-/* You can't easily apply opacity to a background image.  This does it by
- * placing the background image on a layer beneath the item, and setting
- * opacity on the entire layer. */
-.hasBackground::after {
-    content : "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: -1;
-    background: url('images/constableLandscapeRetouched.jpg') no-repeat center center fixed;
-    background-size: cover;
-    opacity: 0.18;
+a {
+    color: #3366ff;
+    text-decoration: none;
 }
+    a:hover {
+        text-decoration: underline;
+    }
 
 #strip{
     text-shadow:none;
 }
+    #strip .title {
+        font-family: 'Suez One', serif;
+        opacity: 0.75;
+    }
+    #strip .version {
+        display: inline-block;
+        margin-right: 1em;
+        opacity: 0.25;
+    }
+    #strip a {
+        display: inline-block;
+        margin: 0 0.5em;
+    }
 
 .icon-lg{
     height:42px;
@@ -56,8 +62,12 @@ body{
 }
 
 #header{
-    position:relative;
+    position: relative;
+    font-family: 'Suez One', serif;
 }
+    #header h1 {
+        font-weight: normal;
+    }
 
 h1{
     float:left;
@@ -118,7 +128,7 @@ h1{
 h3{
     clear:both;
 }
-button{
+button {
     width:190px;
     border:2px solid black;
     background-color:#fff;
@@ -127,11 +137,13 @@ button{
     font-size:1.0em;
     font-weight:500;
     border-radius:0.5em;
+    cursor: pointer;
 }
-button:hover:enabled{
+button:hover:enabled {
     background-color:#eee;
 }
-button:disabled{
+button:disabled {
+    cursor: not-allowed;
     border-color:#ccc;
     font-weight:normal;
 }

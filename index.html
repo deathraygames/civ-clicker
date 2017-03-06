@@ -21,24 +21,27 @@
 <head>
     <title>CivClicker</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="civclicker.css" />
-    <link rel="canonical" href="http://civclicker.sourceforge.net/civclicker/civclicker.html" />
+    <link href="https://fonts.googleapis.com/css?family=Lato|Suez+One" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles/civclicker.css" />
+    <!-- <link rel="canonical" href="http://civclicker.sourceforge.net/civclicker/civclicker.html" /> -->
     <meta name="description" content="CivClicker: Build a Civilisation In Your Browser" />
 
     <!-- JS utilities -->
-    <script type="application/javascript" src="lz-string.js" async="async"></script>
-    <script type="application/javascript" src="jsutils.js" async="async"></script>
+    <script type="application/javascript" src="scripts/lz-string.js" async="async"></script>
+    <script type="application/javascript" src="scripts/jsutils.js" async="async"></script>
     <!-- Polyfill from https://developer.mozilla.org/en-US/docs/Web/API/Element.classList -->
-    <script type="application/javascript" src="classList.js" async="async"></script>
+    <script type="application/javascript" src="scripts/classList.js" async="async"></script>
     <!-- Main program -->
-    <script type="application/javascript" src="civclicker.js" defer="defer"></script>
+    <script type="application/javascript" src="scripts/civclicker.js" defer="defer"></script>
 </head>
 <body class="hasBackground">
 
 <div id="strip">
     <div id="stripInner">
-        <a href="civFAQ.html" target="_blank">FAQ / Instructions / Bugfixing</a> - 
-        <a href="civUpdates.html" target="_blank">Game Updates Log</a> - 
+        <span class="title">CivClicker</span>
+        <span class="version">v1.2</span>
+        <a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
+        <a href="updates.html" target="_blank">Game Updates Log</a>
         <a href="#" onclick="impExp()">Import/Export Save</a>
         <span id="versionAlert"> - <span id="newVersionText" onclick="location.reload()">New Version Available</span></span>
     </div>

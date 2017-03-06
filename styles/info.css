@@ -1,0 +1,61 @@
+@import url('../fonts/OpenSans-CondLight.css');
+body {
+	font-family: 'Lato', Arial, sans-serif;
+	background: #D0CFCC;
+	text-align: center;
+	font-size: 18px;
+}
+h1, h2, h3, h4, h5 {
+	font-family: 'Suez One', serif;
+	font-weight: normal;
+}
+h1 {
+	text-align: left;
+	width: 75%;
+	font-size: 200%;
+	min-width: 10em;
+	max-width: 25em;
+	padding: 0.5em 0;
+	margin: 1em auto 0.5em auto;
+	box-sizing: border-box;
+}
+a {
+    color: #3366ff;
+    text-decoration: none;
+}
+    a:hover {
+        text-decoration: underline;
+    }
+    
+section {
+	box-sizing: border-box;
+	text-align: left;
+	width: 75%;
+	min-width: 20em;
+	max-width: 50em;
+	padding: 1em 2em;
+	margin: 1em auto;
+	background: white;
+	/* border: solid 1px rgba(0,0,0,0.1); */
+	box-shadow: 0 0.2em 0.3em rgba(0,0,0,0.1);
+}
+dt {
+	font-weight:bold;
+	margin-bottom:0.5em;
+}
+dd {
+	margin-bottom:1.5em;
+}
+
+footer {
+	padding: 3em 0 6em 0;
+	/*
+	background: url('../images/constableLandscapeRetouched.jpg') bottom center no-repeat;
+	background-size: auto 5em;
+	*/
+}
+	footer > a {
+		display: inline-block;
+		padding: 0.5em;
+		margin: 0 1em;
+	}
