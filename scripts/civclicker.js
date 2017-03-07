@@ -1738,7 +1738,7 @@ function updatePopulationBar () {
 	var barElt = ui.find("#populationBar");
 	var h = '';
 	function getUnitPercent (x, y) {
-		return (Math.round(1000 * (x / y)) / 10);
+		return (Math.floor(1000 * (x / y)) / 10);
 	}
 	unitData.forEach(function(unit){
 		var p;
