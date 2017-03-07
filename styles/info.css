@@ -1,7 +1,7 @@
 @import url('../fonts/OpenSans-CondLight.css');
 body {
 	font-family: 'Lato', Arial, sans-serif;
-	background: #D0CFCC;
+	background: #EAF0EA;
 	text-align: center;
 	font-size: 18px;
 }
@@ -26,7 +26,7 @@ a {
     a:hover {
         text-decoration: underline;
     }
-    
+
 section {
 	box-sizing: border-box;
 	text-align: left;

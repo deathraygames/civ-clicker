@@ -1,320 +1,392 @@
 /**
-    CivClicker
-    Copyright (C) 2014; see the AUTHORS file for authorship.
+	CivClicker
+	Copyright (C) 2014; see the AUTHORS file for authorship.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program in the LICENSE file.
-    If it is not there, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program in the LICENSE file.
+	If it is not there, see <http://www.gnu.org/licenses/>.
 **/
 @import url('../fonts/OpenSans-CondLight.css');
 
 body{
-    font-family: 'Lato', Arial, sans-serif;
-    /*font-weight:600;*/
-    /*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
-    text-shadow:none;
-    background: #D0CFCC;
+	font-family: 'Lato', Arial, sans-serif;
+	/*font-weight:600;*/
+	/*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
+	text-shadow:none;
+	padding: 0;
+	margin: 0;
+	background: #EAF0EA;
+}
+
+table {
+	width: 100%;
 }
 
 a {
-    color: #3366ff;
-    text-decoration: none;
+	color: #3366ff;
+	text-decoration: none;
 }
-    a:hover {
-        text-decoration: underline;
-    }
+	a:hover {
+		text-decoration: underline;
+	}
 
-#strip{
-    text-shadow:none;
+.columns {
+	/* column-count: 2; */
+	display: block;
+	box-sizing: border-box;
+	margin: 0 auto;
+	clear: both;
+	width: 80%;
 }
-    #strip .title {
-        font-family: 'Suez One', serif;
-        opacity: 0.75;
-    }
-    #strip .version {
-        display: inline-block;
-        margin-right: 1em;
-        opacity: 0.25;
-    }
-    #strip a {
-        display: inline-block;
-        margin: 0 0.5em;
-    }
+	.columns:after /* clearfix */ { content: ""; display: table; clear: both; }
+.column {
+	display: block;
+	box-sizing: border-box;
+	width: 50%;
+	float: left;
+}
+	.column.left {
+		padding-right: 2.5%;
+	}
+	.column.right {
+		padding-left: 2.5%;
+	}
+
+	@media screen and (max-width: 1400px) {
+		.columns {
+			width: 90%;
+		}
+	}
+	@media screen and (max-width: 1250px) {
+		.columns {
+			width: 100%;
+		}
+	}
+	@media screen and (max-width: 1000px) {
+		.columns {
+			width: 100%;
+			padding: 0 1em;
+		}
+		.column {
+			width: 100%;
+			float: none;
+		}
+		.column.left, 
+		.column.right {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
 
 .icon-lg{
-    height:42px;
-    width:42px;
+	height:42px;
+	width:42px;
 }
 .icon-sm{
-    height:16px;
-    width:16px;
-    margin: 2px 0 -2px 0;
+	height:16px;
+	width:16px;
+	margin: 2px 0 -2px 0;
 }
 
-#header{
-    position: relative;
-    font-family: 'Suez One', serif;
+#header {
+	float: left;
+	position: relative;
+	text-align: left;
+	font-family: 'Suez One', serif;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
-    #header h1 {
-        font-weight: normal;
-    }
+	#header h1 {
+		font-weight: normal;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	#header.condensed {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+		#header.condensed h1 {
+			padding: 0;
+			margin: 0;
+			font-size: 1.5em;
+		}
+		#header.condensed #ruler {
+			display: none;
+		}
 
-h1{
-    float:left;
-    bottom:0;
+
+
+#strip{
+	box-sizing: border-box;
+	padding: 0 1em;
+	text-shadow: none;
+	width:100%;
+	text-align:right;
 }
-#ruler{
-    position:absolute;
-    float:left;
-    padding-left:1em;
-    bottom:0;
+	#strip .title {
+		font-family: 'Suez One', serif;
+		opacity: 0.75;
+	}
+	#strip .version {
+		display: inline-block;
+		margin-right: 1em;
+		opacity: 0.25;
+	}
+
+	#stripInner{
+		width: 100%;
+	}
+	#strip a {
+		display: inline-block;
+		padding: 0.5em 1em;
+	}
+	#strip a.selected {
+		background: rgba(0,0,0,0.1);
+	}
+
+
+.drawer {
+	display: none;
+	padding: 1em 0;
+	background: rgba(0,0,0,0.1);
+	clear: both;
+}
+	.drawer:after /* clearfix */ { content: ""; display: table; clear: both; }
+
+
+#main {
+	display: none;
 }
 
-#impexp{
-    display:none;
-    position:absolute;
-    top:0;
-    right:0;
-    width:40%;
-    border:1px solid black;
-    background-color:#fff;
-    z-index:1;
-}
 #impexpField{
-    display:block;
-    width:90%;
-    height:10em;
-    margin:1em auto;
+	display:block;
+	width: 100%;
+	height: 6em;
+	margin: 1em 0;
 }
 #expButton{
-    width:7em;
-    float:left;
-    margin-left:5%;
-    margin-bottom:1em;
+	width:7em;
+	float:left;
+	margin-left:5%;
+	margin-bottom:1em;
 }
 #expSelect{
-    width:7em;
-    float:left;
-    margin-left:1em;
-    margin-bottom:1em;
+	width:7em;
+	float:left;
+	margin-left:1em;
+	margin-bottom:1em;
 }
 #impButton{
-    width:7em;
-    float:right;
-    margin-right:1em;
-    margin-bottom:1em;
+	width:7em;
+	float:right;
+	margin-right:1em;
+	margin-bottom:1em;
 }
 #impexpClose{
-    width:7em;
-    float:right;
-    margin-right:5%;
-    margin-bottom:1em;
+	width:7em;
+	float:right;
+	margin-right:5%;
+	margin-bottom:1em;
 }
 
 .net{
-    padding-left:1em;
+	padding-left:1em;
 }
 
 h3{
-    clear:both;
+	clear:both;
 }
 button {
-    width:190px;
-    border:2px solid black;
-    background-color:#fff;
-    margin-right:0.8em;
-    padding:0.1em;
-    font-size:1.0em;
-    font-weight:500;
-    border-radius:0.5em;
-    cursor: pointer;
+	font-family: 'Suez One', serif;
+	border: 1px solid rgba(0,0,0,0.5);
+	background-color: rgba(255,255,255,0.9);
+	box-shadow: 0 0.2em 0 rgba(0,0,0,0.1);
+	margin-right: 0.8em;
+	padding: 0.1em 1em;
+	font-size: 1.0em;
+	font-weight: 500;
+	border-radius: 0.75em;
+	cursor: pointer;
+	outline: none;
 }
-button:hover:enabled {
-    background-color:#eee;
-}
-button:disabled {
-    cursor: not-allowed;
-    border-color:#ccc;
-    font-weight:normal;
-}
+	button:hover:enabled {
+		border-color: rgba(0,0,0,1);
+		background-color: rgba(255,255,255,1);
+	}
+	button:disabled {
+		cursor: not-allowed;
+		background-color: rgba(255,255,255,0.25);
+		border-color: rgba(0,0,0,0.1);
+		font-weight: normal;
+		box-shadow: none;
+	}
+	button:active, button:active:hover {
+		background-color: rgba(200,255,180,0.9);
+	}
 
-/* Use two columns on large displays */
-@media screen and (min-width: 800px) {
-.mainContent {
-    /* Two-column display */
-    column-count: 2;
-    -moz-column-count: 2;
-}
-}
 
-/* Don't allow column breaks inside sections */
-/*xxx Unfortunately, support for these properties is very sketchy. */
-.civColumn,
-.civSection {
-    break-inside: avoid;
-    -webkit-break-inside: avoid;
-    -moz-break-inside: avoid;
-    -webkit-column-break-inside: avoid;
-    -moz-column-break-inside: avoid;
-}
+.panesTabs {
 
-/* Put the column breaks where we want them */
-/*xxx Unfortunately, support for these properties is very sketchy. */
-#rightColumn {
-    break-before: column;
-    -webkit-break-before: column;
-    -moz-break-before: column;
-    -webkit-column-break-before: always;
-    -moz-column-break-before: always;
 }
+	.panesTabs:after /* clearfix */ { content: ""; display: table; clear: both; }
 
-.paneSelector{
-    float:left;
-    text-align:center;
-    margin:1em 0;
-    padding:0 0.5em;
-    line-height:2em;
-    border:2px solid black;
-    background-color:#fff;
-    border-top-left-radius:0.5em;
-    border-top-right-radius:0.5em;
+.paneSelector {
+	float:left;
+	text-align:center;
+	margin-top: 1.5em;
+	padding: 0.0em 0.5em;
+	line-height:2em;
+	border: 1px solid rgba(0,0,0,0.3);
+	background-color: rgba(0,0,0,0.1);
+	color: black;
+	border-top-left-radius: 0.25em;
+	border-top-right-radius: 0.25em;
+	cursor: pointer;
 }
-.paneSelector:hover{
-    text-decoration:underline;
-    text-shadow: none;
-    cursor:pointer;
-}
+	.paneSelector:hover {
+		border-color: rgba(0,0,0,0.5);
+		color: black;
+		background: rgba(255,255,255,0.5);
+	}
 
-#deitySelect,
-#conquestSelect,
-#tradeSelect{ 
-    display: none; 
-}
-
-.paneSelector.selected{
-    border-bottom:none;
-    background:none;
-    color:white;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-}
-.paneSelector.selected:hover{
-    text-decoration:none;
-    cursor:auto;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-}
+	.paneSelector.selected{
+		margin-top: 1em;
+		padding: 0.25em 0.5em;
+		border-color: rgba(0,0,0,0.5);
+		border-bottom-color: rgba(255,255,255,0.5);
+		background: rgba(255,255,255,0.5);
+		color: black;
+		font-weight: bold;
+		/* text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; */
+	}
 
 .selectPane {
-    display: none;
+	display: none;
+	padding: 1.5em 1em 2em 1em;
+	background-color: rgba(255,255,255,0.5);
+	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.1);
 }
-.selectPane.selected {
-    /* Note that this will cause a problem for non-block elements */
-    /* We should use 'default', but it's not sufficiently supported yet */
-    display: block; 
-}
+	.selectPane.selected {
+		/* Note that this will cause a problem for non-block elements */
+		/* We should use 'default', but it's not sufficiently supported yet */
+		display: block; 
+	}
+	.selectPane:after /* clearfix */ { content: ""; display: table; clear: both; }
 
 .devcost{
-    padding-right:1em;
+	padding-right:1em;
 }
 
 
 #conquest{
-    display:none;
+	display:none;
 }
 .note{
-    /*width: 380px;*/
-    text-align:right;
-    font-style:italic;
-    color:#555;
-    padding-left:1em;
-    width:35em;
+	/*width: 380px;*/
+	text-align:right;
+	font-style:italic;
+	color:#555;
+	padding-left:1em;
+	width:35em;
 }
 .cost{
-    white-space:nowrap;
-    text-align:right;
-    font-style:italic;
-    color:#555;
-    padding-left:1em;
-    margin-right:-1em;
+	white-space:nowrap;
+	text-align:right;
+	font-style:italic;
+	color:#555;
+	padding-left:1em;
+	margin-right:-1em;
 }
-.number{
-    text-align:right;
-    padding-right:0.3em;
+.number {
+	text-align: right;
+	padding-right: 0.3em;
+	font-size: 1.2em;
 }
+	.mainNumber {
+
+	}
+	.maxNumber {        
+		font-size: 1em;
+	}
 .icon{
-    padding-right:10px;
+	padding-right:10px;
 }
 
+
+
 .deityDomain{
-    padding-right:2em;
+	padding-right:2em;
 }
 #oldDeities{
-    display:none;
+	display:none;
 }
 #oldDeities td{
-    padding-right:1em;
+	padding-right:1em;
 }
 #deityDomains{
-    display:none;
+	display:none;
 }
 #deityDomains .purchaseRow{
-    /* We control the display of these through #deityDomains, so */
-    /*   suppress the usual .purchaseRow display:none */
-    display:inline;
+	/* We control the display of these through #deityDomains, so */
+	/*   suppress the usual .purchaseRow display:none */
+	display:inline;
 }
 
 #battleUpgrades,
 #fieldsUpgrades,
 #underworldUpgrades,
 #catsUpgrades{
-    display:none;
+	display:none;
 }
 .enemy{
-    color:red;
-    font-weight:bold;
+	color:red;
+	font-weight:bold;
 }
 
 #customJobQuantity,
 #customBuildQuantity,
 #customPartyQuantity,
 #customSpawnQuantity{
-    display:none;
+	display:none;
 }
 #customBuildQuantity{
-    margin-left:1em;
+	margin-left:1em;
 }
 
 .purchaseRow{
-    display:none;
+	display:none;
 }
 
 #victoryGroup{
-    display:none;
+	display:none;
 }
 
 .itemname{
-    padding-left:0.3em;
-    text-transform:capitalize;
+	padding-left:0.3em;
+	text-transform:capitalize;
 }
 
 /*
 button.build{
-    text-transform:capitalize;
+	text-transform:capitalize;
 	width: 4em;
 }
 */
 
 #basicResources button {
-    text-transform:capitalize;
+	text-transform: capitalize;
+	width: 8em;
 }
 
 #textSize button,
@@ -323,16 +395,16 @@ button.build{
 #buildings button,
 #deityPane button.xInfinity, /* Needed for Raise Dead */
 #deityPane button.x100{
-    width:3.5em;
-    text-shadow:none;
-    font-weight:normal;
-    font-size:0.9em;
-    margin-right:0.3em;
-    text-transform:capitalize;
+	width:3.5em;
+	text-shadow:none;
+	font-weight:normal;
+	font-size:0.9em;
+	margin-right:0.3em;
+	text-transform:capitalize;
 }
 
 .buycustom button{
-    width:7.5em !important; /* Need to make this override the above */
+	width:7.5em !important; /* Need to make this override the above */
 }
 
 .building10,
@@ -344,183 +416,250 @@ button.build{
 .unit1000,
 .unitInfinity,
 .buycustom {
-    display:none;
+	display:none;
 }
 
 
 #zombieWorkers{
-    display:none;
+	display:none;
 }
 
 .Pupgrade {
-    display:none;
+	display:none;
 }
 
 #logTable td{
-    padding-right:20px;
+	padding-right:20px;
 }
 
 #graveTotal{
-    display:none;
-}
-#settings{
+	display:none;
 }
 
-#strip{
-    width:100%;
-    height:1.5em;
-    margin-bottom:-2em;
-    text-align:right;
-}
-#stripInner{
-    position:relative;
-    z-index:1;
-    width:100%;
-}
 
 .achievement{
-    display:block;
-    float:left;
-    width:50px;
-    height:50px;
-    border:2px solid black;
-    background-color:#aaa;
-    background-image:url('images/achLocked.jpg');
+	display:block;
+	float:left;
+	width:50px;
+	height:50px;
+	border:2px solid black;
+	background-color:#aaa;
+	background-image:url('../images/achLocked.jpg');
 }
 .break{
-    display:block;
-    width:20px;
+	display:block;
+	width:20px;
 }
 .unlockedAch{
-    box-sizing:border-box;
-    -moz-box-sizing:border-box; /* Firefox needs a nonstandard name */
-    width:100%;
-    height:100%;
-    padding:0.2em;
-    font-size:0.9em;
-    text-shadow:none;
-    font-weight:normal;
-    background-color:#fff;
-    display:none; /* Initially */
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox needs a nonstandard name */
+	width:100%;
+	height:100%;
+	padding:0.2em;
+	font-size:0.9em;
+	text-shadow:none;
+	font-weight:normal;
+	background-color:#fff;
+	display:none; /* Initially */
 }
 
 #gloryGroup{
-    display:none;
+	display:none;
 }
 #morale{
-    color:#0d0;
+	color:#0d0;
 }
 #wondersContainer{
-    display:none;
-    padding-bottom:0.3em;
+	display:none;
+	padding-bottom:0.3em;
 }
 #startWonderLine{
-    display:none;
+	display:none;
 }
 
 #pastWonders td {
-    padding-right:1em;
+	padding-right:1em;
 }
 .wonderTitle{
-    font-weight:bold;
-    margin-bottom:1em;
+	font-weight:bold;
+	margin-bottom:1em;
 }
 #renameWonder{
-    width:5em;
+	width:5em;
 }
 #progressContainer{
-    border:1px solid black;
+	border:1px solid black;
 }
 #progressBar{
-    height:1em;
-    background-color:green;
-    width:0%;
+	height:1em;
+	background-color:green;
+	width:0%;
 }
 #wonderInProgress{
-    display:none;
+	display:none;
 }
 #speedWonderGroup{
-    display:none;
+	display:none;
 }
 #wonderCompleted{
-    padding-top:1em;
-    display:none;
+	padding-top:1em;
+	display:none;
 }
 .wonderCompleted button {
-    width:5em;
+	width:5em;
 }
 #lowResources{
-    display:none;
-    color:red;
+	display:none;
+	color:red;
 }
 #goldRow{
-    display:none;
+	display:none;
 }
 #tradeContainer{
-    display:none;
-    padding:0.3em 0 0.5em 0;
-    margin:0.5em 0;
-    text-align:center;
-    background-color:#9d9;
-    border-radius:1.5em;
+	display:none;
+	padding:0.3em 0 0.5em 0;
+	margin:0.5em 0;
+	text-align:center;
+	background-color:#9d9;
+	border-radius:1.5em;
 }
 #trader{
-    height:2em;
-    width:70%;
+	height:2em;
+	width:70%;
 }
 #tradeUpgradeContainer{
-    display:none;
+	display:none;
 }
 #iconoclasmGroup{
-    display:none;
+	display:none;
 }
 #iconoclasmList{
-    padding-left:2em;
+	padding-left:2em;
 }
 #versionAlert{
-    display:none;
+	display:none;
 }
 #newVersionText{
-    color:#f00;
-    text-decoration:underline;
+	color:#f00;
+	text-decoration:underline;
 }
 #newVersionText:hover{
-    cursor:pointer;
+	cursor:pointer;
 }
 
 #basicResources{
-    margin-left:0.3em;
+	margin-left:0.3em;
 }
 #basicResources button{
-    padding:0.3em;
-}
-#specialResourcesContainer{
-    margin-bottom:0.3em;
-}
-#specialResourcesContainer .number{
-    padding:0 0.3em 0.3em 0.3em;
-}
-#specialResourcesContainer img{
-    padding-right:5em;
+	padding:0.3em;
 }
 
+#specialResourcesContainer{
+	margin-bottom:0.3em;
+}
+	#specialResourcesContainer .number{
+		padding:0 0.3em 0.3em 0.3em;
+	}
+	#specialResourcesContainer img {
+		padding-right: 1em;
+		vertical-align: middle;
+	}
+	#specialResourcesContainer label {
+		display: inline-block;
+		min-width: 4em;
+	}
+
 #walkGroup{
-    display:none;
+	display:none;
 }
 
 
 #purchasedUpgrades, #purchasedPantheon{
-    margin-left:1em;
+	margin-left:1em;
 }
 #purchasedUpgrades *, #purchasedPantheon * {
-    line-height:1.5em;
+	line-height:1.5em;
 }
 
 #resetNote,
 #resetDeity,
 #resetBoth,
 #resetWonder{
-    display:none;
+	display:none;
 }
 
 
+#populationBar {
+	margin: 1em 0;
+	height: 1em;
+	border: solid 1px rgba(0,0,0,0.2);
+}
+	#populationBar div {
+		height: 100%;
+		width: 0;
+	}
+	#populationBar > div {
+		background-color: #ccc;
+	}
+	#populationBar > div > div {
+		float: left;
+	}
+
+.totalSick { 	background-color: #fcc; }
+.unemployed { 	background-color: #bbb; }
+.farmer { 		background-color: #CF9221; }
+.woodcutter { 	background-color: #016901; }
+.miner { 		background-color: #887878; }
+.tanner { 		background-color: #591B11; }
+.blacksmith { 	background-color: #525252; }
+.healer { 		background-color: #003B00; }
+.cleric { 		background-color: #CF6666; }
+.labourer { 	background-color: #9f9; }
+.soldier { 		background-color: #f99; }
+.cavalry { 		background-color: #ff9; }
+.cat { 			background-color: #ff2; }
+.shade { 		background-color: #333; }
+.wolf { 		background-color: #999; }
+.bandit { 		background-color: #666; }
+.barbarian { 	background-color: #f63; }
+.esiege { 		background-color: #99f; }
+.soldierParty { background-color: #9ff; }
+.cavalryParty { background-color: #f9f; }
+.siege { 		background-color: #cc3; }
+.esoldier { 	background-color: #c44; }
+.efort { 		background-color: #cc4; }
+
+	#populationBar span {
+		display: none;
+		position: relative;
+		top: 1.25em;
+		background-color: rgba(0,0,0,0.3);
+		color: white;
+		width: 10em;
+		font-size: 80%;
+		text-align: center;
+		padding: 0.5em;
+		border-radius: 0.2em;
+		text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+	}
+	#populationBar div:hover > span {
+		display: block;
+	}
+
+
+footer {
+	padding: 5em 0;
+	text-align: center;
+}
+footer .title {
+	font-family: 'Suez One', serif;
+	font-size: 150%;
+	color: rgba(0,0,0,0.5);
+	margin-right: 1em;
+	/* text-shadow: 0 0.1em 0 rgba(0,0,0,0.25), 0 0.1em 0.5em rgba(0,0,0,0.5); */
+}
+	footer > a {
+		display: inline-block;
+		padding: 0.5em;
+		margin: 0 1em;
+	}
