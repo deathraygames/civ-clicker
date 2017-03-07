@@ -104,19 +104,62 @@ var curCiv = {
 	//change.
 };
 
-
-function getCurDeityDomain() { return (curCiv.deities.length > 0) ? curCiv.deities[0].domain : undefined; }
-
 // These are not saved, but we need them up here for the asset data to init properly.
 var population = {
-	current:0,
-	limit:0,
-	healthy:0,
-	totalSick:0
+	current:	0,
+	limit:		0,
+	healthy:	0,
+	totalSick:	0
 };
 
 // Caches the total number of each wonder, so that we don't have to recount repeatedly.
 var wonderCount = {};
+
+var civData = []; // Giant array of data, defined below
+
+// Build a variety of additional indices so that we can iterate over specific
+// subsets of our civ objects.
+var resourceData	= []; // All resources
+var buildingData	= []; // All buildings
+var upgradeData 	= []; // All upgrades
+var powerData 		= []; // All 'powers' //xxx This needs refinement.
+var unitData 		= []; // All units
+var achData 		= []; // All achievements
+var sackable		= []; // All buildings that can be destroyed
+var lootable		= []; // All resources that can be stolen
+var killable		= []; // All units that can be destroyed
+var homeBuildings	= []; // All buildings to be displayed in the home area
+var homeUnits		= []; // All units to be displayed in the home area
+var armyUnits		= []; // All units to be displayed in the army area
+var basicResources	= []; // All basic (click-to-get) resources
+var normalUpgrades	= []; // All upgrades to be listed in the normal upgrades area
+
+// The resources that Wonders consume, and can give bonuses for.
+var wonderResources = []; // defined below
+
+// These are settings that should probably be tied to the browser.
+var settings = {
+	autosave: 			true,
+	autosaveCounter: 	1,
+	autosaveTime: 		60, //Currently autosave is every minute. Might change to 5 mins in future.
+	customIncr: 		false,
+	fontSize: 			1.0,
+	delimiters: 		true,
+	textShadow: 		false,
+	notes: 				true,
+	worksafe: 			false,
+	useIcons: 			true
+};
+
+var body = document.getElementsByTagName("body")[0];
+
+
+
+function getCurDeityDomain() { 
+	return (curCiv.deities.length > 0) ? curCiv.deities[0].domain : undefined; 
+}
+
+
 
 // Tallies the number of each wonder from the wonders array.
 function updateWonderCount() {
@@ -135,7 +178,7 @@ function getWonderBonus(resourceObj)
 	return (1 + (wonderCount[resourceObj.id]||0)/10);
 }
 
-var civData; //xxx Should this be deleted?
+
 
 //xxxTODO: Create a mechanism to automate the creation of a class hierarchy,
 // specifying base class, shared props, instance props.
@@ -340,7 +383,7 @@ Achievement.prototype = new CivObj({
 },true);
 
 // Initialize Data
-var civData = [
+civData = [
 // Resources
 new Resource({ id:"food", name:"food", increment:1, specialChance:0.1,
 	subType:"basic",
@@ -992,22 +1035,7 @@ indexArrayByAttr(civData,"id");
 // Initialize our data. //xxx Should this move to initCivclicker()?
 civData.forEach( function(elem){ if (elem instanceof CivObj) { elem.init(); } });
 
-// Build a variety of additional indices so that we can iterate over specific
-// subsets of our civ objects.
-var resourceData= []; // All resources
-var buildingData= []; // All buildings
-var upgradeData = []; // All upgrades
-var powerData = []; // All 'powers' //xxx This needs refinement.
-var unitData = []; // All units
-var achData = []; // All achievements
-var sackable= []; // All buildings that can be destroyed
-var lootable= []; // All resources that can be stolen
-var killable= []; // All units that can be destroyed
-var homeBuildings= []; // All buildings to be displayed in the home area
-var homeUnits= []; // All units to be displayed in the home area
-var armyUnits= []; // All units to be displayed in the army area
-var basicResources= []; // All basic (click-to-get) resources
-var normalUpgrades= []; // All upgrades to be listed in the normal upgrades area
+
 civData.forEach( function(elem){ 
 	if (!(elem instanceof CivObj)) { return; }  // Unknown type
 	if (elem.type == "resource") { resourceData.push(elem); 
@@ -1028,8 +1056,17 @@ civData.forEach( function(elem){
 
 
 // The resources that Wonders consume, and can give bonuses for.
-var wonderResources = [civData.food,civData.wood,civData.stone,civData.skins,civData.herbs,civData.ore,
-					   civData.leather,civData.metal,civData.piety];
+wonderResources = [
+	civData.food,
+	civData.wood,
+	civData.stone,
+	civData.skins,
+	civData.herbs,
+	civData.ore,
+	civData.leather,
+	civData.metal,
+	civData.piety
+];
 
 // Reset the raid data.
 function resetRaiding()
@@ -1045,23 +1082,11 @@ function resetRaiding()
 			.forEach(function(elem) { elem.reset(); });
 }
 
-// These are settings that should probably be tied to the browser.
-var settings = {
-	autosave : true,
-	autosaveCounter : 1,
-	autosaveTime : 60, //Currently autosave is every minute. Might change to 5 mins in future.
-	customIncr : false,
-	fontSize : 1.0,
-	delimiters : true,
-	textShadow : false,
-	notes : true,
-	worksafe : false,
-	useIcons : true
-};
 
-var body = document.getElementsByTagName("body")[0];
 
-function playerCombatMods() { return (0.01 * ((civData.riddle.owned) + (civData.weaponry.owned) + (civData.shields.owned))); }
+function playerCombatMods() { 
+	return (0.01 * ((civData.riddle.owned) + (civData.weaponry.owned) + (civData.shields.owned))); 
+}
 
 // Get an object's requirements in text form.
 // Pass it a cost object and optional quantity
@@ -1405,14 +1430,22 @@ function updatePurchaseRow(purchaseObj){
 
 
 // Only set up for the basic resources right now.
-function updateResourceRows() { basicResources.forEach(function(elem) { updatePurchaseRow(elem); }); }
+function updateResourceRows() { 
+	basicResources.forEach(function(elem) { updatePurchaseRow(elem); }); 
+}
 // Enables/disabled building buttons - calls each type of building in turn
 // Can't do altars; they're not in the proper format.
-function updateBuildingButtons() { homeBuildings.forEach(function(elem) { updatePurchaseRow(elem); }); }
+function updateBuildingButtons() { 
+	homeBuildings.forEach(function(elem) { updatePurchaseRow(elem); }); 
+}
 // Update the page with the latest worker distribution and stats
-function updateJobButtons(){ homeUnits.forEach(function(elem) { updatePurchaseRow(elem); }); }
+function updateJobButtons(){ 
+	homeUnits.forEach(function(elem) { updatePurchaseRow(elem); }); 
+}
 // Updates the party (and enemies)
-function updatePartyButtons(){ armyUnits.forEach(function(elem) { updatePurchaseRow(elem); }); }
+function updatePartyButtons(){ 
+	armyUnits.forEach(function(elem) { updatePurchaseRow(elem); }); 
+}
 
 
 // We have a separate row generation function for upgrades, because their
@@ -2055,41 +2088,6 @@ function updateSettings(){
 	setWorksafe();
 	setIcons();
 }
-
-function update(){
-
-	//unified update function. NOT YET IMPLEMENTED
-
-	//debugging - mark beginning of function execution
-	var start = new Date().getTime();
-
-	//call each existing update subfunction in turn
-	updateResourceTotals(); //need to remove call to updatePopulation, move references to upgrades
-	updatePopulation(); //move enabling/disabling by space to updateJobButtons, remove calls to updateJobButtons, updateMorale, updateAchievements
-	updatePopulationUI();
-	updateResourceRows();
-	updateBuildingButtons();
-	updateJobButtons();
-	updatePartyButtons();
-	updateUpgrades();
-	//updateDeity(); --- only needs to be called on initialisation and deity-related interactions ---
-	//makeDeitiesTables(); --- only needs to be called on initialisation and deity-related interactions ---
-	updateDevotion(); //need to add else clauses to disable buttons, change the way updates are revealed (unhidden as devotion increases)
-	//updateRequirements(); --- only needs to be called on building-related interactions, though must subsequently call the update() function ---
-	updateAchievements(); //should probably include else clauses
-	//updateTargets();  --- only to be called at initialisation and targetMax alterations
-	updateMorale();
-	updateWonder(); //remove reference to updateWonderList
-	//updateWonderList(); --- only to be called at initialisation and when wonders are created ---
-	updateReset();
-	
-	//Debugging - mark end of function, calculate delta in milliseconds, and print to console
-	var end = new Date().getTime();
-	var time = end - start;
-	//console.log("Update loop execution time: " + time + "ms"); //temporary altered to return time in order to run a debugging function
-	return time;
-}
-
 
 // Game functions
 
@@ -4137,8 +4135,6 @@ function tickGrace() {
 
 //========== UI functions
 
-
-
 // Called when user switches between the various panes on the left hand side of the interface
 // Returns the target pane element.
 function paneSelect(control){
@@ -4236,7 +4232,9 @@ function setNotes(value){
 		setElemDisplay(elems[i],settings.notes);
 	}
 }
-function onToggleNotes(control){ return setNotes(control.checked); }
+function onToggleNotes(control){ 
+	return setNotes(control.checked); 
+}
 
 // value is the desired change in 0.1em units.
 function textSize(value){
@@ -4254,7 +4252,9 @@ function setShadow(value){
 					+ ", 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff";
 	body.style.textShadow = settings.textShadow ? shadowStyle : "none";
 }
-function onToggleShadow(control){ return setShadow(control.checked); }
+function onToggleShadow(control){ 
+	return setShadow(control.checked); 
+}
 
 // Does nothing yet, will probably toggle display for "icon" and "word" classes 
 // as that's probably the simplest way to do this.
@@ -4269,14 +4269,18 @@ function setIcons(value){
 		elems[i].style.visibility = (settings.useIcons && !settings.worksafe) ? "visible" : "hidden";
 	}
 }
-function onToggleIcons(control){ return setIcons(control.checked); }
+function onToggleIcons(control){ 
+	return setIcons(control.checked); 
+}
 
 function setDelimiters(value){
 	if (value !== undefined) { settings.delimiters = value; }
 	document.getElementById("toggleDelimiters").checked = settings.delimiters;
 	updateResourceTotals();
 }
-function onToggleDelimiters(control){ return setDelimiters(control.checked); }
+function onToggleDelimiters(control){ 
+	return setDelimiters(control.checked); 
+}
 
 function setWorksafe(value){
 	if (value !== undefined) { settings.worksafe = value; }
@@ -4291,10 +4295,10 @@ function setWorksafe(value){
 
 	setIcons(); // Worksafe overrides icon settings.
 }
-function onToggleWorksafe(control){ return setWorksafe(control.checked); }
+function onToggleWorksafe(control){ 
+	return setWorksafe(control.checked); 
+}
 
-
-/* Debug functions */
 
 //Not strictly a debug function so much as it is letting the user know when 
 //something happens without needing to watch the console.
@@ -4325,17 +4329,6 @@ function gameLog(message){
 	document.getElementById("log0").innerHTML = s;
 }
 
-function updateTest(){
-	//Debug function, runs the update() function 1000 times, adds the results together, and calculates a mean
-	var total = 0;
-	var i;
-	for (i=0;i<1000;i++){
-		total += update();
-	}
-	console.log(total);
-	total = total / 1000;
-	console.log(total);
-};
 
 function gameLoop () {
 	//debugging - mark beginning of loop execution
@@ -4381,6 +4374,15 @@ function gameLoop () {
 	testAchievements();
 	
 	//Data changes should be done; now update the UI.
+	updateAll();
+	
+	//Debugging - mark end of main loop and calculate delta in milliseconds
+	//var end = new Date().getTime();
+	//var time = end - start;
+	//console.log("Main loop execution time: " + time + "ms");
+};
+
+function updateAll () {
 	updateUpgrades();
 	updateResourceRows(); //Update resource display
 	updateBuildingButtons();
@@ -4390,12 +4392,7 @@ function gameLoop () {
 	updateTargets();
 	updateDevotion();
 	updateWonder();
-	updateReset();
-	
-	//Debugging - mark end of main loop and calculate delta in milliseconds
-	//var end = new Date().getTime();
-	//var time = end - start;
-	//console.log("Main loop execution time: " + time + "ms");
+	updateReset();	
 };
 
 function ruinFun(){
