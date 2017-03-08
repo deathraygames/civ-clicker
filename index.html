@@ -157,6 +157,17 @@
 		</div>
 		
 		<div id="buildingsPane" class="selectPane selected">
+			<div class="landCols cols">
+				<div class="col">
+					Total Buildings: <span id="totalBuildings">...</span><br />
+				</div>
+				<div class="col">
+					Total Land: <span id="totalLand">...</span><br />
+				</div>
+			</div>
+			<div id="landBar" class="bar">
+				<!-- populated by javascript -->
+			</div>
 			<p id="customBuildQuantity">
 				Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
 			</p>
@@ -330,7 +341,8 @@
 		</div>
 		<div id="populationCreate">
 			<div class="unit1">
-				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button><span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span>
+				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button>
+				<span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span>
 				<span class="newSpawnJob">
 					as
 					<select type="dropdown" id="newSpawnJobSelection">
@@ -342,21 +354,25 @@
 				</span>
 			</div>
 			<div class='unit10'>
-				<button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Citizens</button><span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new workers</span>
+				<button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Citizens</button>
+				<span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new workers</span>
 			</div>
 			<div class='unit100'>
-				<button id="spawn100button" onmousedown="spawn(100)">Recruit 100 Citizens</button><span class="cost"><span id="workerCost100">2000</span> food</span><span class="note">: Recruit 100 new workers</span>
+				<button id="spawn100button" onmousedown="spawn(100)">Recruit 100 Citizens</button>
+				<span class="cost"><span id="workerCost100">2000</span> food</span><span class="note">: Recruit 100 new workers</span>
 			</div>
 			<div class='unit1000'>
-				<button id="spawn1000button" onmousedown="spawn(1000)">Recruit 1000 Citizens</button><span class="cost"><span id="workerCost1000">20000</span> food</span><span class="note">: Recruit 1000 new workers</span>
+				<button id="spawn1000button" onmousedown="spawn(1000)">Recruit 1000 Citizens</button>
+				<span class="cost"><span id="workerCost1000">20000</span> food</span><span class="note">: Recruit 1000 new workers</span>
 			</div>
 			<div class='unitInfinity'>
-				<button id="spawnMaxbutton" onmousedown="spawn(Infinity)">Recruit <span id="workerNumMax">Max</span> Citizens</button><span class="cost"><span id="workerCostMax"></span> food</span><span class="note">: Recruit as many new workers as possible</span>
+				<button id="spawnMaxbutton" onmousedown="spawn(Infinity)">Recruit <span id="workerNumMax">Max</span> Citizens</button>
+				<span class="cost"><span id="workerCostMax"></span> food</span><span class="note">: Recruit as many new workers as possible</span>
 			</div>
 			<div id="customSpawnQuantity"><button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Workers</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
 			</div>
 		</div>
-		<div id="populationBar">
+		<div id="populationBar" class="bar">
 			<!-- populated by javascript -->
 		</div>
 	</div>
@@ -404,8 +420,6 @@
 	<div id="statsContainer" class="civSection">
 		<h3>Stats</h3>
 		Resource clicks: <span id="clicks">0</span><br />
-		Total Land: <span id="totalLand">...</span><br />
-		Total Buildings: <span id="totalBuildings">...</span><br />
 		Enemies Slain: <span data-action="display" data-target="enemySlain">...</span><br />
 		Unburied Corpses: <span data-action="display" data-target="corpses">...</span><br />
 		<span id="graveTotal">Unfilled Graves: <span data-action="display" data-target="grave">...</span><br /></span>

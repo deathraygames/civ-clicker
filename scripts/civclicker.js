@@ -1567,6 +1567,17 @@ function addUpgradeRows()
 	ui.find("#purchasedPantheon").innerHTML = pantheonUpgStr;
 }
 
+function getLandTotals () {
+	//Update land values
+	var ret = { lands: 0, buildings: 0, free: 0 };
+	buildingData.forEach(function(elem) { 
+		if (elem.subType == "land") { ret.free     += elem.owned; }
+		else                        { ret.buildings += elem.owned; }
+	});
+	ret.lands = ret.free + ret.buildings;
+	return ret;
+}
+
 
 // Update functions. Called by other routines in order to update the interface.
 
@@ -1574,6 +1585,7 @@ function addUpgradeRows()
 //doesn't need multiple action types?
 function updateResourceTotals(){
 	var i,displayElems,elem,val;
+	var landTotals = getLandTotals();
 
 	// Scan the HTML document for elements with a "data-action" element of
 	// "display".  The "data-target" of such elements (or their ancestors) 
@@ -1581,7 +1593,7 @@ function updateResourceTotals(){
 	// the global variable name to be displayed as the element's content.
 	//xxx Note that this is now also updating nearly all updatable values,
 	// including population.
-	displayElems=document.querySelectorAll("[data-action='display']");
+	displayElems = document.querySelectorAll("[data-action='display']");
 	for (i=0;i<displayElems.length;++i)
 	{
 		elem = displayElems[i];
@@ -1614,15 +1626,8 @@ function updateResourceTotals(){
 	ui.find("#maxfood").innerHTML = prettify(civData.food.limit);
 	ui.find("#maxwood").innerHTML = prettify(civData.wood.limit);
 	ui.find("#maxstone").innerHTML = prettify(civData.stone.limit);
-
-	//Update land values
-	var buildingCount = 0, landCount = 0;
-	buildingData.forEach(function(elem) { 
-		if (elem.subType == "land") { landCount     += elem.owned; }
-		else                        { buildingCount += elem.owned; }
-	});
-	ui.find("#totalBuildings").innerHTML = prettify(buildingCount);
-	ui.find("#totalLand"     ).innerHTML = prettify(buildingCount + landCount);
+	ui.find("#totalBuildings").innerHTML = prettify(landTotals.buildings);
+	ui.find("#totalLand"     ).innerHTML = prettify(landTotals.lands);
 
 	// Unlock advanced control tabs as they become enabled (they never disable)
 	// Temples unlock Deity, barracks unlock Conquest, having gold unlocks Trade.
@@ -1786,6 +1791,7 @@ function updatePopulationUI() {
 	updateMorale();
 	updateAchievements(); //handles display of achievements
 	updatePopulationBar();
+	updateLandBar();
 }
 
 function updatePopulationBar () {
@@ -1811,7 +1817,13 @@ function updatePopulationBar () {
 		+ h 
 		+ '</div>'
 	);
-};
+}
+function updateLandBar () {
+	var barElt = ui.find("#landBar");
+	var landTotals = getLandTotals();
+	var p = (Math.floor(1000 * (landTotals.buildings / landTotals.lands)) / 10);
+	barElt.innerHTML = ('<div style="width: ' + p + '%"></div>');	
+}
 
 
 function typeToId(deityType) {
@@ -3325,8 +3337,6 @@ function load (loadType) {
 		if (string1) { try { loadVar  = JSON.parse(string1); } catch(ignore){} }
 		if (string2) { try { loadVar2 = JSON.parse(string2); } catch(ignore){} }
 		if (settingsString) { try { settingsVar = JSON.parse(settingsString); } catch(ignore){} }
-
-		console.log("string1", string1, string2, loadVar, loadVar2);
 
 		// If there's a second string (old save game format), merge it in.
 		if (loadVar2) { loadVar = mergeObj(loadVar, loadVar2); loadVar2 = undefined; }

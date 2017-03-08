@@ -37,7 +37,8 @@ a {
 		text-decoration: underline;
 	}
 
-.columns {
+.columns,
+.cols {
 	/* column-count: 2; */
 	display: block;
 	box-sizing: border-box;
@@ -46,7 +47,12 @@ a {
 	width: 80%;
 }
 	.columns:after /* clearfix */ { content: ""; display: table; clear: both; }
-.column {
+	.cols:after /* clearfix */ { content: ""; display: table; clear: both; }
+.cols {
+	width: 100%;
+}
+.column,
+.col {
 	display: block;
 	box-sizing: border-box;
 	width: 50%;
@@ -85,6 +91,12 @@ a {
 		}
 	}
 
+.landCols {
+
+}
+	.landCols .col:nth-child(2) {
+		text-align: right;
+	}
 
 .icon-lg{
 	height:42px;
@@ -598,19 +610,19 @@ button {
 }
 
 
-#populationBar {
+.bar {
 	margin: 1em 0;
 	height: 1em;
 	border: solid 1px rgba(0,0,0,0.2);
 }
-	#populationBar div {
+	.bar div {
 		height: 100%;
 		width: 0;
 	}
-	#populationBar > div {
+	.bar > div {
 		background-color: #ccc;
 	}
-	#populationBar > div > div {
+	.bar > div > div {
 		float: left;
 	}
 
@@ -638,7 +650,7 @@ button {
 .esoldier { 	background-color: #c44; }
 .efort { 		background-color: #cc4; }
 
-	#populationBar span {
+	.bar span {
 		display: none;
 		position: relative;
 		top: 1.25em;
@@ -651,9 +663,11 @@ button {
 		border-radius: 0.2em;
 		text-shadow: 0 1px 0 rgba(0,0,0,0.2);
 	}
-	#populationBar div:hover > span {
+	.bar div:hover > span {
 		display: block;
 	}
+
+
 
 #morale {
 
@@ -687,7 +701,7 @@ button {
 
 
 footer {
-	padding: 5em 0;
+	padding: 1em 0;
 	text-align: center;
 }
 footer .title {
