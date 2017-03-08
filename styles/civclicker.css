@@ -99,8 +99,8 @@ a {
 	}
 
 .icon-lg{
-	height:42px;
-	width:42px;
+	height: 38px;
+	width: 38px;
 }
 .icon-sm{
 	height:16px;
@@ -512,14 +512,7 @@ button {
 #renameWonder{
 	width:5em;
 }
-#progressContainer{
-	border:1px solid black;
-}
-#progressBar{
-	height:1em;
-	background-color:green;
-	width:0%;
-}
+
 #wonderInProgress{
 	display:none;
 }
@@ -535,9 +528,7 @@ button {
 	display:none;
 	color:red;
 }
-#goldRow{
-	display:none;
-}
+
 #tradeContainer{
 	display:none;
 	padding:0.3em 0 0.5em 0;
@@ -625,6 +616,15 @@ button {
 	.bar > div > div {
 		float: left;
 	}
+#progressContainer {
+	border: 1px solid rgba(0,0,0,0.2);
+}
+#progressBar {
+	height: 1em;
+	background-color: #3f6;
+	width: 0%;
+}
+
 
 .totalSick { 	background-color: #fcc; }
 .unemployed { 	background-color: #bbb; }

@@ -1352,8 +1352,7 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 
 // Pass this the item definition object.
 // Or pass nothing, to create a blank row.
-function getPurchaseRowText(purchaseObj)
-{
+function getPurchaseRowText (purchaseObj) {
 	// Make sure to update this if the number of columns changes.
 	if (!purchaseObj) { return "<tr class='purchaseRow'><td colspan='13'/>&nbsp;</tr>"; }
 
@@ -1381,8 +1380,7 @@ function getPurchaseRowText(purchaseObj)
 
 // For efficiency, we set up a single bulk listener for all of the buttons, rather
 // than putting a separate listener on each button.
-function onBulkEvent(e)
-{
+function onBulkEvent(e) {
 	switch (dataset(e.target,"action")) 
 	{
 		case "increment": return onIncrement(e.target);
@@ -1618,9 +1616,10 @@ function updateResourceTotals(){
 		elem.innerHTML = prettify(val.toFixed(1));
 	}
 
-	if (civData.gold.owned >= 1){
-		ui.show("#goldRow",true);
-	}
+
+	//if (civData.gold.owned >= 1){
+	//	ui.show("#goldRow",true);
+	//}
 
 	//Update page with building numbers, also stockpile limits.
 	ui.find("#maxfood").innerHTML = prettify(civData.food.limit);
@@ -1701,7 +1700,7 @@ function updatePopulationUI() {
 
 	civData.house.update(); //xxx Effect might change dynamically.  Need a more general way to do this.
 
-	ui.show("#graveTotal",(curCiv.grave.owned > 0));
+	ui.show("#graveTotal", (curCiv.grave.owned > 0));
 
 	//As population increases, various things change
 	// Update our civ type name

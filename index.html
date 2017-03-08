@@ -92,12 +92,14 @@
 
 <div id="main" class="columns">
 <div id="leftColumn" class="column left">
+	<h3>Resources</h3>
 	<div id="basicResourcesContainer" class="civSection">
-		<h3>Basic Resources</h3>
-		<table id="basicResources"></table>
+		
+		<table id="basicResources">
+			<!-- populated by javascript -->
+		</table>
 	</div>
 	<div id="specialResourcesContainer" class="civSection">
-		<h3>Special Resources</h3>
 		<table>
 			<tr>
 				<td>
@@ -135,13 +137,16 @@
 					<span class="number" data-action="display" data-target="metal">0</span>
 				</td>
 			</tr>
-			<tr id="goldRow">
+			<tr>
 				<td>
 					<img src="images/gold.png" class="icon icon-lg" alt="Gold" />
 					<label>Gold:</label>
 					<span class="number" data-action="display" data-target="gold">0</span>
 				</td>
 				<td>
+					<img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
+					<label>Corpses:</label>
+					<span class="number" data-action="display" data-target="corpses">0</span>
 				</td>
 			</tr>
 		</table>
@@ -171,7 +176,12 @@
 			<p id="customBuildQuantity">
 				Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
 			</p>
-			<table id="buildings"></table>
+			<table id="buildings">
+				<!-- populated by javascript -->
+			</table>
+			<div id="graveTotal">
+				Unfilled Graves: <span data-action="display" data-target="grave">...</span>
+			</div>
 		</div>
 		
 		<div id="upgradesPane" class="selectPane">
@@ -183,7 +193,7 @@
 				<h3>Current Deity</h3>
 				<table id="activeDeity"><!-- populated by javascript --></table>
 			</div>
-			<span id="worshipRow"></span>
+			<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
 			<div id="deityDomains">
 				<span id="battleRow" class="purchaseRow" data-target="battle"> <span class="upgradetrue" data-quantity="true">
 				<button id="battleDeity" class="xtrue" onmousedown="selectDeity('battle')">Battle</button></span>
@@ -277,6 +287,9 @@
 					<button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
 				</div>
 			</div>
+			<div>
+				Enemies Slain: <span data-action="display" data-target="enemySlain">...</span>
+			</div>
 		</div>
 		<div id="tradePane" class="selectPane">
 			<span id="tradeRow"></span>
@@ -298,6 +311,9 @@
 			<div id="achievements">
 				<!-- populated by javascript -->
 			</div>
+			<p>
+				Resource clicks: <span id="clicks">0</span>
+			</p>
 		</div>
 	</div>
 </div>
@@ -416,14 +432,6 @@
 			<tr id="log8"><td colspan="3"></td></tr>
 			<tr id="log9"><td colspan="3"></td></tr> -->
 		</table>
-	</div>
-	<div id="statsContainer" class="civSection">
-		<h3>Stats</h3>
-		Resource clicks: <span id="clicks">0</span><br />
-		Enemies Slain: <span data-action="display" data-target="enemySlain">...</span><br />
-		Unburied Corpses: <span data-action="display" data-target="corpses">...</span><br />
-		<span id="graveTotal">Unfilled Graves: <span data-action="display" data-target="grave">...</span><br /></span>
-		<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
 	</div>
 </div>
 </div>
