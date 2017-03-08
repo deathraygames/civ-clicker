@@ -1,6 +1,6 @@
 /**
 	CivClicker
-	Copyright (C) 2014; see the AUTHORS file for authorship.
+	Copyright (C) 2014; see the README.md file for authorship.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -16,15 +16,17 @@
 	along with this program in the LICENSE file.
 	If it is not there, see <http://www.gnu.org/licenses/>.
 **/
-@import url('../fonts/OpenSans-CondLight.css');
+@import url("fonts.css");
 
-body{
+body {
 	font-family: 'Lato', Arial, sans-serif;
 	/*font-weight:600;*/
 	/*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
 	text-shadow:none;
 	padding: 0;
 	margin: 0;
+}
+body.hasBackground {
 	background: #EAF0EA;
 }
 
