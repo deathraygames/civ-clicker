@@ -151,6 +151,12 @@
 			</tr>
 		</table>
 	</div>
+	<div id="tradeContainer">
+		Trader offers 1 gold for <span id="tradeRequested">...</span> <span id="tradeType">...</span>
+		for the next <span id="traderTimer">...</span>.
+		<br />
+		<button id="tradeButton" onmousedown="trade()">Trade</button>
+	</div>
 	<div id="panesSelectors" class="civSection">
 		<div id="selectors" class="panesTabs">
 			<div id="buildingsSelect" class="paneSelector selected" data-target="buildingsPane" onclick="paneSelect(this)">Buildings</div>
@@ -194,6 +200,9 @@
 				<table id="activeDeity"><!-- populated by javascript --></table>
 			</div>
 			<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
+			<div id="worshipRow">
+				<!-- populated by updatePurchaseRow -->
+			</div>
 			<div id="deityDomains">
 				<span id="battleRow" class="purchaseRow" data-target="battle"> <span class="upgradetrue" data-quantity="true">
 				<button id="battleDeity" class="xtrue" onmousedown="selectDeity('battle')">Battle</button></span>
@@ -311,9 +320,9 @@
 			<div id="achievements">
 				<!-- populated by javascript -->
 			</div>
-			<p>
+			<div class="stats">
 				Resource clicks: <span id="clicks">0</span>
-			</p>
+			</div>
 		</div>
 	</div>
 </div>
@@ -398,10 +407,6 @@
 			Custom Quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
 		</p>
 		<table id="jobs"></table>
-	</div>
-	<div id="tradeContainer">
-		Trader offers 1 gold for <span id="tradeRequested">0</span> <span id="tradeType">food</span><br />
-		<button id="trader" onmousedown="trade()">Trade</button>
 	</div>
 	<div id="wondersContainer" class="civSection">
 		<h3>Wonders</h3>

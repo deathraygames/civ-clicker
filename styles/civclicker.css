@@ -490,6 +490,11 @@ button {
 	background-color: #FBDA20;
 	display: none; /* Initially */
 }
+.stats {
+	display: block;
+	clear: both;
+	margin: 1em 0;
+}
 
 #gloryGroup{
 	display:none;
@@ -530,19 +535,20 @@ button {
 }
 
 #tradeContainer{
-	display:none;
-	padding:0.3em 0 0.5em 0;
-	margin:0.5em 0;
-	text-align:center;
-	background-color:#9d9;
-	border-radius:1.5em;
+	display: none;
+	padding: 0.5em 0;
+	margin: 0.5em 0;
+	text-align: center;
+	background-color: #dd9;
+	border-radius: 0.5em;
+	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.1);
 }
-#trader{
-	height:2em;
-	width:70%;
+#tradeButton {
+	height: 2em;
+	min-width: 50%;
 }
 #tradeUpgradeContainer{
-	display:none;
+	display: none;
 }
 #iconoclasmGroup{
 	display:none;

@@ -73,10 +73,10 @@ var curCiv = {
 	attackCounter : 0, // How long since last attack?
 
 	trader : {
-		materialId:"",
-		requested:0,
-		timer:0,
-		counter : 0 // How long since last trader?
+		materialId: "",
+		requested: 	0,
+		timer: 		0, // How many seconds will the trader be around
+		counter: 	0 // How long since last trader?
 	},
 
 	raid: {
@@ -1636,7 +1636,7 @@ function updateResourceTotals(){
 	if (civData.gold.owned > 0) { ui.show("#tradeSelect",true); }
 
 	// Need to have enough resources to trade
-	ui.find("#trader").disabled = !curCiv.trader || !curCiv.trader.timer ||
+	ui.find("#tradeButton").disabled = !curCiv.trader || !curCiv.trader.timer ||
 		(civData[curCiv.trader.materialId].owned < curCiv.trader.requested);
 
 	// Cheaters don't get names.
@@ -2765,31 +2765,32 @@ function wonderSelect(resourceId){
 }
 
 
+
+
 /* Trade functions */
 
-function tradeTimer(){
+function startTrader(){
 	// Set timer length (10 sec + 5 sec/upgrade)
 	curCiv.trader.timer = 10 + (5 * (civData.currency.owned + civData.commerce.owned + civData.stay.owned));
 
 	//then set material and requested amount
-	var tradeItems =   // Item and base amount
-		[{ materialId : "food",    requested : 5000 },
-		 { materialId : "wood",    requested : 5000 },
-		 { materialId : "stone",   requested : 5000 },
-		 { materialId : "skins",   requested :  500 },
-		 { materialId : "herbs",   requested :  500 },
-		 { materialId : "ore",     requested :  500 },
-		 { materialId : "leather", requested :  250 },
-		 { materialId : "metal",   requested :  250 }];
+	var tradeItems = [ // Item and base amount
+		{ materialId: "food",    requested: 5000 },
+		{ materialId: "wood",    requested: 5000 },
+		{ materialId: "stone",   requested: 5000 },
+		{ materialId: "skins",   requested:  500 },
+		{ materialId: "herbs",   requested:  500 },
+		{ materialId: "ore",     requested:  500 },
+		{ materialId: "leather", requested:  250 },
+		{ materialId: "metal",   requested:  250 }
+	];
 
 	// Randomly select and merge one of the above.
 	var selected = tradeItems[Math.floor(Math.random() * tradeItems.length)];
 	curCiv.trader.materialId = selected.materialId;
 	curCiv.trader.requested = selected.requested * (Math.ceil(Math.random() * 20)); // Up to 20x amount
 
-	ui.find("#tradeContainer").style.display = "block";
-	ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
-	ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested);
+	updateTrader();
 }
 
 function trade(){
@@ -2808,7 +2809,24 @@ function trade(){
 	gameLog("Traded " + curCiv.trader.requested + " " + material.getQtyName(curCiv.trader.requested));
 }
 
-function buy(materialId){
+function isTraderHere () {
+	return (curCiv.trader.timer > 0);
+}
+
+function updateTrader () {
+	if (isTraderHere()) {
+		ui.show("#tradeContainer", true);
+		ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
+		ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested);
+		ui.find("#traderTimer").innerHTML = curCiv.trader.timer + " second" + ((curCiv.trader.timer != 1) ? "s" : "");
+	} else {
+		ui.show("#tradeContainer", false);
+	}
+
+}
+
+
+function buy (materialId){
 	var material = civData[materialId];
 	if (civData.gold.owned < 1) { return; }
 	--civData.gold.owned;
@@ -4141,23 +4159,22 @@ function doMobs() {
 }
 
 function tickTraders() {
-	//traders occasionally show up
-	if (population.current + curCiv.zombie.owned > 0) { ++curCiv.trader.counter; }
 	var delayMult = 60 * (3 - ((civData.currency.owned)+(civData.commerce.owned)));
 	var check;
+	//traders occasionally show up
+	if (population.current + curCiv.zombie.owned > 0) { 
+		++curCiv.trader.counter; 
+	}
 	if (population.current + curCiv.zombie.owned > 0 && curCiv.trader.counter > delayMult){
 		check = Math.random() * delayMult;
 		if (check < (1 + (0.2 * (civData.comfort.owned)))){
 			curCiv.trader.counter = 0;
-			tradeTimer();
+			startTrader();
 		}
 	}
 	
-	//Trader stuff
-	if (curCiv.trader.timer > 0){
-		if (--curCiv.trader.timer <= 0){
-			ui.show("#tradeContainer",false);
-		}
+	if (curCiv.trader.timer > 0) {
+		curCiv.trader.timer--;
 	}
 }
 
@@ -4463,6 +4480,7 @@ function gameLoop () {
 };
 
 function updateAll () {
+	updateTrader();
 	updateUpgrades();
 	updateResourceRows(); //Update resource display
 	updateBuildingButtons();
