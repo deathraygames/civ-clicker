@@ -31,6 +31,7 @@
 	<script type="application/javascript" src="scripts/jsutils.js"></script>
 	<!-- Polyfill from https://developer.mozilla.org/en-US/docs/Web/API/Element.classList -->
 	<script type="application/javascript" src="scripts/classList.js"></script>
+	<script type="application/javascript" src="scripts/ui.js"></script>
 	<!-- Main program -->
 	<script type="application/javascript" src="scripts/civclicker.js" defer="defer"></script>
 </head>
@@ -43,7 +44,7 @@
 	</div>
 	<div id="stripInner">
 		<span class="title">CivClicker</span>
-		<span class="version">v1.2.1-beta</span>
+		<span class="version">v1.2.1</span>
 		<a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
 		<a href="updates.html" target="_blank">Game Updates Log</a>
 		<a href="#" class="openSettings">Settings</a>
@@ -248,20 +249,20 @@
 		<div id="conquestPane" class="selectPane">
 			<span id="standardRow"></span>
 			<div id="conquest">
-				<h4>Army</h4>
+				<h2>Army</h2>
 				<p id="customPartyQuantity">
 					Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
 				</p>
 				<table id="party"></table>
 				<br />
 				<div id="raidGroup">
-					<h4>To War!</h4>
+					<h2>To War!</h2>
 					<p id="gloryGroup">
 						Glory: <span id="gloryTimer">0</span> seconds remain
 					</p>
 				</div>
 				<div id="victoryGroup">
-					<h4>Victory!</h4>
+					<h2>Victory!</h2>
 					<button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
 				</div>
 			</div>
@@ -289,36 +290,60 @@
 		</div>
 	</div>
 </div>
+
 <div id="rightColumn" class="column right">
 	<div id="populationContainer" class="civSection">
 		<h3>Population</h3>
 		<div id="populationNumbers">
 			<table>
-				<tr>
-					<td>Current Population: </td>
-					<td class="number"><span data-action="display_pop" data-target="current">0</span></td>
-				</tr>
-				<tr>
-					<td>Maximum Population: </td>
-					<td class="number"><span data-action="display_pop" data-target="limit">0</span></td>
-				</tr>
-				<tr id="zombieWorkers">
-					<td>Zombies: </td>
-					<td class="number"><span data-action="display" data-target="zombie">0</span></td>
-				</tr>
-				<tr>
-					<td>Happiness: </td>
-					<td><span id="morale">Content</span></td>
-				</tr>
+				<tbody>
+					<tr>
+						<td>Citizen Population: </td>
+						<td class="number"><span data-action="display_pop" data-target="current">...</span></td>
+						<td class="number maxNumber">
+							/ max: <span data-action="display_pop" data-target="limit">...</span>
+						</td>
+						<td class="note">
+							Build more housing to grow your civilization
+						</td>
+					</tr>
+					<tr id="zombieWorkers">
+						<td>Zombies: </td>
+						<td class="number"><span data-action="display" data-target="zombie">...</span></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Happiness: </td>
+						<td colspan="3" id="morale">
+							<ol class="happinessRanks">
+								<li>Blissful</li>
+								<li>Happy</li>
+								<li>Content</li>
+								<li>Unhappy</li>
+								<li>Angry</li>
+							</ol>
+						</td>
+					</tr>
+				</tbody>
 			</table>
-			<br />
 		</div>
 		<div id="populationCreate">
-			<div class="unit1"><button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Worker</button><span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span><br /></div>
-			<div class='unit10'><button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Workers</button><span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new workers</span></div>
-			<div class='unit100'><button id="spawn100button" onmousedown="spawn(100)">Recruit 100 Workers</button><span class="cost"><span id="workerCost100">2000</span> food</span><span class="note">: Recruit 100 new workers</span></div>
-			<div class='unit1000'><button id="spawn1000button" onmousedown="spawn(1000)">Recruit 1000 Workers</button><span class="cost"><span id="workerCost1000">20000</span> food</span><span class="note">: Recruit 1000 new workers</span></div>
-			<div class='unitInfinity'><button id="spawnMaxbutton" onmousedown="spawn(Infinity)">Recruit <span id="workerNumMax">Max</span> Workers</button><span class="cost"><span id="workerCostMax"></span> food</span><span class="note">: Recruit as many new workers as possible</span></div>
+			<div class="unit1">
+				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button><span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span><br />
+			</div>
+			<div class='unit10'>
+				<button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Citizens</button><span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new workers</span>
+			</div>
+			<div class='unit100'>
+				<button id="spawn100button" onmousedown="spawn(100)">Recruit 100 Citizens</button><span class="cost"><span id="workerCost100">2000</span> food</span><span class="note">: Recruit 100 new workers</span>
+			</div>
+			<div class='unit1000'>
+				<button id="spawn1000button" onmousedown="spawn(1000)">Recruit 1000 Citizens</button><span class="cost"><span id="workerCost1000">20000</span> food</span><span class="note">: Recruit 1000 new workers</span>
+			</div>
+			<div class='unitInfinity'>
+				<button id="spawnMaxbutton" onmousedown="spawn(Infinity)">Recruit <span id="workerNumMax">Max</span> Citizens</button><span class="cost"><span id="workerCostMax"></span> food</span><span class="note">: Recruit as many new workers as possible</span>
+			</div>
 			<div id="customSpawnQuantity"><button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Workers</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
 			</div>
 		</div>
@@ -389,5 +414,9 @@
 	<a href="https://www.reddit.com/r/CivClicker/">Reddit</a>
 	-->
 </footer>
+<div class="scripts">
+	<!-- Google Analytics. REMOVE this for your own forks. -->
+	<script src="../../js/ga.js"></script>
+</div>
 </body>
 </html>

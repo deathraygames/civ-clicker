@@ -18,7 +18,6 @@
 	If it is not there, see <http://www.gnu.org/licenses/>.
 **/
 
-var ui = {};
 var setup = {};
 var loopTimer = 0;
 
@@ -800,7 +799,7 @@ new Unit({ id:"totalSick", singular:"sick worker", plural:"sick workers", subTyp
 	set owned(value) { population[this.id]= value; },
 	init: function() { this.owned = this.initOwned; }, //xxx Verify this override is needed.
 	effectText:"Use healers and herbs to cure them" }),
-new Unit({ id:"unemployed", singular:"idle worker", plural:"idle workers",
+new Unit({ id:"unemployed", singular:"idle citizen", plural:"idle citizens",
 	require: undefined,  // Cannot be purchased (through normal controls) xxx Maybe change this?
 	salable: false,  // Cannot be sold.
 	customQtyId:"spawnCustomQty",
@@ -1415,7 +1414,7 @@ function updateRequirements(buildingObj){
 function updatePurchaseRow(purchaseObj){
 	if (!purchaseObj) { return; }
 
-	var elem = document.getElementById(purchaseObj.id + "Row");
+	var elem = ui.find("#" + purchaseObj.id + "Row");
 	if (!elem) { console.log("Missing UI for "+purchaseObj.id); return; }
 
 	// If the item's cost is variable, update its requirements.
@@ -1429,7 +1428,7 @@ function updatePurchaseRow(purchaseObj){
 	var hideBoughtUpgrade = ((purchaseObj.type == "upgrade") && (purchaseObj.owned == purchaseObj.limit) && !purchaseObj.salable);
 
 	// Reveal the row if  prereqs are met
-	setElemDisplay(elem,havePrereqs && !hideBoughtUpgrade);
+	ui.show(elem, havePrereqs && !hideBoughtUpgrade);
 
 	var maxQty = canPurchase(purchaseObj);
 	var minQty = canPurchase(purchaseObj,-Infinity);
@@ -1607,7 +1606,7 @@ function updateResourceTotals(){
 	}
 
 	if (civData.gold.owned >= 1){
-		setElemDisplay("goldRow",true);
+		ui.show("#goldRow",true);
 	}
 
 	//Update page with building numbers, also stockpile limits.
@@ -1627,9 +1626,9 @@ function updateResourceTotals(){
 	// Unlock advanced control tabs as they become enabled (they never disable)
 	// Temples unlock Deity, barracks unlock Conquest, having gold unlocks Trade.
 	// Deity is also unlocked if there are any prior deities present.
-	if ((civData.temple.owned > 0)||(curCiv.deities.length > 1)) { setElemDisplay("deitySelect",true); }
-	if (civData.barracks.owned > 0) { setElemDisplay("conquestSelect",true); }
-	if (civData.gold.owned > 0) { setElemDisplay("tradeSelect",true); }
+	if ((civData.temple.owned > 0)||(curCiv.deities.length > 1)) { ui.show("#deitySelect",true); }
+	if (civData.barracks.owned > 0) { ui.show("#conquestSelect",true); }
+	if (civData.gold.owned > 0) { ui.show("#tradeSelect",true); }
 
 	// Need to have enough resources to trade
 	document.getElementById("trader").disabled = !curCiv.trader || !curCiv.trader.timer ||
@@ -1649,7 +1648,7 @@ function updatePopulation(){
 	//Update sick workers
 	population.totalSick = 0;
 	unitData.forEach(function(elem) { if (elem.alignment == "player") { population.totalSick += (elem.ill||0); } });
-	setElemDisplay("totalSickRow",(population.totalSick > 0));
+	ui.show("#totalSickRow",(population.totalSick > 0));
 
 	//Calculate healthy workers (excludes sick, zombies and deployed units)
 	//xxx Should this use 'killable'?
@@ -1696,7 +1695,7 @@ function updatePopulationUI() {
 
 	civData.house.update(); //xxx Effect might change dynamically.  Need a more general way to do this.
 
-	setElemDisplay("graveTotal",(curCiv.grave.owned > 0));
+	ui.show("#graveTotal",(curCiv.grave.owned > 0));
 
 	//As population increases, various things change
 	// Update our civ type name
@@ -1715,7 +1714,7 @@ function updatePopulationUI() {
 		if (!settings.customIncr){    
 			elems = document.getElementsByClassName("unit10");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 		}
 	}
@@ -1723,11 +1722,11 @@ function updatePopulationUI() {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building10");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 			elems = document.getElementsByClassName("unit100");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 		}
 	}
@@ -1735,15 +1734,15 @@ function updatePopulationUI() {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building100");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 			elems = document.getElementsByClassName("unit1000");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 			elems = document.getElementsByClassName("unitInfinity");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 		}
 	}
@@ -1751,7 +1750,7 @@ function updatePopulationUI() {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building1000");
 			for(i = 0; i < elems.length; i++) {
-				setElemDisplay(elems[i],!settings.customincr);
+				ui.show(elems[i], !settings.customincr);
 			}
 		}
 	}
@@ -1768,7 +1767,7 @@ function updatePopulationUI() {
 
 	var canRaise = (getCurDeityDomain() == "underworld" && civData.devotion.owned >= 20);
 	var maxRaise = canRaise ? logSearchFn(calcZombieCost,civData.piety.owned) : 0;
-	setElemDisplay("raiseDeadRow", canRaise);
+	ui.show("#raiseDeadRow", canRaise);
 	document.getElementById("raiseDead").disabled = (maxRaise < 1);
 	document.getElementById("raiseDeadMax").disabled = (maxRaise < 1);
 	document.getElementById("raiseDead100").disabled = (maxRaise < 100);
@@ -1840,17 +1839,17 @@ function updateUpgrades(){
 		updatePurchaseRow(elem);  // Update the purchase row.
 
 		// Show the already-purchased line if we've already bought it.
-		setElemDisplay(("P"+elem.id),elem.owned);
+		ui.show(("#P" + elem.id), elem.owned);
 	});
 
 	//deity techs
 	document.getElementById("renameDeity").disabled = (!civData.worship.owned);
-	setElemDisplay("deityDomains",((civData.worship.owned) && (getCurDeityDomain() === "")));
-	setElemDisplay("battleUpgrades",(getCurDeityDomain() == "battle"));
-	setElemDisplay("fieldsUpgrades",(getCurDeityDomain() == "fields"));
-	setElemDisplay("underworldUpgrades",(getCurDeityDomain() == "underworld"));
-	setElemDisplay("zombieWorkers", (curCiv.zombie.owned > 0));
-	setElemDisplay("catsUpgrades",(getCurDeityDomain() == "cats"));
+	ui.show("#deityDomains",((civData.worship.owned) && (getCurDeityDomain() === "")));
+	ui.show("#battleUpgrades",(getCurDeityDomain() == "battle"));
+	ui.show("#fieldsUpgrades",(getCurDeityDomain() == "fields"));
+	ui.show("#underworldUpgrades",(getCurDeityDomain() == "underworld"));
+	ui.show("#zombieWorkers", (curCiv.zombie.owned > 0));
+	ui.show("#catsUpgrades",(getCurDeityDomain() == "cats"));
 
 	deitySpecEnable = civData.worship.owned && (getCurDeityDomain() === "") && (civData.piety.owned >= 500);
 	document.getElementById("battleDeity").disabled = !deitySpecEnable;
@@ -1859,10 +1858,10 @@ function updateUpgrades(){
 	document.getElementById("catsDeity").disabled = !deitySpecEnable;
 
 	//standard
-	setElemDisplay("conquest",civData.standard.owned);
+	ui.show("#conquest",civData.standard.owned);
 
 	// Trade
-	setElemDisplay("tradeUpgradeContainer",civData.trade.owned);
+	ui.show("#tradeUpgradeContainer",civData.trade.owned);
 }
 
 
@@ -1873,10 +1872,10 @@ function updateDeity(){
 	document.getElementById("deityADevotion").innerHTML = civData.devotion.owned;
 
 	// Display if we have an active deity, or any old ones.
-	setElemDisplay("deityContainer",(curCiv.deities[0].name));
-	setElemDisplay("activeDeity",(curCiv.deities[0].name));
-	setElemDisplay("oldDeities",(curCiv.deities[0].name || curCiv.deities.length > 1));
-	setElemDisplay("iconoclasmGroup",(curCiv.deities.length > 1));
+	ui.show("#deityContainer",(curCiv.deities[0].name));
+	ui.show("#activeDeity",(curCiv.deities[0].name));
+	ui.show("#oldDeities",(curCiv.deities[0].name || curCiv.deities.length > 1));
+	ui.show("#iconoclasmGroup",(curCiv.deities.length > 1));
 }
 
 function getDeityRowText(deityId, deityObj)
@@ -1917,7 +1916,7 @@ function updateDevotion(){
 
 	// Process altars
 	buildingData.forEach(function(elem) { if (elem.subType == "altar") {
-		setElemDisplay((elem.id+"Row"), meetsPrereqs(elem.prereqs));
+		ui.show(("#" + elem.id + "Row"), meetsPrereqs(elem.prereqs));
 		document.getElementById(elem.id).disabled = (!(meetsPrereqs(elem.prereqs) && canAfford(elem.require)));
 	}});
 
@@ -1925,7 +1924,7 @@ function updateDevotion(){
 	powerData.forEach(function(elem) { if (elem.subType == "prayer") {
 		//xxx raiseDead buttons updated by UpdatePopulationUI
 		if (elem.id == "raiseDead") { return; }
-		setElemDisplay((elem.id+"Row"), meetsPrereqs(elem.prereqs));
+		ui.show(("#" + elem.id + "Row"), meetsPrereqs(elem.prereqs));
 		document.getElementById(elem.id).disabled = !(meetsPrereqs(elem.prereqs) && canAfford(elem.require));
 	}});
 
@@ -1940,31 +1939,24 @@ function updateDevotion(){
 	document.getElementById("ceaseWalk").disabled = (civData.walk.rate === 0);
 }
 
-
-// achObj can be:
-//   true:  Generate a line break
-//   false: Generate a gap
-//   An achievement (or civ size) object: Generate the display of that achievement
-function getAchRowText(achObj)
-{
-	if (achObj===true)  { return "<div style='clear:both;'><br /></div>"; }
-	if (achObj===false) { return "<div class='break'>&nbsp;</div>"; }
-	return "<div class='achievement' title='"+achObj.getQtyName()+"'>"+
-			"<div class='unlockedAch' id='"+achObj.id+"'>"+achObj.getQtyName()+"</div></div>";
-}
-
 // Dynamically create the achievement display
 function addAchievementRows()
 {
-	var s="";
-	achData.forEach(function(elem) { s += getAchRowText(elem); });
-	document.getElementById("achievements").innerHTML += s;
+	var s = '';
+	achData.forEach(function(elem) { 
+		s += (
+			'<div class="achievement" title="' + elem.getQtyName() + '">'
+			+ '<div class="unlockedAch" id="' + elem.id + '">' + elem.getQtyName() + '</div>'
+			+ '</div>'
+		)
+	});
+	ui.find("#achievements").innerHTML += s;
 }
 
-//Displays achievements if they are unlocked
+// Displays achievements if they are unlocked
 function updateAchievements(){
 	achData.forEach(function(achObj) { 
-		setElemDisplay(achObj.id,achObj.owned);
+		ui.show("#" + achObj.id, achObj.owned);
 	});
 }
 
@@ -2001,10 +1993,10 @@ function updateTargets(){
 	var raidButtons = document.getElementsByClassName("raid");
 	var haveArmy = false;
 
-	setElemDisplay("victoryGroup", curCiv.raid.victory);
+	ui.show("#victoryGroup", curCiv.raid.victory);
 
 	// Raid buttons are only visible when not already raiding.
-	if (setElemDisplay("raidGroup", !curCiv.raid.raiding))
+	if (ui.show("#raidGroup", !curCiv.raid.raiding))
 	{
 		if (getCombatants("party", "player").length > 0) { haveArmy = true; }
 
@@ -2020,18 +2012,21 @@ function updateTargets(){
 
 function updateMorale(){
 	//updates the morale stat
-	var text, color;
+	var happinessRank; // Lower is better
+	var elt = ui.find("#morale");
 	//first check there's someone to be happy or unhappy, not including zombies
-	if (population.current < 1) { curCiv.morale.efficiency = 1.0; }
+	if (population.current < 1) { 
+		elt.className = "";
+		return;
+	}
 
-	if      (curCiv.morale.efficiency > 1.4) { text = "Blissful"; color = "#f0f"; }
-	else if (curCiv.morale.efficiency > 1.2) { text = "Happy";    color = "#00f"; }
-	else if (curCiv.morale.efficiency > 0.8) { text = "Content";  color = "#0b0"; } // Was "#0d0" if pop === 0
-	else if (curCiv.morale.efficiency > 0.6) { text = "Unhappy";  color = "#880"; }
-	else                              { text = "Angry";    color = "#f00"; }
+	if (curCiv.morale.efficiency > 1.4) { 		happinessRank = 1; }
+	else if (curCiv.morale.efficiency > 1.2) { 	happinessRank = 2;    }
+	else if (curCiv.morale.efficiency > 0.8) { 	happinessRank = 3;  }
+	else if (curCiv.morale.efficiency > 0.6) { 	happinessRank = 4;  }
+	else                              { 		happinessRank = 5;    }
 
-	document.getElementById("morale").innerHTML = text;
-	document.getElementById("morale").style.color = color;
+	elt.className = "happy-" + happinessRank;
 }
 
 function addWonderSelectText() {
@@ -2052,16 +2047,16 @@ function updateWonder() {
 	var haveTech = (civData.architecture.owned && civData.civilservice.owned);
 
 	// Display this section if we have any wonders or could build one.
-	setElemDisplay("wondersContainer",(haveTech || curCiv.wonders.length > 0));
+	ui.show("#wondersContainer",(haveTech || curCiv.wonders.length > 0));
 
 	// Can start building a wonder, but haven't yet.
-	setElemDisplay("startWonderLine",(haveTech && curCiv.curWonder.stage === 0 ));
+	ui.show("#startWonderLine",(haveTech && curCiv.curWonder.stage === 0 ));
 	document.getElementById("startWonder").disabled = (!haveTech || curCiv.curWonder.stage !== 0); 
 
 	// Construction in progress; show/hide building area and labourers
-	setElemDisplay("labourerRow",(curCiv.curWonder.stage === 1));
-	setElemDisplay("wonderInProgress",(curCiv.curWonder.stage === 1));
-	setElemDisplay("speedWonderGroup",(curCiv.curWonder.stage === 1));
+	ui.show("#labourerRow",(curCiv.curWonder.stage === 1));
+	ui.show("#wonderInProgress",(curCiv.curWonder.stage === 1));
+	ui.show("#speedWonderGroup",(curCiv.curWonder.stage === 1));
 	document.getElementById("speedWonder").disabled = (curCiv.curWonder.stage !== 1 || !canAfford({ gold: 100 }));
 	if (curCiv.curWonder.stage === 1){
 		document.getElementById("progressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
@@ -2069,7 +2064,7 @@ function updateWonder() {
 	}
 
 	// Finished, but haven't picked the resource yet.
-	setElemDisplay("wonderCompleted",(curCiv.curWonder.stage === 2));
+	ui.show("#wonderCompleted",(curCiv.curWonder.stage === 2));
  
 	updateWonderList();
 }
@@ -2091,10 +2086,10 @@ function updateWonderList(){
 }
 
 function updateReset(){
-	setElemDisplay("resetNote"  , (civData.worship.owned || curCiv.curWonder.stage === 3));
-	setElemDisplay("resetDeity" , (civData.worship.owned));
-	setElemDisplay("resetWonder", (curCiv.curWonder.stage === 3));
-	setElemDisplay("resetBoth"  , (civData.worship.owned && curCiv.curWonder.stage === 3));
+	ui.show("#resetNote"  , (civData.worship.owned || curCiv.curWonder.stage === 3));
+	ui.show("#resetDeity" , (civData.worship.owned));
+	ui.show("#resetWonder", (curCiv.curWonder.stage === 3));
+	ui.show("#resetBoth"  , (civData.worship.owned && curCiv.curWonder.stage === 3));
 }
 
 function updateSettings(){
@@ -2500,7 +2495,7 @@ function walk(increment){
 	//xxx This needs to move into the main loop in case it's reloaded.
 	document.getElementById("walkStat").innerHTML = prettify(civData.walk.rate);
 	document.getElementById("ceaseWalk").disabled = (civData.walk.rate === 0);
-	setElemDisplay("walkGroup",(civData.walk.rate > 0)); 
+	ui.show("#walkGroup",(civData.walk.rate > 0)); 
 }
 
 function tickWalk() {
@@ -3649,9 +3644,9 @@ function reset(){
 	document.getElementById("glory").disabled = "true";
 	document.getElementById("summonShade").disabled = "true";
 
-	setElemDisplay("deitySelect",(civData.temple.owned > 0));
-	setElemDisplay("conquestSelect",(civData.barracks.owned > 0));
-	setElemDisplay("tradeSelect",(civData.gold.owned > 0));
+	ui.show("#deitySelect",(civData.temple.owned > 0));
+	ui.show("#conquestSelect",(civData.barracks.owned > 0));
+	ui.show("#tradeSelect",(civData.gold.owned > 0));
 
 	document.getElementById("conquest").style.display = "none";
 
@@ -4070,7 +4065,7 @@ function doLabourers() {
 		curCiv.curWonder.progress += num / (1000000 * getWonderCostMultiplier());
 		
 		//show/hide limited notice
-		setElemDisplay("lowResources",(num < civData.labourer.owned));
+		ui.show("#lowResources",(num < civData.labourer.owned));
 
 		var lowItem = null;
 		var i = 0;
@@ -4130,7 +4125,7 @@ function tickTraders() {
 	//Trader stuff
 	if (curCiv.trader.timer > 0){
 		if (--curCiv.trader.timer <= 0){
-			setElemDisplay("tradeContainer",false);
+			ui.show("#tradeContainer",false);
 		}
 	}
 }
@@ -4219,37 +4214,55 @@ function setCustomQuantities(value){
 	if (value !== undefined) { settings.customIncr = value; }
 	document.getElementById("toggleCustomQuantities").checked = settings.customIncr;
 
-	setElemDisplay("customJobQuantity",settings.customIncr);
-	setElemDisplay("customPartyQuantity",settings.customIncr);
-	setElemDisplay("customBuildQuantity",settings.customIncr);
-	setElemDisplay("customSpawnQuantity",settings.customIncr);
+	ui.show("#customJobQuantity",settings.customIncr);
+	ui.show("#customPartyQuantity",settings.customIncr);
+	ui.show("#customBuildQuantity",settings.customIncr);
+	ui.show("#customSpawnQuantity",settings.customIncr);
 
 	elems = document.getElementsByClassName("unit10");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 10)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 10)); 
+	}
 
 	elems = document.getElementsByClassName("unit100");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 100)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 100)); 
+	}
 
 	elems = document.getElementsByClassName("unit1000");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 1000)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 1000)); 
+	}
 
 	elems = document.getElementsByClassName("unitInfinity");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 1000)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 1000)); 
+	}
 
 	elems = document.getElementsByClassName("building10");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 100)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 100)); 
+	}
 
 	elems = document.getElementsByClassName("building100");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 1000)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 1000)); 
+	}
 
 	elems = document.getElementsByClassName("building1000");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 10000)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 10000)); 
+	}
 
 	elems = document.getElementsByClassName("buildingInfinity");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 10000)); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],!settings.customIncr && (curPop >= 10000)); 
+	}
 
 	elems = document.getElementsByClassName("buycustom");
-	for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],settings.customIncr); }
+	for (i = 0; i < elems.length; ++i) { 
+		ui.show(elems[i],settings.customIncr); 
+	}
 }
 function onToggleCustomQuantities(control){ return setCustomQuantities(control.checked); }
 
@@ -4261,7 +4274,7 @@ function setNotes(value){
 	var i;
 	var elems = document.getElementsByClassName("note");
 	for(i = 0; i < elems.length; ++i) {
-		setElemDisplay(elems[i],settings.notes);
+		ui.show(elems[i],settings.notes);
 	}
 }
 function onToggleNotes(control){ 
@@ -4450,33 +4463,6 @@ function ruinFun(){
 
 
 
-//========== More UI functions
-
-ui.find = function (selector) {
-	if (typeof selector === 'string') {
-		return document.querySelectorAll(selector)[0];
-	} else if (typeof selector === 'object') {
-		return selector;
-	}
-};
-
-ui.isHidden = function (selector) {
-	// NOTE: This does not work for fixed-position elements
-	var elt = ui.find(selector);
-	return (elt.offsetParent === null);
-};
-
-
-ui.toggle = function (selector) {
-	var elt = ui.find(selector);
-	if (ui.isHidden(elt)) {
-		elt.style.display = "block";
-		return true;
-	} else {
-		elt.style.display = "none";
-		return false;
-	}
-};
 
 
 

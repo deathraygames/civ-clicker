@@ -1,7 +1,7 @@
 "use strict";
 /**
     CivClicker
-    Copyright (C) 2014; see the AUTHORS file for authorship.
+    Copyright (C) 2014; see the README.md file for authorship.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -127,62 +127,6 @@ function mergeObj(o1, o2)
     }}
 
     return o1;
-}
-
-
-// Wrapper to set an HTML element's visibility.
-// Pass the element object or ID as the 1st param.
-// Pass true as the 2nd param to be visible, false to be hidden, no value to
-// toggle.
-// Compensates for IE's lack of support for the "initial" property value.
-// May not support all HTML elements.
-// Returns the input visibility state, or undefined on an error.
-function setElemDisplay(htmlElem,visible)
-{
-    // If we're passed a string, assume it's the element ID.
-    if (typeof htmlElem === "string") { htmlElem = document.getElementById(htmlElem); }
-
-    if (!htmlElem) {
-        return undefined;
-    }
-
-    // If the visibility is unspecified, toggle it.
-    if (visible === undefined) { visible = (htmlElem.style.display == "none"); }
-
-    var tagName = htmlElem.tagName.toUpperCase();
-
-/* xxx This is disabled because browser support for visibility: collapse is too inconsistent.
-    // If it's a <col> element, use visibility: collapse instead.
-    if (tagName == "COL") {
-        htmlElem.style.visibility = visible ? "inherit" : "collapse"; 
-        return;
-    }
-*/
-
-    var displayVal = (!visible) ? "none" : "initial";
-    if (visible)
-    {
-        // Note that HTML comes in upper case, XML in lower.
-        switch(tagName)
-        {
-            case "SPAN": displayVal = "inline"; break;
-            case "DIV": displayVal = "block"; break;
-            case "P": displayVal = "block"; break;
-            case "TABLE": displayVal = "table"; break;
-            case "CAPTION": displayVal = "table-caption"; break;
-            case "THEAD": displayVal = "table-header-group"; break;
-            case "TBODY": displayVal = "table-row-group"; break;
-            case "TFOOT": displayVal = "table-footer-group"; break;
-            case "TR": displayVal = "table-row"; break;
-            case "COL": displayVal = "table-column"; break;
-            case "TD": displayVal = "table-cell"; break;
-            case "LI": displayVal = "list-item"; break;
-            default: console.log("Unsupported tag <"+tagName+"> passed to setElemDisplay()"); break;
-        }
-    }
-    htmlElem.style.display = displayVal;
-
-    return visible;
 }
 
 

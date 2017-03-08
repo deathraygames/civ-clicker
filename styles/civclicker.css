@@ -28,9 +28,6 @@ body{
 	background: #EAF0EA;
 }
 
-table {
-	width: 100%;
-}
 
 a {
 	color: #3366ff;
@@ -169,6 +166,21 @@ a {
 	display: none;
 }
 
+/* tables */
+
+
+table#basicResources,
+#specialResourcesContainer table {
+	width: 100%;
+}
+#populationNumbers table {
+	width: 100%;
+	margin-bottom: 1em;
+}
+
+
+
+
 #impexpField{
 	display:block;
 	width: 100%;
@@ -207,13 +219,15 @@ a {
 h3{
 	clear:both;
 }
+
+
 button {
 	font-family: 'Suez One', serif;
 	border: 1px solid rgba(0,0,0,0.5);
 	background-color: rgba(255,255,255,0.9);
 	box-shadow: 0 0.2em 0 rgba(0,0,0,0.1);
-	margin-right: 0.8em;
-	padding: 0.1em 1em;
+	margin: 0.25em 0em 0.25em 0;
+	padding: 0.25em 0.5em;
 	font-size: 1.0em;
 	font-weight: 500;
 	border-radius: 0.75em;
@@ -234,6 +248,43 @@ button {
 	button:active, button:active:hover {
 		background-color: rgba(200,255,180,0.9);
 	}
+#populationCreate button {
+	min-width: 12em;
+	margin-right: 1em;
+}
+#upgrades button {
+	min-width: 9em;
+}
+#deityPane button {
+	min-width: 10em;
+}
+#basicResources button {
+	text-transform: capitalize;
+	width: 8em;
+}
+#textSize button,
+#jobs button,
+#party button,
+#buildings button,
+#deityPane button.xInfinity, /* Needed for Raise Dead */
+#deityPane button.x100{
+	width:3.5em;
+	text-shadow:none;
+	font-weight:normal;
+	font-size:0.9em;
+	margin-right:0.3em;
+	text-transform:capitalize;
+}
+.buycustom button{
+	width:7.5em !important; /* Need to make this override the above */
+}
+.wonderCompleted button {
+	width:5em;
+}
+#basicResources button{
+	/* padding:0.3em; */
+}
+
 
 
 .panesTabs {
@@ -294,7 +345,6 @@ button {
 	text-align: right;
 	font-style: italic;
 	color: #555;
-	width: 35em;
 }
 .cost {
 	color: #333;
@@ -368,35 +418,6 @@ button {
 	text-transform:capitalize;
 }
 
-/*
-button.build{
-	text-transform:capitalize;
-	width: 4em;
-}
-*/
-
-#basicResources button {
-	text-transform: capitalize;
-	width: 8em;
-}
-
-#textSize button,
-#jobs button,
-#party button,
-#buildings button,
-#deityPane button.xInfinity, /* Needed for Raise Dead */
-#deityPane button.x100{
-	width:3.5em;
-	text-shadow:none;
-	font-weight:normal;
-	font-size:0.9em;
-	margin-right:0.3em;
-	text-transform:capitalize;
-}
-
-.buycustom button{
-	width:7.5em !important; /* Need to make this override the above */
-}
 
 .building10,
 .building100,
@@ -429,36 +450,35 @@ button.build{
 
 
 .achievement{
-	display:block;
-	float:left;
-	width:50px;
-	height:50px;
-	border:2px solid black;
-	background-color:#aaa;
-	background-image:url('../images/achLocked.jpg');
+	display: block;
+	float: left;
+	width: 50px;
+	height: 50px;
+	background-color: #aaa;
+	background-image: url('../images/achLocked.jpg');
+	margin: 0.5em;
+	font-family: 'Suez One', serif;
 }
 .break{
 	display:block;
 	width:20px;
 }
 .unlockedAch{
-	box-sizing:border-box;
-	-moz-box-sizing:border-box; /* Firefox needs a nonstandard name */
-	width:100%;
-	height:100%;
-	padding:0.2em;
-	font-size:0.9em;
-	text-shadow:none;
-	font-weight:normal;
-	background-color:#fff;
-	display:none; /* Initially */
+	box-sizing: border-box;
+	border: 5px ridge #FBDA20;
+	width: 60px;
+	height: 60px;
+	padding: 0.2em;
+	margin: -5px 0 0 -5px;
+	font-size: 0.9em;
+	box-shadow: 0 0.25em 0.3em rgba(0,0,0,0.25), inset 0 0 0.5em rgba(0,0,0,0.25);
+	font-weight: normal;
+	background-color: #FBDA20;
+	display: none; /* Initially */
 }
 
 #gloryGroup{
 	display:none;
-}
-#morale{
-	color:#0d0;
 }
 #wondersContainer{
 	display:none;
@@ -496,9 +516,7 @@ button.build{
 	padding-top:1em;
 	display:none;
 }
-.wonderCompleted button {
-	width:5em;
-}
+
 #lowResources{
 	display:none;
 	color:red;
@@ -541,9 +559,7 @@ button.build{
 #basicResources{
 	margin-left:0.3em;
 }
-#basicResources button{
-	padding:0.3em;
-}
+
 
 #specialResourcesContainer{
 	margin-bottom:0.3em;
@@ -636,6 +652,28 @@ button.build{
 	#populationBar div:hover > span {
 		display: block;
 	}
+
+#morale {
+
+}
+	ol.happinessRanks {
+		list-style: none;
+		display: block;
+		padding: 0;
+		margin: 0;
+	}
+	ol.happinessRanks li {
+		color: #fff;
+		opacity: 0.5;
+		display: inline-block;
+		padding: 0.1em 0.5em;
+		background-color: rgba(0,0,0,0.1);
+	}
+	.happy-1 li:nth-child(1) { background-color: #f0f; opacity: 1; font-size: 1em; }
+	.happy-2 li:nth-child(2) { 	background-color: #00f; opacity: 1; font-size: 1em; }
+	.happy-3 li:nth-child(3) { 	background-color: #090; opacity: 1; font-size: 1em; }
+	.happy-4 li:nth-child(4) { 	background-color: #880; opacity: 1; font-size: 1em; }
+	.happy-5 li:nth-child(5) { 	background-color: #f00; opacity: 1; font-size: 1em; }
 
 
 footer {
