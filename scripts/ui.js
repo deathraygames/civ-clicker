@@ -23,6 +23,11 @@
 
 		find: function (selector) {
 			if (typeof selector === 'string') {
+				/*
+				if (selector.substr(0,1) === "#") {
+					return document.getElementById(selector.substr(1));
+				}
+				*/
 				return document.querySelectorAll(selector)[0];
 			} else if (typeof selector === 'object') {
 				return selector;
@@ -103,11 +108,18 @@
 			elt.style.display = displayVal;
 
 			return visible;
+		},
+		body: null,
+		setup: function () {
+			this.body = document.getElementsByTagName("body")[0];
 		}
 	};
 
 	if (window) { 
 		window.ui = ui;
+		document.addEventListener("DOMContentLoaded", function(e){
+			ui.setup();
+		});
 	} else { 
 		console.error("ui instantiation failed"); 
 	}

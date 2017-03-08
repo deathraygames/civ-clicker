@@ -41,18 +41,18 @@ var logRepeat = 1;
 
 // Civ size category minimums
 var civSizes = [
-	{ min_pop :      0, name : "Thorp"       , id : "thorp"      },
-	{ min_pop :     20, name : "Hamlet"      , id : "hamlet"     },
-	{ min_pop :     60, name : "Village"     , id : "village"    },
-	{ min_pop :    200, name : "Small Town"  , id : "smallTown"  },
-	{ min_pop :   2000, name : "Large Town"  , id : "largeTown"  },
-	{ min_pop :   5000, name : "Small City"  , id : "smallCity"  },
-	{ min_pop :  10000, name : "Large City"  , id : "largeCity"  },
+	{ min_pop :      0, name: "Thorp"       , id : "thorp"      },
+	{ min_pop :     20, name: "Hamlet"      , id : "hamlet"     },
+	{ min_pop :     60, name: "Village"     , id : "village"    },
+	{ min_pop :    200, name: "Small Town"  , id : "smallTown"  },
+	{ min_pop :   2000, name: "Large Town"  , id : "largeTown"  },
+	{ min_pop :   5000, name: "Small City"  , id : "smallCity"  },
+	{ min_pop :  10000, name: "Large City"  , id : "largeCity"  },
 	{ min_pop :  20000, name:"Metro&shy;polis",id : "metropolis" },
-	{ min_pop :  50000, name : "Small Nation", id : "smallNation"},
-	{ min_pop : 100000, name : "Nation"      , id : "nation"     },
-	{ min_pop : 200000, name : "Large Nation", id : "largeNation"},
-	{ min_pop : 500000, name : "Empire"      , id : "empire"     }
+	{ min_pop :  50000, name: "Small Nation", id : "smallNation"},
+	{ min_pop : 100000, name: "Nation"      , id : "nation"     },
+	{ min_pop : 200000, name: "Large Nation", id : "largeNation"},
+	{ min_pop : 500000, name: "Empire"      , id : "empire"     }
 ];
 
 
@@ -149,8 +149,6 @@ var settings = {
 	worksafe: 			false,
 	useIcons: 			true
 };
-
-var body = document.getElementsByTagName("body")[0];
 
 
 
@@ -1528,7 +1526,7 @@ function setPantheonUpgradeRowText(upgradeObj)
 // Dynamically create the upgrade purchase buttons.
 function addUpgradeRows()
 {
-	document.getElementById("upgradesPane").innerHTML += 
+	ui.find("#upgradesPane").innerHTML += 
 	   "<h3>Purchased Upgrades</h3>" + "<div id='purchasedUpgrades'></div>";
 
 	// Fill in any pre-existing stubs.
@@ -1562,8 +1560,8 @@ function addUpgradeRows()
 		else { standardUpgStr += text; }
 	});
 
-	document.getElementById("purchasedUpgrades").innerHTML += standardUpgStr;
-	document.getElementById("purchasedPantheon").innerHTML = pantheonUpgStr;
+	ui.find("#purchasedUpgrades").innerHTML += standardUpgStr;
+	ui.find("#purchasedPantheon").innerHTML = pantheonUpgStr;
 }
 
 
@@ -1610,9 +1608,9 @@ function updateResourceTotals(){
 	}
 
 	//Update page with building numbers, also stockpile limits.
-	document.getElementById("maxfood").innerHTML = prettify(civData.food.limit);
-	document.getElementById("maxwood").innerHTML = prettify(civData.wood.limit);
-	document.getElementById("maxstone").innerHTML = prettify(civData.stone.limit);
+	ui.find("#maxfood").innerHTML = prettify(civData.food.limit);
+	ui.find("#maxwood").innerHTML = prettify(civData.wood.limit);
+	ui.find("#maxstone").innerHTML = prettify(civData.stone.limit);
 
 	//Update land values
 	var buildingCount = 0, landCount = 0;
@@ -1620,8 +1618,8 @@ function updateResourceTotals(){
 		if (elem.subType == "land") { landCount     += elem.owned; }
 		else                        { buildingCount += elem.owned; }
 	});
-	document.getElementById("totalBuildings").innerHTML = prettify(buildingCount);
-	document.getElementById("totalLand"     ).innerHTML = prettify(buildingCount + landCount);
+	ui.find("#totalBuildings").innerHTML = prettify(buildingCount);
+	ui.find("#totalLand"     ).innerHTML = prettify(buildingCount + landCount);
 
 	// Unlock advanced control tabs as they become enabled (they never disable)
 	// Temples unlock Deity, barracks unlock Conquest, having gold unlocks Trade.
@@ -1631,11 +1629,11 @@ function updateResourceTotals(){
 	if (civData.gold.owned > 0) { ui.show("#tradeSelect",true); }
 
 	// Need to have enough resources to trade
-	document.getElementById("trader").disabled = !curCiv.trader || !curCiv.trader.timer ||
+	ui.find("#trader").disabled = !curCiv.trader || !curCiv.trader.timer ||
 		(civData[curCiv.trader.materialId].owned < curCiv.trader.requested);
 
 	// Cheaters don't get names.
-	document.getElementById("renameRuler").disabled = (curCiv.rulerName == "Cheater");
+	ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
 
 	updatePopulation(); //updatePopulation() handles the population limit, which is determined by buildings.
 	updatePopulationUI(); //xxx Maybe remove this?
@@ -1706,7 +1704,7 @@ function updatePopulationUI() {
 	if (curCiv.zombie.owned >= 1000 && curCiv.zombie.owned >= 2 * population.current){ //easter egg
 		civType = "Necropolis";
 	}
-	document.getElementById("civType").innerHTML = civType;
+	ui.find("#civType").innerHTML = civType;
 
 	//Unlocking interface elements as population increases to reduce unnecessary clicking
 	//xxx These should be reset in reset()
@@ -1758,28 +1756,28 @@ function updatePopulationUI() {
 	//Turning on/off buttons based on free space.
 	var maxSpawn = Math.max(0,Math.min((population.limit - population.current),logSearchFn(calcWorkerCost,civData.food.owned)));
 
-	document.getElementById("spawn1button").disabled = (maxSpawn < 1);
-	document.getElementById("spawnCustomButton").disabled = (maxSpawn < 1);
-	document.getElementById("spawnMaxbutton").disabled = (maxSpawn < 1);
-	document.getElementById("spawn10button").disabled = (maxSpawn < 10);
-	document.getElementById("spawn100button").disabled = (maxSpawn < 100);
-	document.getElementById("spawn1000button").disabled = (maxSpawn < 1000);
+	ui.find("#spawn1button").disabled = (maxSpawn < 1);
+	ui.find("#spawnCustomButton").disabled = (maxSpawn < 1);
+	ui.find("#spawnMaxbutton").disabled = (maxSpawn < 1);
+	ui.find("#spawn10button").disabled = (maxSpawn < 10);
+	ui.find("#spawn100button").disabled = (maxSpawn < 100);
+	ui.find("#spawn1000button").disabled = (maxSpawn < 1000);
 
 	var canRaise = (getCurDeityDomain() == "underworld" && civData.devotion.owned >= 20);
 	var maxRaise = canRaise ? logSearchFn(calcZombieCost,civData.piety.owned) : 0;
 	ui.show("#raiseDeadRow", canRaise);
-	document.getElementById("raiseDead").disabled = (maxRaise < 1);
-	document.getElementById("raiseDeadMax").disabled = (maxRaise < 1);
-	document.getElementById("raiseDead100").disabled = (maxRaise < 100);
+	ui.find("#raiseDead").disabled = (maxRaise < 1);
+	ui.find("#raiseDeadMax").disabled = (maxRaise < 1);
+	ui.find("#raiseDead100").disabled = (maxRaise < 100);
 
 	//Calculates and displays the cost of buying workers at the current population.
-	document.getElementById("raiseDeadCost").innerHTML = prettify(Math.round(calcZombieCost(1)));
-	document.getElementById("workerCost").innerHTML = prettify(Math.round(calcWorkerCost(1)));
-	document.getElementById("workerCost10").innerHTML = prettify(Math.round(calcWorkerCost(10)));
-	document.getElementById("workerCost100").innerHTML = prettify(Math.round(calcWorkerCost(100)));
-	document.getElementById("workerCost1000").innerHTML = prettify(Math.round(calcWorkerCost(1000)));
-	document.getElementById("workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
-	document.getElementById("workerCostMax").innerHTML = prettify(Math.round(calcWorkerCost(maxSpawn)));
+	ui.find("#raiseDeadCost").innerHTML = prettify(Math.round(calcZombieCost(1)));
+	ui.find("#workerCost").innerHTML = prettify(Math.round(calcWorkerCost(1)));
+	ui.find("#workerCost10").innerHTML = prettify(Math.round(calcWorkerCost(10)));
+	ui.find("#workerCost100").innerHTML = prettify(Math.round(calcWorkerCost(100)));
+	ui.find("#workerCost1000").innerHTML = prettify(Math.round(calcWorkerCost(1000)));
+	ui.find("#workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
+	ui.find("#workerCostMax").innerHTML = prettify(Math.round(calcWorkerCost(maxSpawn)));
 	updateJobButtons(); //handles the display of units in the player's kingdom.
 	updatePartyButtons(); // handles the display of units out on raids.
 	updateMorale();
@@ -1843,7 +1841,7 @@ function updateUpgrades(){
 	});
 
 	//deity techs
-	document.getElementById("renameDeity").disabled = (!civData.worship.owned);
+	ui.find("#renameDeity").disabled = (!civData.worship.owned);
 	ui.show("#deityDomains",((civData.worship.owned) && (getCurDeityDomain() === "")));
 	ui.show("#battleUpgrades",(getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades",(getCurDeityDomain() == "fields"));
@@ -1852,10 +1850,10 @@ function updateUpgrades(){
 	ui.show("#catsUpgrades",(getCurDeityDomain() == "cats"));
 
 	deitySpecEnable = civData.worship.owned && (getCurDeityDomain() === "") && (civData.piety.owned >= 500);
-	document.getElementById("battleDeity").disabled = !deitySpecEnable;
-	document.getElementById("fieldsDeity").disabled = !deitySpecEnable;
-	document.getElementById("underworldDeity").disabled = !deitySpecEnable;
-	document.getElementById("catsDeity").disabled = !deitySpecEnable;
+	ui.find("#battleDeity").disabled = !deitySpecEnable;
+	ui.find("#fieldsDeity").disabled = !deitySpecEnable;
+	ui.find("#underworldDeity").disabled = !deitySpecEnable;
+	ui.find("#catsDeity").disabled = !deitySpecEnable;
 
 	//standard
 	ui.show("#conquest",civData.standard.owned);
@@ -1867,9 +1865,9 @@ function updateUpgrades(){
 
 function updateDeity(){
 	//Update page with deity details
-	document.getElementById("deityAName").innerHTML = curCiv.deities[0].name;
-	document.getElementById("deityADomain").innerHTML = getCurDeityDomain() ? ", deity of "+idToType(getCurDeityDomain()) : "";
-	document.getElementById("deityADevotion").innerHTML = civData.devotion.owned;
+	ui.find("#deityAName").innerHTML = curCiv.deities[0].name;
+	ui.find("#deityADomain").innerHTML = getCurDeityDomain() ? ", deity of "+idToType(getCurDeityDomain()) : "";
+	ui.find("#deityADevotion").innerHTML = civData.devotion.owned;
 
 	// Display if we have an active deity, or any old ones.
 	ui.show("#deityContainer",(curCiv.deities[0].name));
@@ -1892,7 +1890,7 @@ function makeDeitiesTables()
 {
 	// Display the active deity
 	var deityId = "deityA";
-	document.getElementById("activeDeity").innerHTML = '<tr id="' + deityId + '">'
+	ui.find("#activeDeity").innerHTML = '<tr id="' + deityId + '">'
 	+ '<td><strong><span id="' + deityId + 'Name">'+'</span></strong>'
 	+ '<span id="' + deityId + 'Domain" class="deityDomain">' + '</span></td>'
 	+ '<td>Devotion: <span id="' + deityId + 'Devotion">'+'</span></td></tr>';
@@ -1904,7 +1902,7 @@ function makeDeitiesTables()
 		if ((i===0)&&(!elem.name)) { return; } // Don't display current deity-in-waiting.
 		s += getDeityRowText("deity"+i,elem);
 	});
-	document.getElementById("oldDeities").innerHTML = s;
+	ui.find("#oldDeities").innerHTML = s;
 
 	updateDeity();
 }
@@ -1912,7 +1910,7 @@ function makeDeitiesTables()
 // Enables or disables availability of activated religious powers.
 // Passive religious benefits are handled by the upgrade system.
 function updateDevotion(){
-	document.getElementById("deityA"+"Devotion").innerHTML = civData.devotion.owned;
+	ui.find("#deityA"+"Devotion").innerHTML = civData.devotion.owned;
 
 	// Process altars
 	buildingData.forEach(function(elem) { if (elem.subType == "altar") {
@@ -1932,11 +1930,11 @@ function updateDevotion(){
 
 	//xxx These costs are not yet handled by canAfford().
 	if (population.healthy < 1) { 
-		document.getElementById("wickerman").disabled = true; 
-		document.getElementById("walk").disabled = true; 
+		ui.find("#wickerman").disabled = true; 
+		ui.find("#walk").disabled = true; 
 	}
 
-	document.getElementById("ceaseWalk").disabled = (civData.walk.rate === 0);
+	ui.find("#ceaseWalk").disabled = (civData.walk.rate === 0);
 }
 
 // Dynamically create the achievement display
@@ -1982,7 +1980,7 @@ function addRaidRows()
 		"Raid "+elem.name+"</button><br />"; //xxxL10N
 	});
 
-	var group = document.getElementById("raidGroup");
+	var group = ui.find("#raidGroup");
 	group.innerHTML += s;
 	group.onmousedown=onBulkEvent;
 }
@@ -2030,7 +2028,7 @@ function updateMorale(){
 }
 
 function addWonderSelectText() {
-	var wcElem = document.getElementById("wonderCompleted");
+	var wcElem = ui.find("#wonderCompleted");
 	if (!wcElem) { console.log("Error: No wonderCompleted element found."); return; }
 	var s = wcElem.innerHTML;
 	wonderResources.forEach(function(elem,i, wr) {
@@ -2051,16 +2049,16 @@ function updateWonder() {
 
 	// Can start building a wonder, but haven't yet.
 	ui.show("#startWonderLine",(haveTech && curCiv.curWonder.stage === 0 ));
-	document.getElementById("startWonder").disabled = (!haveTech || curCiv.curWonder.stage !== 0); 
+	ui.find("#startWonder").disabled = (!haveTech || curCiv.curWonder.stage !== 0); 
 
 	// Construction in progress; show/hide building area and labourers
 	ui.show("#labourerRow",(curCiv.curWonder.stage === 1));
 	ui.show("#wonderInProgress",(curCiv.curWonder.stage === 1));
 	ui.show("#speedWonderGroup",(curCiv.curWonder.stage === 1));
-	document.getElementById("speedWonder").disabled = (curCiv.curWonder.stage !== 1 || !canAfford({ gold: 100 }));
+	ui.find("#speedWonder").disabled = (curCiv.curWonder.stage !== 1 || !canAfford({ gold: 100 }));
 	if (curCiv.curWonder.stage === 1){
-		document.getElementById("progressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
-		document.getElementById("progressNumber").innerHTML = curCiv.curWonder.progress.toFixed(2);
+		ui.find("#progressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
+		ui.find("#progressNumber").innerHTML = curCiv.curWonder.progress.toFixed(2);
 	}
 
 	// Finished, but haven't picked the resource yet.
@@ -2082,7 +2080,7 @@ function updateWonderList(){
 			console.log("Could not build wonder row " + i);
 		}
 	}
-	document.getElementById("pastWonders").innerHTML = wonderhtml;
+	ui.find("#pastWonders").innerHTML = wonderhtml;
 }
 
 function updateReset(){
@@ -2427,7 +2425,7 @@ function selectDeity(domain,force){
 	curCiv.deities[0].domain = domain;
 
 	document.getElementById(domain+"Upgrades").style.display = "inline";
-	document.getElementById("deityDomains").style.display = "none";
+	ui.find("#deityDomains").style.display = "none";
 	makeDeitiesTables();
 }
 
@@ -2498,8 +2496,8 @@ function walk(increment){
 	civData.walk.rate += increment;
 
 	//xxx This needs to move into the main loop in case it's reloaded.
-	document.getElementById("walkStat").innerHTML = prettify(civData.walk.rate);
-	document.getElementById("ceaseWalk").disabled = (civData.walk.rate === 0);
+	ui.find("#walkStat").innerHTML = prettify(civData.walk.rate);
+	ui.find("#ceaseWalk").disabled = (civData.walk.rate === 0);
 	ui.show("#walkGroup",(civData.walk.rate > 0)); 
 }
 
@@ -2508,7 +2506,7 @@ function tickWalk() {
 	var target = "";
 	if (civData.walk.rate > population.healthy) { 
 		civData.walk.rate = population.healthy; 
-		document.getElementById("ceaseWalk").disabled = true;
+		ui.find("#ceaseWalk").disabled = true;
 	}
 	if (civData.walk.rate <= 0) { return; }
 
@@ -2543,7 +2541,7 @@ function iconoclasmList(){
 	if (civData.piety.owned >= 1000){
 		civData.piety.owned -= 1000;
 		updateResourceTotals();
-		document.getElementById("iconoclasm").disabled = true;
+		ui.find("#iconoclasm").disabled = true;
 		var append = "<br />";
 		for (i=1;i<curCiv.deities.length;++i){
 			append += '<button onclick="iconoclasm(' + i + ')">';
@@ -2551,14 +2549,14 @@ function iconoclasmList(){
 			append += '</button><br />';
 		}
 		append += '<br /><button onclick=\'iconoclasm("cancel")\'>Cancel</button>';
-		document.getElementById("iconoclasmList").innerHTML = append;
+		ui.find("#iconoclasmList").innerHTML = append;
 	}
 }
 
 function iconoclasm(index){
 	//will splice a deity from the deities array unless the user has cancelled
-	document.getElementById("iconoclasmList").innerHTML = "";
-	document.getElementById("iconoclasm").disabled = false;
+	ui.find("#iconoclasmList").innerHTML = "";
+	ui.find("#iconoclasm").disabled = false;
 	if ((index == "cancel")||(index >= curCiv.deities.length)){
 		//return the piety
 		civData.piety.owned += 1000;
@@ -2686,8 +2684,8 @@ function glory(time){
 
 	civData.glory.timer = time; //set timer
 	//xxx This needs to move into the main loop in case it's reloaded.
-	document.getElementById("gloryTimer").innerHTML = civData.glory.timer; //update timer to player
-	document.getElementById("gloryGroup").style.display = "block";
+	ui.find("#gloryTimer").innerHTML = civData.glory.timer; //update timer to player
+	ui.find("#gloryGroup").style.display = "block";
 }
 
 function grace(delta){
@@ -2695,7 +2693,7 @@ function grace(delta){
 	if (civData.piety.owned >= civData.grace.cost){
 		civData.piety.owned -= civData.grace.cost;
 		civData.grace.cost = Math.floor(civData.grace.cost * 1.2);
-		document.getElementById("graceCost").innerHTML = prettify(civData.grace.cost);
+		ui.find("#graceCost").innerHTML = prettify(civData.grace.cost);
 		adjustMorale(delta);
 		updateResourceTotals();
 		updateMorale();
@@ -2735,9 +2733,9 @@ function renameWonder(){
 	var n = prompt("Please name your Wonder:",curCiv.curWonder.name);
 	if (!n) { return; }
 	curCiv.curWonder.name = n;
-	var wp = document.getElementById("wonderNameP");
+	var wp = ui.find("#wonderNameP");
 	if (wp) { wp.innerHTML = curCiv.curWonder.name; }
-	var wc = document.getElementById("wonderNameC");
+	var wc = ui.find("#wonderNameC");
 	if (wc) { wc.innerHTML = curCiv.curWonder.name; }
 }
 
@@ -2775,9 +2773,9 @@ function tradeTimer(){
 	curCiv.trader.materialId = selected.materialId;
 	curCiv.trader.requested = selected.requested * (Math.ceil(Math.random() * 20)); // Up to 20x amount
 
-	document.getElementById("tradeContainer").style.display = "block";
-	document.getElementById("tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
-	document.getElementById("tradeRequested").innerHTML = prettify(curCiv.trader.requested);
+	ui.find("#tradeContainer").style.display = "block";
+	ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
+	ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested);
 }
 
 function trade(){
@@ -3274,13 +3272,14 @@ function migrateGameData(loadVar, settingsVarReturn)
 }
 
 // Load in saved data
-function load(loadType){
+function load (loadType) {
 	//define load variables
 	var loadVar = {},
 		loadVar2 = {},
 		settingsVar = {};
-		
-	if (loadType === "cookie"){
+	var saveVersion = new VersionData(1,0,0,"legacy");
+
+	if (loadType === "cookie") {
 		//check for cookies
 		if (read_cookie(saveTag) && read_cookie(saveTag2)){
 			//set variables to load from
@@ -3297,7 +3296,7 @@ function load(loadType){
 		}
 	}
 	
-	if (loadType === "localStorage"){
+	if (loadType === "localStorage") {
 		//check for local storage
 		var string1;
 		var string2;
@@ -3324,6 +3323,8 @@ function load(loadType){
 		if (string2) { try { loadVar2 = JSON.parse(string2); } catch(ignore){} }
 		if (settingsString) { try { settingsVar = JSON.parse(settingsString); } catch(ignore){} }
 
+		console.log("string1", string1, string2, loadVar, loadVar2);
+
 		// If there's a second string (old save game format), merge it in.
 		if (loadVar2) { loadVar = mergeObj(loadVar, loadVar2); loadVar2 = undefined; }
 
@@ -3336,33 +3337,12 @@ function load(loadType){
 		gameLog("Loaded saved game from localStorage");
 	}
 	
-	if (loadType === "import"){
-		//take the import string, decompress and parse it
-		var compressed = document.getElementById("impexpField").value;
-		var decompressed = LZString.decompressFromBase64(compressed);
-		var revived = JSON.parse(decompressed);
-		//set variables to load from
-		loadVar = revived[0];
-		if (isValid(revived[1])) {
-			loadVar2 = revived[1];
-			// If there's a second string (old save game format), merge it in.
-			if (loadVar2) { loadVar = mergeObj(loadVar, loadVar2); loadVar2 = undefined; }
-		}
-		if (!loadVar) {
-			console.log("Unable to parse saved game string.");
-			return false;
-		}
-
-		//notify user
-		gameLog("Imported saved game");
-		//close import/export dialog
-		//impexp();
+	if (loadType === "import") {
+		loadVar = importByInput(ui.find("#impexpField"));
 	}
 
-	var saveVersion = new VersionData(1,0,0,"legacy");
-	saveVersion = mergeObj(saveVersion,loadVar.versionData);
-	if (saveVersion.toNumber() > versionData.toNumber())
-	{
+	saveVersion = mergeObj(saveVersion, loadVar.versionData);
+	if (saveVersion.toNumber() > versionData.toNumber()) {
 		// Refuse to load saved games from future versions.
 		var alertStr = "Cannot load; saved game version " + saveVersion + " is newer than game version " + versionData;
 		console.log(alertStr);
@@ -3372,18 +3352,17 @@ function load(loadType){
 	if (saveVersion.toNumber() < versionData.toNumber()) {
 		// Migrate saved game data from older versions.
 		var settingsVarReturn = { val: {} };
-		migrateGameData(loadVar,settingsVarReturn);
+		migrateGameData(loadVar, settingsVarReturn);
 		settingsVar = settingsVarReturn.val;
 
 		// Merge the loaded data into our own, in case we've added fields.
 		mergeObj(curCiv, loadVar.curCiv);
-	}
-	else {
+	} else {
 		curCiv = loadVar.curCiv; // No need to merge if the versions match; this is quicker.
 	}
 
 	console.log("Loaded save game version " + saveVersion.major +
-		"." + saveVersion.minor + "." + saveVersion.sub + "(" + saveVersion.mod + ").");
+		"." + saveVersion.minor + "." + saveVersion.sub + "(" + saveVersion.mod + ") via", loadType);
 
 	if (isValid(settingsVar)){ settings = mergeObj(settings,settingsVar); }
  
@@ -3405,13 +3384,38 @@ function load(loadType){
 	updateMorale();
 	updateWonder();
 	updateWonderCount();
-	document.getElementById("clicks").innerHTML = prettify(Math.round(curCiv.resourceClicks));
-	document.getElementById("civName").innerHTML = curCiv.civName;
-	document.getElementById("rulerName").innerHTML = curCiv.rulerName;
-	document.getElementById("wonderNameP").innerHTML = curCiv.curWonder.name;
-	document.getElementById("wonderNameC").innerHTML = curCiv.curWonder.name;
+	ui.find("#clicks").innerHTML = prettify(Math.round(curCiv.resourceClicks));
+	ui.find("#civName").innerHTML = curCiv.civName;
+	ui.find("#rulerName").innerHTML = curCiv.rulerName;
+	ui.find("#wonderNameP").innerHTML = curCiv.curWonder.name;
+	ui.find("#wonderNameC").innerHTML = curCiv.curWonder.name;
 
 	return true;
+}
+
+function importByInput (elt) {
+	//take the import string, decompress and parse it
+	var compressed = elt.value;
+	var decompressed = LZString.decompressFromBase64(compressed);
+	var revived = JSON.parse(decompressed);
+	//set variables to load from
+	var loadVar = revived[0];
+	var loadVar2;
+	if (isValid(revived[1])) {
+		loadVar2 = revived[1];
+		// If there's a second string (old save game format), merge it in.
+		if (loadVar2) { loadVar = mergeObj(loadVar, loadVar2); loadVar2 = undefined; }
+	}
+	if (!loadVar) {
+		console.log("Unable to parse saved game string.");
+		return false;
+	}
+
+	//notify user
+	gameLog("Imported saved game");
+	//close import/export dialog
+	//impexp();	
+	return loadVar;
 }
 
 // Create objects and populate them with the variables, these will be stored in HTML5 localStorage.
@@ -3433,7 +3437,7 @@ function save(savetype){
 		var savestring = "[" + JSON.stringify(saveVar) + "]";
 		var compressed = LZString.compressToBase64(savestring);
 		console.log("Compressed save from " + savestring.length + " to " + compressed.length + " characters");
-		document.getElementById("impexpField").value = compressed;
+		ui.find("#impexpField").value = compressed;
 		gameLog("Exported game to text");
 		return true;
 	}
@@ -3503,7 +3507,7 @@ function renameCiv(newName){
 	}
 
 	curCiv.civName = newName;
-	document.getElementById("civName").innerHTML = curCiv.civName;
+	ui.find("#civName").innerHTML = curCiv.civName;
 }
 
 // Note:  Returns the index (which could be 0), or 'false'.
@@ -3531,7 +3535,7 @@ function renameRuler(newName){
 
 	curCiv.rulerName = newName;
 
-	document.getElementById("rulerName").innerHTML = curCiv.rulerName;
+	ui.find("#rulerName").innerHTML = curCiv.rulerName;
 }
 
 // Looks to see if the deity already exists.  If it does, that deity
@@ -3617,7 +3621,7 @@ function reset(){
 	curCiv.curWonder.rushed = false;
 	curCiv.curWonder.progress = 0;
 
-	document.getElementById("graceCost").innerHTML = prettify(civData.grace.cost);
+	ui.find("#graceCost").innerHTML = prettify(civData.grace.cost);
 	//Update page with all new values
 	updateResourceTotals();
 	updateUpgrades();
@@ -3630,38 +3634,38 @@ function reset(){
 	updateWonder();
 	//Reset upgrades and other interface elements that might have been unlocked
 	//xxx Some of this probably isn't needed anymore; the update routines will handle it.
-	document.getElementById("renameDeity").disabled = "true";
-	document.getElementById("raiseDead").disabled = "true";
-	document.getElementById("raiseDead100").disabled = "true";
-	document.getElementById("raiseDeadMax").disabled = "true";
-	document.getElementById("smite").disabled = "true";
-	document.getElementById("wickerman").disabled = "true";
-	document.getElementById("pestControl").disabled = "true";
-	document.getElementById("grace").disabled = "true";
-	document.getElementById("walk").disabled = "true";
-	document.getElementById("ceaseWalk").disabled = "true";
-	document.getElementById("lure").disabled = "true";
-	document.getElementById("companion").disabled = "true";
-	document.getElementById("comfort").disabled = "true";
-	document.getElementById("book").disabled = "true";
-	document.getElementById("feast").disabled = "true";
-	document.getElementById("blessing").disabled = "true";
-	document.getElementById("waste").disabled = "true";
-	document.getElementById("riddle").disabled = "true";
-	document.getElementById("throne").disabled = "true";
-	document.getElementById("glory").disabled = "true";
-	document.getElementById("summonShade").disabled = "true";
+	ui.find("#renameDeity").disabled = "true";
+	ui.find("#raiseDead").disabled = "true";
+	ui.find("#raiseDead100").disabled = "true";
+	ui.find("#raiseDeadMax").disabled = "true";
+	ui.find("#smite").disabled = "true";
+	ui.find("#wickerman").disabled = "true";
+	ui.find("#pestControl").disabled = "true";
+	ui.find("#grace").disabled = "true";
+	ui.find("#walk").disabled = "true";
+	ui.find("#ceaseWalk").disabled = "true";
+	ui.find("#lure").disabled = "true";
+	ui.find("#companion").disabled = "true";
+	ui.find("#comfort").disabled = "true";
+	ui.find("#book").disabled = "true";
+	ui.find("#feast").disabled = "true";
+	ui.find("#blessing").disabled = "true";
+	ui.find("#waste").disabled = "true";
+	ui.find("#riddle").disabled = "true";
+	ui.find("#throne").disabled = "true";
+	ui.find("#glory").disabled = "true";
+	ui.find("#summonShade").disabled = "true";
 
 	ui.show("#deitySelect",(civData.temple.owned > 0));
 	ui.show("#conquestSelect",(civData.barracks.owned > 0));
 	ui.show("#tradeSelect",(civData.gold.owned > 0));
 
-	document.getElementById("conquest").style.display = "none";
+	ui.find("#conquest").style.display = "none";
 
-	document.getElementById("tradeContainer").style.display = "none";
-	document.getElementById("tradeUpgradeContainer").style.display = "none";
-	document.getElementById("iconoclasmList").innerHTML = "";
-	document.getElementById("iconoclasm").disabled = false;
+	ui.find("#tradeContainer").style.display = "none";
+	ui.find("#tradeUpgradeContainer").style.display = "none";
+	ui.find("#iconoclasmList").innerHTML = "";
+	ui.find("#iconoclasm").disabled = false;
 	gameLog("Game Reset"); //Inform player.
 
 	renameCiv();
@@ -4056,7 +4060,7 @@ function doLabourers() {
 		civData.labourer.ill = 0;
 		updatePopulation();
 		//hide limited notice
-		document.getElementById("lowResources").style.display = "none";
+		ui.find("#lowResources").style.display = "none";
 		//then set wonder.stage so things will be updated appropriately
 		++curCiv.curWonder.stage;
 	} else {
@@ -4080,7 +4084,7 @@ function doLabourers() {
 		for (i=0;i < wonderResources.length;++i) { 
 			if (wonderResources[i].owned < 1) { lowItem = wonderResources[i]; break; } 
 		}
-		if (lowItem) { document.getElementById("limited").innerHTML = " by low " + lowItem.getQtyName(); }
+		if (lowItem) { ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); }
 	}
 	updateWonder();
 }
@@ -4147,9 +4151,9 @@ function doPestControl() {
 function tickGlory() {
 	//Handles the Glory bonus
 	if (civData.glory.timer > 0){
-		document.getElementById("gloryTimer").innerHTML = civData.glory.timer--;
+		ui.find("#gloryTimer").innerHTML = civData.glory.timer--;
 	} else {
-		document.getElementById("gloryGroup").style.display = "none";
+		ui.find("#gloryGroup").style.display = "none";
 	}
 }
 function doThrone() {
@@ -4164,7 +4168,7 @@ function doThrone() {
 function tickGrace() {
 	if (civData.grace.cost > 1000) {
 		civData.grace.cost = Math.floor(--civData.grace.cost);
-		document.getElementById("graceCost").innerHTML = prettify(civData.grace.cost);
+		ui.find("#graceCost").innerHTML = prettify(civData.grace.cost);
 	}
 }
 
@@ -4178,7 +4182,7 @@ function paneSelect(control){
 	// Identify the target pane to be activated, and the currently active
 	// selector tab(s).
 	var newTarget = dataset(control,"target");
-	var selectors = document.getElementById("selectors");
+	var selectors = ui.find("#selectors");
 	if (!selectors) { console.log("No selectors found"); return null; }
 	var curSelects = selectors.getElementsByClassName("selected");
 
@@ -4199,7 +4203,7 @@ function paneSelect(control){
 
 function versionAlert(){
 	console.log("New Version Available");
-	document.getElementById("versionAlert").style.display = "inline";
+	ui.find("#versionAlert").style.display = "inline";
 }
 
 function prettify(input){
@@ -4210,7 +4214,7 @@ function prettify(input){
 
 function setAutosave(value){ 
 	if (value !== undefined) { settings.autosave = value; } 
-	document.getElementById("toggleAutosave").checked = settings.autosave;
+	ui.find("#toggleAutosave").checked = settings.autosave;
 }
 function onToggleAutosave(control){ return setAutosave(control.checked); }
 
@@ -4220,7 +4224,7 @@ function setCustomQuantities(value){
 	var curPop = population.current + curCiv.zombie.owned;
 
 	if (value !== undefined) { settings.customIncr = value; }
-	document.getElementById("toggleCustomQuantities").checked = settings.customIncr;
+	ui.find("#toggleCustomQuantities").checked = settings.customIncr;
 
 	ui.show("#customJobQuantity",settings.customIncr);
 	ui.show("#customPartyQuantity",settings.customIncr);
@@ -4277,7 +4281,7 @@ function onToggleCustomQuantities(control){ return setCustomQuantities(control.c
 // Toggles the display of the .notes class
 function setNotes(value){
 	if (value !== undefined) { settings.notes = value; }
-	document.getElementById("toggleNotes").checked = settings.notes;
+	ui.find("#toggleNotes").checked = settings.notes;
 
 	var i;
 	var elems = document.getElementsByClassName("note");
@@ -4292,18 +4296,18 @@ function onToggleNotes(control){
 // value is the desired change in 0.1em units.
 function textSize(value){
 	if (value !== undefined) { settings.fontSize += 0.1 * value; }
-	document.getElementById("smallerText").disabled = (settings.fontSize <= 0.5); 
+	ui.find("#smallerText").disabled = (settings.fontSize <= 0.5); 
 
 	//xxx Should this be applied to the document instead of the body?
-	body.style.fontSize = settings.fontSize + "em";
+	ui.body.style.fontSize = settings.fontSize + "em";
 }
 
 function setShadow(value){
 	if (value !== undefined) { settings.textShadow = value; }
-	document.getElementById("toggleShadow").checked = settings.textShadow;
+	ui.find("#toggleShadow").checked = settings.textShadow;
 	var shadowStyle = "3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff"
 					+ ", 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff";
-	body.style.textShadow = settings.textShadow ? shadowStyle : "none";
+	ui.body.style.textShadow = settings.textShadow ? shadowStyle : "none";
 }
 function onToggleShadow(control){ 
 	return setShadow(control.checked); 
@@ -4313,7 +4317,7 @@ function onToggleShadow(control){
 // as that's probably the simplest way to do this.
 function setIcons(value){ 
 	if (value !== undefined) { settings.useIcons = value; } 
-	document.getElementById("toggleIcons").checked = settings.useIcons;
+	ui.find("#toggleIcons").checked = settings.useIcons;
 
 	var i;
 	var elems = document.getElementsByClassName("icon");
@@ -4328,7 +4332,7 @@ function onToggleIcons(control){
 
 function setDelimiters(value){
 	if (value !== undefined) { settings.delimiters = value; }
-	document.getElementById("toggleDelimiters").checked = settings.delimiters;
+	ui.find("#toggleDelimiters").checked = settings.delimiters;
 	updateResourceTotals();
 }
 function onToggleDelimiters(control){ 
@@ -4337,13 +4341,13 @@ function onToggleDelimiters(control){
 
 function setWorksafe(value){
 	if (value !== undefined) { settings.worksafe = value; }
-	document.getElementById("toggleWorksafe").checked = settings.worksafe;
+	ui.find("#toggleWorksafe").checked = settings.worksafe;
 
 	//xxx Should this be applied to the document instead of the body?
 	if (settings.worksafe){
-		body.classList.remove("hasBackground");
+		ui.body.classList.remove("hasBackground");
 	} else {
-		body.classList.add("hasBackground");
+		ui.body.classList.add("hasBackground");
 	}
 
 	setIcons(); // Worksafe overrides icon settings.
@@ -4362,24 +4366,24 @@ function gameLog(message){
 	var curTime = d.getHours() + "." + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes();
 
 	//Check to see if the last message was the same as this one, if so just increment the (xNumber) value
-	if (document.getElementById("logL").innerHTML != message) {
+	if (ui.find("#logL").innerHTML != message) {
 		logRepeat = 0; //Reset the (xNumber) value
 
 		//Go through all the logs in order, moving them down one and successively overwriting them.
 		var i = 5; // Number of lines of log to keep.
-		while (--i > 1) { document.getElementById("log"+i).innerHTML = document.getElementById("log"+(i-1)).innerHTML; }
+		while (--i > 1) { ui.find("#log"+i).innerHTML = ui.find("#log"+(i-1)).innerHTML; }
 		//Since ids need to be unique, log1 strips the ids from the log0 elements when copying the contents.
-		document.getElementById("log1").innerHTML = (
-			"<td>" + document.getElementById("logT").innerHTML 
-			+ "</td><td>" + document.getElementById("logL").innerHTML 
-			+ "</td><td>" + document.getElementById("logR").innerHTML + "</td>"
+		ui.find("#log1").innerHTML = (
+			"<td>" + ui.find("#logT").innerHTML 
+			+ "</td><td>" + ui.find("#logL").innerHTML 
+			+ "</td><td>" + ui.find("#logR").innerHTML + "</td>"
 		);
 	}
 	// Updates most recent line with new time, message, and xNumber.
 	var s =  "<td id='logT'>" + curTime + "</td><td id='logL'>" + message + "</td><td id='logR'>";
 	if (++logRepeat > 1) { s += "(x" + logRepeat + ")"; } // Optional (xNumber)
 	s += "</td>";
-	document.getElementById("log0").innerHTML = s;
+	ui.find("#log0").innerHTML = s;
 }
 
 
