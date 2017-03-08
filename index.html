@@ -27,10 +27,10 @@
 	<meta name="description" content="CivClicker: Build a Civilisation In Your Browser" />
 
 	<!-- JS utilities -->
-	<script type="application/javascript" src="scripts/lz-string.js" async="async"></script>
-	<script type="application/javascript" src="scripts/jsutils.js" async="async"></script>
+	<script type="application/javascript" src="scripts/lz-string.js"></script>
+	<script type="application/javascript" src="scripts/jsutils.js"></script>
 	<!-- Polyfill from https://developer.mozilla.org/en-US/docs/Web/API/Element.classList -->
-	<script type="application/javascript" src="scripts/classList.js" async="async"></script>
+	<script type="application/javascript" src="scripts/classList.js"></script>
 	<!-- Main program -->
 	<script type="application/javascript" src="scripts/civclicker.js" defer="defer"></script>
 </head>
@@ -167,6 +167,10 @@
 		</div>
 		
 		<div id="deityPane" class="selectPane">
+			<div id="deityContainer">
+				<h3>Current Deity</h3>
+				<table id="activeDeity"><!-- populated by javascript --></table>
+			</div>
 			<span id="worshipRow"></span>
 			<div id="deityDomains">
 				<span id="battleRow" class="purchaseRow" data-target="battle"> <span class="upgradetrue" data-quantity="true">
@@ -333,25 +337,6 @@
 		Trader offers 1 gold for <span id="tradeRequested">0</span> <span id="tradeType">food</span><br />
 		<button id="trader" onmousedown="trade()">Trade</button>
 	</div>
-	<div id="eventsContainer" class="civSection">
-		<h3>Events</h3>
-		<table id="logTable">
-			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
-			<tr id="log1"><td colspan="3"></td></tr>
-			<tr id="log2"><td colspan="3"></td></tr>
-			<tr id="log3"><td colspan="3"></td></tr>
-			<tr id="log4"><td colspan="3"></td></tr>
-			<!-- <tr id="log5"><td colspan="3"></td></tr>
-			<tr id="log6"><td colspan="3"></td></tr>
-			<tr id="log7"><td colspan="3"></td></tr>
-			<tr id="log8"><td colspan="3"></td></tr>
-			<tr id="log9"><td colspan="3"></td></tr> -->
-		</table>
-	</div>
-	<div id="deityContainer" class="civSection">
-		<h3>Current Deity</h3>
-		<table id="activeDeity"><tr><td></td></tr></table>
-	</div>
 	<div id="wondersContainer" class="civSection">
 		<h3>Wonders</h3>
 		<span id="startWonderLine"><button id="startWonder" onmousedown="startWonder()">Start Building Wonder</button></span>
@@ -367,15 +352,30 @@
 		</div>
 		<table id="pastWonders"><tr><td></td></tr></table>
 	</div>
+	<div id="eventsContainer" class="civSection">
+		<h3>Events</h3>
+		<table id="logTable">
+			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
+			<tr id="log1"><td colspan="3"></td></tr>
+			<tr id="log2"><td colspan="3"></td></tr>
+			<tr id="log3"><td colspan="3"></td></tr>
+			<tr id="log4"><td colspan="3"></td></tr>
+			<!-- <tr id="log5"><td colspan="3"></td></tr>
+			<tr id="log6"><td colspan="3"></td></tr>
+			<tr id="log7"><td colspan="3"></td></tr>
+			<tr id="log8"><td colspan="3"></td></tr>
+			<tr id="log9"><td colspan="3"></td></tr> -->
+		</table>
+	</div>
 	<div id="statsContainer" class="civSection">
 		<h3>Stats</h3>
-		Resource clicks: <span id="clicks">0</span><br />
-		Total Land: <span id="totalLand">1000</span><br />
-		Total Buildings: <span id="totalBuildings">0</span><br />
-		Enemies Slain: <span data-action="display" data-target="enemySlain">0</span><br />
-		Unburied Corpses: <span data-action="display" data-target="corpses">0</span><br />
-		<span id="graveTotal">Unfilled Graves: <span data-action="display" data-target="grave">0</span><br /></span>
-		<span id="walkGroup"><br />Walk: <span id="walkStat">0</span> workers per second<br /></span>
+		Resource clicks: <span id="clicks">...</span><br />
+		Total Land: <span id="totalLand">...</span><br />
+		Total Buildings: <span id="totalBuildings">...</span><br />
+		Enemies Slain: <span data-action="display" data-target="enemySlain">...</span><br />
+		Unburied Corpses: <span data-action="display" data-target="corpses">...</span><br />
+		<span id="graveTotal">Unfilled Graves: <span data-action="display" data-target="grave">...</span><br /></span>
+		<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
 	</div>
 </div>
 </div>
