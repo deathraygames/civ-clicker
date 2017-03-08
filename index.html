@@ -330,7 +330,16 @@
 		</div>
 		<div id="populationCreate">
 			<div class="unit1">
-				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button><span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span><br />
+				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button><span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new worker</span>
+				<span class="newSpawnJob">
+					as
+					<select type="dropdown" id="newSpawnJobSelection">
+						<option value="unemployed">Idle Citizen</option>
+						<option value="farmer">Farmer</option>
+						<option value="woodcutter">Woodcutter</option>
+						<option value="miner">Miner</option>
+					</select>
+				</span>
 			</div>
 			<div class='unit10'>
 				<button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Citizens</button><span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new workers</span>

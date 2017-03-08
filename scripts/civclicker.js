@@ -2261,21 +2261,22 @@ function calcWorkerCost(num, curPop){
 function calcZombieCost(num){ return calcWorkerCost(num, curCiv.zombie.owned)/5; }
 
 
+
 // Create a cat
-function spawnCat()
-{
+function spawnCat() {
 	++civData.cat.owned;
 	gameLog("Found a cat!");
 }
 
 // Creates or destroys workers
 function spawn(num){
-	var jobObj = civData.unemployed;
-	if (num == "custom" ) { num =  getCustomNumber(jobObj); }
-	if (num == "-custom") { num = -getCustomNumber(jobObj); }
+	var newJobId = "unemployed";
+	var bums = civData.unemployed;
+	if (num == "custom" ) { num =  getCustomNumber(bums); }
+	if (num == "-custom") { num = -getCustomNumber(bums); }
 
 	// Find the most workers we can spawn
-	num = Math.max(num, -jobObj.owned);  // Cap firing by # in that job.
+	num = Math.max(num, -bums.owned);  // Cap firing by # in that job.
 	num = Math.min(num,logSearchFn(calcWorkerCost,civData.food.owned));
 
 	// Apply population limit, and only allow whole workers.
@@ -2284,9 +2285,13 @@ function spawn(num){
 	// Update numbers and resource levels
 	civData.food.owned -= calcWorkerCost(num);
 
-	// New workers enter as farmers, but we only destroy idle ones.
-	if (num >= 0) { civData.farmer.owned += num; }
-	else          { jobObj.owned += num; }
+	// New workers enter as a job that has been selected, but we only destroy idle ones.
+	newJobId = ui.find("#newSpawnJobSelection").value;
+	if (num >= 0 && typeof civData[newJobId] === "object") {
+		civData[newJobId].owned += num;
+	} else { 
+		bums.owned += num; 
+	}
 	updatePopulation(); //Run through the population->job update cycle
 
 	//This is intentionally independent of the number of workers spawned
@@ -3472,7 +3477,7 @@ function save(savetype){
 
 function deleteSave(){
 	//Deletes the current savegame by setting the game's cookies to expire in the past.
-	if (!confirm("Really delete save?")) { return; } //Check the player really wanted to do that.
+	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return; } //Check the player really wanted to do that.
 
 	try {
 		deleteCookie(saveTag);
@@ -3481,6 +3486,9 @@ function deleteSave(){
 		localStorage.removeItem(saveTag2);
 		localStorage.removeItem(saveSettingsTag);
 		gameLog("Save Deleted");
+		if (confirm("Save Deleted. Refresh page to start over?")) {
+			window.location.reload();
+		}
 	} catch(err) {
 		handleStorageError(err);
 		alert("Save Deletion Failed!");
