@@ -64,7 +64,10 @@ var curCiv = {
 	zombie: { owned:0 },
 	grave: { owned:0 },
 	enemySlain: { owned:0 },
-	morale : { mod:1.0 },
+	morale: { 
+		mod: 		1.0,
+		efficiency: 1.0
+	},
 
 	resourceClicks : 0, // For NeverClick
 	attackCounter : 0, // How long since last attack?
@@ -3585,7 +3588,7 @@ function reset(){
 	curCiv.enemySlain.owned = 0;
 	curCiv.resourceClicks = 0; // For NeverClick
 	curCiv.attackCounter = 0; // How long since last attack?
-	curCiv.morale = { mod: 1.0 };
+	curCiv.morale = { mod: 1.0, efficiency: 1.0 };
 
 	// If our current deity is powerless, delete it.
 	if (!curCiv.deities[0].maxDev) {
@@ -3687,7 +3690,14 @@ function doFarmers() {
 	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
 	var millMod = 1;
 	if (population.current > 0 || curCiv.zombie.owned > 0) { millMod = population.current / (population.current + curCiv.zombie.owned); }
-	civData.food.net = civData.farmer.owned * (1 + (civData.farmer.efficiency * curCiv.morale.efficiency)) * ((civData.pestControl.timer > 0) ? 1.01 : 1) * getWonderBonus(civData.food) * (1 + civData.walk.rate/120) * (1 + civData.mill.owned * millMod / 200); //Farmers farm food
+	civData.food.net = (
+		civData.farmer.owned 
+		* (1 + (civData.farmer.efficiency * curCiv.morale.efficiency)) 
+		* ((civData.pestControl.timer > 0) ? 1.01 : 1) 
+		* getWonderBonus(civData.food) 
+		* (1 + civData.walk.rate/120) 
+		* (1 + civData.mill.owned * millMod / 200) //Farmers farm food
+	);
 	civData.food.net -= population.current; //The living population eats food.
 	civData.food.owned += civData.food.net;
 	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
@@ -4387,6 +4397,12 @@ function gameLog(message){
 }
 
 
+function checkLimits () {
+	//Resources occasionally go above their caps.
+	//Cull the excess /after/ other workers have taken their inputs.
+	resourceData.forEach( function(elem){ if (elem.owned > elem.limit) { elem.owned = elem.limit; } });
+}
+
 function gameLoop () {
 	//debugging - mark beginning of loop execution
 	//var start = new Date().getTime();
@@ -4405,9 +4421,7 @@ function gameLoop () {
 	doStarve();
 	//xxx Need to kill workers who die from exposure.
 
-	//Resources occasionally go above their caps.
-	//Cull the excess /after/ other workers have taken their inputs.
-	resourceData.forEach( function(elem){ if (elem.owned > elem.limit) { elem.owned = elem.limit; } });
+	checkLimits();
 
 	//Timers - routines that do not occur every second
 	doMobs();
