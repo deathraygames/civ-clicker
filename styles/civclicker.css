@@ -683,7 +683,7 @@ button {
 		opacity: 0.5;
 		display: inline-block;
 		padding: 0.1em 0.5em;
-		background-color: rgba(0,0,0,0.1);
+		background-color: rgba(0,0,0,0.05);
 	}
 	.happy-1 li:nth-child(1) { background-color: #3ac; opacity: 1; font-size: 1em; }
 	.happy-2 li:nth-child(2) { 	background-color: #3a6; opacity: 1; font-size: 1em; }
