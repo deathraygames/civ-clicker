@@ -1032,26 +1032,47 @@ augmentCivData();
 // elements in a readable fashion.
 indexArrayByAttr(civData,"id");
 
-// Initialize our data. //xxx Should this move to initCivclicker()?
+// Initialize our data. 
+// TODO: Should this move to initCivclicker()?
 civData.forEach( function(elem){ if (elem instanceof CivObj) { elem.init(); } });
 
 
-civData.forEach( function(elem){ 
-	if (!(elem instanceof CivObj)) { return; }  // Unknown type
-	if (elem.type == "resource") { resourceData.push(elem); 
-		if (elem.vulnerable === true) { lootable.push(elem); }
-		if (elem.subType == "basic") { basicResources.push(elem); } } 
-	if (elem.type == "building") { buildingData.push(elem); 
+civData.forEach(function(elem){ 
+	if (!(elem instanceof CivObj)) { 
+		console.error("Unknown type:", elem);
+		return; 
+	}
+	if (elem.type == "resource") { 
+		resourceData.push(elem); 
+		if (elem.vulnerable === true) { 
+			lootable.push(elem); 
+		}
+		if (elem.subType == "basic") { 
+			basicResources.push(elem); 
+		} 
+	} 
+	if (elem.type == "building") { 
+		buildingData.push(elem); 
 		if (elem.vulnerable === true) { sackable.push(elem); }
-		if (elem.subType == "normal" || elem.subType == "land") { homeBuildings.push(elem); } }
-	if (elem.subType == "prayer") { powerData.push(elem); }
-	else if (elem.type == "upgrade") { upgradeData.push(elem); 
-		if (elem.subType == "upgrade") { normalUpgrades.push(elem); } }
-	if (elem.type == "unit") { unitData.push(elem); 
+		if (elem.subType == "normal" || elem.subType == "land") { homeBuildings.push(elem); } 
+	}
+	if (elem.subType == "prayer") { 
+		powerData.push(elem); 
+	} else if (elem.type == "upgrade") { 
+		upgradeData.push(elem); 
+		if (elem.subType == "upgrade") { 
+			normalUpgrades.push(elem); 
+		} 
+	}
+	if (elem.type == "unit") { 
+		unitData.push(elem); 
 		if (elem.vulnerable === true) { killable.push(elem); }
 		if (elem.place == "home") { homeUnits.push(elem); }
-		if (elem.place == "party") { armyUnits.push(elem); } }
-	if (elem.type == "achievement") { achData.push(elem); }
+		if (elem.place == "party") { armyUnits.push(elem); } 
+	}
+	if (elem.type == "achievement") { 
+		achData.push(elem); 
+	}
 });
 
 
@@ -2092,14 +2113,18 @@ function updateSettings(){
 // Game functions
 
 //This function is called every time a player clicks on a primary resource button
-function increment(objId){
+function increment (objId) {
 	var purchaseObj = civData[objId];
+	var numArmy = 0;
+
 	if (!purchaseObj) { console.log("Unknown purchase: "+objId); return; }
 
-	var numArmy = 0;
-	unitData.forEach(function(elem) { if ((elem.alignment == "player")&&(elem.species=="human")
-										&&(elem.combatType)&&(elem.place == "home")) 
-	{ numArmy += elem.owned; } }); // Nationalism adds military units.
+	unitData.forEach(function(elem) { 
+		if ((elem.alignment == "player")&&(elem.species=="human")
+										&&(elem.combatType)&&(elem.place == "home")) { 
+			numArmy += elem.owned; 
+		} 
+	}); // Nationalism adds military units.
 
 	purchaseObj.owned += purchaseObj.increment 
 	  + (purchaseObj.increment * 9 * (civData.civilservice.owned)) 
@@ -2122,9 +2147,10 @@ function increment(objId){
 	//Checks to see that resources are not exceeding their limits
 	if (purchaseObj.owned > purchaseObj.limit) { purchaseObj.owned = purchaseObj.limit; }
 
-	document.getElementById("clicks").innerHTML = prettify(Math.round(++curCiv.resourceClicks));
+	ui.find("#clicks").innerHTML = prettify(Math.round(++curCiv.resourceClicks));
 	updateResourceTotals(); //Update the page with totals
 }
+
 function onIncrement(control) { 
 	// We need a valid target to complete this action.
 	var targetId = dataset(control,"target");
@@ -2172,10 +2198,14 @@ function doPurchase(objId,num){
 		}
 	}
 
-	//Then check for overcrowding
-	if ((purchaseObj.type == "building") && --civData.freeLand.owned < 0){
-		gameLog("You are suffering from overcrowding.");  // I18N
-		adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
+	// If building, then you use up free land
+	if (purchaseObj.type == "building") {
+		civData.freeLand.owned -= num;
+		// check for overcrowding
+		if (civData.freeLand.owned < 0) {
+			gameLog("You are suffering from overcrowding.");  // I18N
+			adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
+		}
 	}
 
 	updateRequirements(purchaseObj); //Increases buildings' costs
@@ -2611,7 +2641,9 @@ function invade(ecivtype){
 
 	// Set rewards of land and other random plunder.
 	//xxx Maybe these should be partially proportionate to the actual number of defenders?
-	curCiv.raid.plunderLoot = { freeLand: Math.round(baseLoot * (1 + (civData.administration.owned))) };
+	curCiv.raid.plunderLoot = { 
+		freeLand: Math.round(baseLoot * (1 + (civData.administration.owned))) 
+	};
 	lootable.forEach(function(elem){ curCiv.raid.plunderLoot[elem.id] = Math.round(baseLoot * Math.random()); });
 
 	updateTargets(); //Hides raid buttons until the raid is finished
