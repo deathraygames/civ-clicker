@@ -289,24 +289,15 @@ button {
 }
 
 
-#conquest{
-	display:none;
+.note,
+.cost {
+	text-align: right;
+	font-style: italic;
+	color: #555;
+	width: 35em;
 }
-.note{
-	/*width: 380px;*/
-	text-align:right;
-	font-style:italic;
-	color:#555;
-	padding-left:1em;
-	width:35em;
-}
-.cost{
-	white-space:nowrap;
-	text-align:right;
-	font-style:italic;
-	color:#555;
-	padding-left:1em;
-	margin-right:-1em;
+.cost {
+	color: #333;
 }
 .number {
 	text-align: right;
@@ -329,13 +320,13 @@ button {
 	padding-right:2em;
 }
 #oldDeities{
-	display:none;
+	display: none;
 }
 #oldDeities td{
 	padding-right:1em;
 }
 #deityDomains{
-	display:none;
+	display: none;
 }
 #deityDomains .purchaseRow{
 	/* We control the display of these through #deityDomains, so */
@@ -347,7 +338,7 @@ button {
 #fieldsUpgrades,
 #underworldUpgrades,
 #catsUpgrades{
-	display:none;
+	display: none;
 }
 .enemy{
 	color:red;
@@ -358,18 +349,18 @@ button {
 #customBuildQuantity,
 #customPartyQuantity,
 #customSpawnQuantity{
-	display:none;
+	display: none;
 }
 #customBuildQuantity{
 	margin-left:1em;
 }
 
 .purchaseRow{
-	display:none;
+	display: none;
 }
 
 #victoryGroup{
-	display:none;
+	display: none;
 }
 
 .itemname{
