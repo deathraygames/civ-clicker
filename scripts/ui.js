@@ -89,6 +89,7 @@
 				// Note that HTML comes in upper case, XML in lower.
 				switch (tagName) {
 					case "SPAN": displayVal = "inline"; break;
+					case "BUTTON": displayVal = "inline-block"; break;
 					case "DIV": displayVal = "block"; break;
 					case "P": displayVal = "block"; break;
 					case "TABLE": displayVal = "table"; break;
