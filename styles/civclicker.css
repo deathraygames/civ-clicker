@@ -226,10 +226,6 @@ table#basicResources,
 	margin-bottom:1em;
 }
 
-.net{
-	padding-left:1em;
-}
-
 h3{
 	clear:both;
 }
@@ -585,7 +581,7 @@ button {
 
 
 #specialResourcesContainer{
-	margin-bottom:0.3em;
+	margin: 0.5em 0 0.5em 0;
 }
 	#specialResourcesContainer .number{
 		padding:0 0.3em 0.3em 0.3em;
@@ -597,6 +593,10 @@ button {
 	#specialResourcesContainer label {
 		display: inline-block;
 		min-width: 4em;
+	}
+	#specialResourcesContainer .net,
+	#specialResourcesContainer .perSecond {
+		font-size: 1em;
 	}
 
 #walkGroup{

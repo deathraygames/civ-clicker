@@ -258,7 +258,13 @@ Resource.prototype = new CivObj({
 	constructor: Resource,
 	type: "resource",
 	// 'net' accessor always exists, even if the underlying value is undefined for most resources.
-	get net() { return this.data.net; },
+	get net() { 
+		if (typeof this.data.net !== "number") {
+			console.warn(".net not a number");
+			return 0;
+		}
+		return this.data.net; 
+	},
 	set net(value) { this.data.net = value; },
 	increment: 0,
 	specialChance: 0,
@@ -461,13 +467,19 @@ new Building({ id:"apothecary", singular:"apothecary", plural:"apothecaries",
 	prereqs:{ masonry: true },
 	require:{ wood:30, stone:70, herbs:2 },
 	effectText:"allows 1 healer" }),
-new Building({ id:"temple", singular:"temple", plural:"temples",
+new Building({ 
+	id:"temple", singular:"temple", plural:"temples",
 	prereqs:{ masonry: true },
 	require:{ wood:30, stone:120 },
 	effectText:"allows 1 cleric",
 	// If purchase was a temple and aesthetics has been activated, increase morale
 	// If population is large, temples have less effect.
-	onGain: function(num) { if (civData.aesthetics && civData.aesthetics.owned && num) { adjustMorale(num * 25 / population.current); } }}),
+	onGain: function(num) { 
+		if (civData.aesthetics && civData.aesthetics.owned && num) { 
+			adjustMorale(num * 25 / population.current); 
+		} 
+	}
+}),
 new Building({ id:"barracks", name:"barracks",
 	prereqs:{ masonry: true },
 	require:{ food:20, wood:60, stone:120, metal:10 },
@@ -1414,7 +1426,7 @@ function updatePurchaseRow(purchaseObj){
 	if (!purchaseObj) { return; }
 
 	var elem = ui.find("#" + purchaseObj.id + "Row");
-	if (!elem) { console.log("Missing UI for "+purchaseObj.id); return; }
+	if (!elem) { console.warn("Missing UI for "+purchaseObj.id); return; }
 
 	// If the item's cost is variable, update its requirements.
 	if (purchaseObj.hasVariableCost()) { updateRequirements(purchaseObj); }
@@ -1601,7 +1613,7 @@ function updateResourceTotals(){
 
 	// Update net production values for primary resources.  Same as the above,
 	// but look for "data-action" == "displayNet".
-	displayElems=document.querySelectorAll("[data-action='displayNet']");
+	displayElems = document.querySelectorAll("[data-action='displayNet']");
 	for (i=0;i<displayElems.length;++i)
 	{
 		elem = displayElems[i];
@@ -1613,7 +1625,7 @@ function updateResourceTotals(){
 		else if (val > 0) { elem.style.color="#0b0"; }
 		else              { elem.style.color="#000"; }
 
-		elem.innerHTML = prettify(val.toFixed(1));
+		elem.innerHTML = ((val < 0) ? "" : "+") + prettify(val.toFixed(1));
 	}
 
 
@@ -3719,7 +3731,7 @@ function tickAutosave() {
 	}
 }
 
-//xxx Need to improve 'net' handling.
+// TODO: Need to improve 'net' handling.
 function doFarmers() {
 	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
 	var millMod = 1;
@@ -3735,16 +3747,20 @@ function doFarmers() {
 	civData.food.net -= population.current; //The living population eats food.
 	civData.food.owned += civData.food.net;
 	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
-		var num_skins = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
-		civData.skins.owned += rndRound(num_skins);
+		var skinsChance = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
+		var skinsEarned = rndRound(skinsChance);
+		civData.skins.net += skinsEarned;
+		civData.skins.owned += skinsEarned;
 	}
 }
 function doWoodcutters() {
 	civData.wood.net = civData.woodcutter.owned * (civData.woodcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wood); //Woodcutters cut wood
 	civData.wood.owned += civData.wood.net;
 	if (civData.harvesting.owned && civData.woodcutter.owned > 0){ //and sometimes get herbs
-		var num_herbs = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
-		civData.herbs.owned += rndRound(num_herbs);
+		var herbsChance = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
+		var herbsEarned = rndRound(herbsChance);
+		civData.herbs.net += herbsEarned;
+		civData.herbs.owned += rndRound(herbsEarned);
 	}
 }
 
@@ -3753,25 +3769,42 @@ function doMiners() {
 	civData.stone.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.stone); //Miners mine stone
 	civData.stone.owned += civData.stone.net;
 	if (civData.prospecting.owned && civData.miner.owned > 0){ //and sometimes get ore
-		var num_ore = specialChance * (civData.stone.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
-		civData.ore.owned += rndRound(num_ore);
+		var oreChance = specialChance * (civData.stone.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
+		var oreEarned = rndRound(oreChance);
+		civData.ore.net += oreEarned;
+		civData.ore.owned += oreEarned;
 	}
 }
 
 function doBlacksmiths() {
-	var numUsed = Math.min(civData.ore.owned, (civData.blacksmith.owned * civData.blacksmith.efficiency * curCiv.morale.efficiency));
-	civData.ore.owned -= numUsed;
-	civData.metal.owned += numUsed * getWonderBonus(civData.metal);
+	var oreUsed = Math.min(civData.ore.owned, (civData.blacksmith.owned * civData.blacksmith.efficiency * curCiv.morale.efficiency));
+	var metalEarned = oreUsed * getWonderBonus(civData.metal);
+	civData.ore.net -= oreUsed;
+	civData.ore.owned -= oreUsed;
+	civData.metal.net += metalEarned;
+	civData.metal.owned += metalEarned;
 }
 
 function doTanners() {
-	var numUsed = Math.min(civData.skins.owned, (civData.tanner.owned * civData.tanner.efficiency * curCiv.morale.efficiency));
-	civData.skins.owned -= numUsed;
-	civData.leather.owned += numUsed * getWonderBonus(civData.leather);
+	var skinsUsed = Math.min(civData.skins.owned, (civData.tanner.owned * civData.tanner.efficiency * curCiv.morale.efficiency));
+	var leatherEarned = skinsUsed * getWonderBonus(civData.leather);
+	civData.skins.net -= skinsUsed;
+	civData.skins.owned -= skinsUsed;
+	civData.leather.net += leatherEarned;
+	civData.leather.owned += leatherEarned;
 }
 
 function doClerics() {
-	civData.piety.owned += civData.cleric.owned * (civData.cleric.efficiency + (civData.cleric.efficiency * (civData.writing.owned))) * (1 + ((civData.secrets.owned) * (1 - 100/(civData.graveyard.owned + 100)))) * curCiv.morale.efficiency * getWonderBonus(civData.piety);
+	var pietyEarned = (
+		civData.cleric.owned 
+		* (civData.cleric.efficiency + (civData.cleric.efficiency * (civData.writing.owned))) 
+		* (1 + ((civData.secrets.owned) 
+		* (1 - 100/(civData.graveyard.owned + 100)))) 
+		* curCiv.morale.efficiency 
+		* getWonderBonus(civData.piety)
+	);
+	civData.piety.net += pietyEarned;
+	civData.piety.owned += pietyEarned;
 }
 // Try to heal the specified number of people in the specified job
 // Makes them sick if the number is negative.
@@ -4429,6 +4462,14 @@ function gameLog(message){
 	ui.find("#log0").innerHTML = s;
 }
 
+function clearSpecialResourceNets () {
+	civData.skins.net = 0;
+	civData.herbs.net = 0;
+	civData.ore.net = 0;
+	civData.leather.net = 0;
+	civData.piety.net = 0;
+	civData.metal.net = 0;
+}
 
 function checkLimits () {
 	//Resources occasionally go above their caps.
@@ -4441,7 +4482,13 @@ function gameLoop () {
 	//var start = new Date().getTime();
 	
 	tickAutosave();
-	
+
+	// The "net" values for special resources are just running totals of the
+	// adjustments made each tick; as such they need to be zero'd out at the
+	// start of each new tick.
+	clearSpecialResourceNets();
+
+
 	// Production workers do their thing.
 	doFarmers();
 	doWoodcutters();
