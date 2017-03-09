@@ -1,4 +1,5 @@
-@import url('../fonts/OpenSans-CondLight.css');
+@import url("fonts.css");
+
 body {
 	font-family: 'Lato', Arial, sans-serif;
 	background: #EAF0EA;
