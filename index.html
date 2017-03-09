@@ -42,7 +42,7 @@
 	</div>
 	<div id="stripInner">
 		<span class="title">CivClicker</span>
-		<span class="version">v1.2.2</span>
+		<span class="version">v1.2.3</span>
 		<a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
 		<a href="updates.html" target="_blank">Game Updates Log</a>
 		<a href="#" class="openSettings">Settings</a>
@@ -103,6 +103,8 @@
 				<td>
 					<img src="images/skins.png" class="icon icon-lg" alt="Skins"/>
 					<label>Skins:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="skins">0</span>
 				</td>
 				<td>
@@ -111,6 +113,8 @@
 				<td>
 					<img src="images/leather.png" class="icon icon-lg" alt="Leather"/>
 					<label>Leather:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="leather">0</span>
 				</td>
 				<td>
@@ -121,6 +125,8 @@
 				<td>
 					<img src="images/herbs.png" class="icon icon-lg" alt="Herbs"/>
 					<label>Herbs:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="herbs">0</span>
 				</td>
 				<td>
@@ -129,6 +135,8 @@
 				<td>
 					<img src="images/piety.png" class="icon icon-lg" alt="Piety"/>
 					<label>Piety:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="piety">0</span>
 				</td>
 				<td>
@@ -139,6 +147,8 @@
 				<td>
 					<img src="images/ore.png" class="icon icon-lg" alt="Ore"/>
 					<label>Ore:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="ore">0</span>
 				</td>
 				<td>
@@ -147,6 +157,8 @@
 				<td>
 					<img src="images/metal.png" class="icon icon-lg" alt="Metal"/>
 					<label>Metal:</label>
+				</td>
+				<td>
 					<span class="number" data-action="display" data-target="metal">0</span>
 				</td>
 				<td>
@@ -154,14 +166,18 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">
+				<td>
 					<img src="images/gold.png" class="icon icon-lg" alt="Gold" />
 					<label>Gold:</label>
-					<span class="number" data-action="display" data-target="gold">0</span>
 				</td>
 				<td colspan="2">
+					<span class="number" data-action="display" data-target="gold">0</span>
+				</td>
+				<td>
 					<img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
 					<label>Corpses:</label>
+				</td>
+				<td colspan="2">
 					<span class="number" data-action="display" data-target="corpses">0</span>
 				</td>
 			</tr>
@@ -297,13 +313,13 @@
 			</div>
 		</div>
 		<div id="conquestPane" class="selectPane">
-			<span id="standardRow">
-				<!--  -->
-			</span>
 			<div class="notYet">
 				You cannot command an army yet because you don't own a battle standard.
 				<span class="tip">Try building a barracks first.</span>
 			</div>
+			<span id="standardRow">
+				<!--  -->
+			</span>
 			<div id="conquest">
 				<h2>Army</h2>
 				<p id="customPartyQuantity">
@@ -312,6 +328,9 @@
 				<table id="party">
 					<!-- populated by javascript -->
 				</table>
+				<div id="raidNews">
+					<!-- -->
+				</div>
 				<div id="raidGroup">
 					<h2>To War!</h2>
 					<p id="gloryGroup">
@@ -395,36 +414,25 @@
 			</table>
 		</div>
 		<div id="populationCreate">
-			<div class="unit1">
-				<button id="spawn1button" onmousedown="spawn(1)" disabled="disabled">Recruit Citizen</button>
-				<span class="cost"><span id="workerCost">20</span> food</span><span class="note">: Recruit a new citizen</span>
-				<span class="newSpawnJob">
-					as
-					<select type="dropdown" id="newSpawnJobSelection">
-						<option value="unemployed">Idle Citizen</option>
-						<option value="farmer">Farmer</option>
-						<option value="woodcutter">Woodcutter</option>
-						<option value="miner">Miner</option>
-					</select>
-				</span>
+			<div>
+				Recruit new citizens as
+				<select type="dropdown" id="newSpawnJobSelection">
+					<option value="unemployed">Idle Citizens</option>
+					<option value="farmer">Farmers</option>
+					<option value="woodcutter">Woodcutters</option>
+					<option value="miner">Miners</option>
+				</select>
+				<span class="cost">for <span id="workerCost">...</span> food</span><span class="note">.</span>
 			</div>
-			<div class='unit10'>
-				<button id="spawn10button" onmousedown="spawn(10)">Recruit 10 Citizens</button>
-				<span class="cost"><span id="workerCost10">200</span> food</span><span class="note">: Recruit 10 new citizens</span>
+			<div>
+				<button class="unit1" id="spawn1button" onmousedown="spawn(1)">Recruit +1</button>
+				<button class="unit10" id="spawn10button" onmousedown="spawn(10)">+10</button>
+				<button class="unit100" id="spawn100button" onmousedown="spawn(100)">+100</button>
+				<button class="unit1000" id="spawn1000button" onmousedown="spawn(1000)">+1000</button>
+				<button class="unitInfinity" id="spawnMaxbutton" onmousedown="spawn(Infinity)">+<span id="workerNumMax">Max</span></button>
 			</div>
-			<div class='unit100'>
-				<button id="spawn100button" onmousedown="spawn(100)">Recruit 100 Citizens</button>
-				<span class="cost"><span id="workerCost100">2000</span> food</span><span class="note">: Recruit 100 new citizens</span>
-			</div>
-			<div class='unit1000'>
-				<button id="spawn1000button" onmousedown="spawn(1000)">Recruit 1000 Citizens</button>
-				<span class="cost"><span id="workerCost1000">20000</span> food</span><span class="note">: Recruit 1000 new citizens</span>
-			</div>
-			<div class='unitInfinity'>
-				<button id="spawnMaxbutton" onmousedown="spawn(Infinity)">Recruit <span id="workerNumMax">Max</span> Citizens</button>
-				<span class="cost"><span id="workerCostMax"></span> food</span><span class="note">: Recruit as many new citizens as possible</span>
-			</div>
-			<div id="customSpawnQuantity"><button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
+			<div id="customSpawnQuantity">
+				<button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
 			</div>
 		</div>
 		<div id="populationBar" class="bar">

@@ -109,6 +109,12 @@
 
 			return visible;
 		},
+		hide: function (selector, notVisible) {
+			if (notVisible === undefined) { 
+				notVisible = true; 
+			}
+			return this.show(selector, !notVisible);
+		},
 		body: null,
 		setup: function () {
 			this.body = document.getElementsByTagName("body")[0];

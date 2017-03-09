@@ -393,7 +393,7 @@ civData = [
 // Resources
 new Resource({ id:"food", name:"food", increment:1, specialChance:0.1,
 	subType:"basic",
-	specialMaterial: "skins", verb: "gather", activity: "foraging", //I18N
+	specialMaterial: "skins", verb: "harvest", activity: "harvesting", //I18N
 	get limit() { return 200 + (civData.barn.owned * (civData.granaries.owned?2:1) * 200); },
 	set limit(value) { return this.limit; } // Only here for JSLint.
 }),
@@ -830,18 +830,18 @@ new Unit({
 			+ civData.blessing.owned)); 
 	},
 	set efficiency(value) { this.efficiency_base = value; },
-	effectText:"Automatically gather food" 
+	effectText:"Automatically harvest food" 
 }),
 new Unit({ 
 	id:"woodcutter", singular:"woodcutter", plural:"woodcutters",
 	source:"unemployed",
 	efficiency: 0.5,
-	effectText:"Automatically gather wood" }),
+	effectText:"Automatically cut wood" }),
 new Unit({ 
 	id:"miner", singular:"miner", plural:"miners",
 	source:"unemployed",
 	efficiency: 0.2,
-	effectText:"Automatically gather stone" }),
+	effectText:"Automatically mine stone" }),
 new Unit({ 
 	id:"tanner", singular:"tanner", plural:"tanners",
 	source:"unemployed",
@@ -1717,7 +1717,13 @@ function updatePopulation(){
 
 //Update page with numbers
 function updatePopulationUI() {
-	var i, elem, elems, displayElems;
+	var i, elem, elems, displayElems,
+		spawn1button = ui.find("#spawn1button"),
+		spawnCustomButton = ui.find("#spawnCustomButton"),
+		spawnMaxbutton = ui.find("#spawnMaxbutton"),
+		spawn10button = ui.find("#spawn10button"),
+		spawn100button = ui.find("#spawn100button"),
+		spawn1000button = ui.find("#spawn1000button");
 
 	// Scan the HTML document for elements with a "data-action" element of
 	// "display_pop".  The "data-target" of such elements is presumed to contain
@@ -1798,12 +1804,12 @@ function updatePopulationUI() {
 	//Turning on/off buttons based on free space.
 	var maxSpawn = Math.max(0,Math.min((population.limit - population.current),logSearchFn(calcWorkerCost,civData.food.owned)));
 
-	ui.find("#spawn1button").disabled = (maxSpawn < 1);
-	ui.find("#spawnCustomButton").disabled = (maxSpawn < 1);
-	ui.find("#spawnMaxbutton").disabled = (maxSpawn < 1);
-	ui.find("#spawn10button").disabled = (maxSpawn < 10);
-	ui.find("#spawn100button").disabled = (maxSpawn < 100);
-	ui.find("#spawn1000button").disabled = (maxSpawn < 1000);
+	spawn1button.disabled = (maxSpawn < 1);
+	spawnCustomButton.disabled = (maxSpawn < 1);
+	spawnMaxbutton.disabled = (maxSpawn < 1);
+	spawn10button.disabled = (maxSpawn < 10);
+	spawn100button.disabled = (maxSpawn < 100);
+	spawn1000button.disabled = (maxSpawn < 1000);
 
 	var canRaise = (getCurDeityDomain() == "underworld" && civData.devotion.owned >= 20);
 	var maxRaise = canRaise ? logSearchFn(calcZombieCost,civData.piety.owned) : 0;
@@ -1814,12 +1820,17 @@ function updatePopulationUI() {
 
 	//Calculates and displays the cost of buying workers at the current population.
 	ui.find("#raiseDeadCost").innerHTML = prettify(Math.round(calcZombieCost(1)));
-	ui.find("#workerCost").innerHTML = prettify(Math.round(calcWorkerCost(1)));
-	ui.find("#workerCost10").innerHTML = prettify(Math.round(calcWorkerCost(10)));
-	ui.find("#workerCost100").innerHTML = prettify(Math.round(calcWorkerCost(100)));
-	ui.find("#workerCost1000").innerHTML = prettify(Math.round(calcWorkerCost(1000)));
+
 	ui.find("#workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
-	ui.find("#workerCostMax").innerHTML = prettify(Math.round(calcWorkerCost(maxSpawn)));
+
+	spawn1button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1))) + " food";
+	spawn10button.title = "Cost: " + prettify(Math.round(calcWorkerCost(10))) + " food";
+	spawn100button.title = "Cost: " + prettify(Math.round(calcWorkerCost(100))) + " food";
+	spawn1000button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1000))) + " food";
+	spawnMaxbutton.title = "Cost: " + prettify(Math.round(calcWorkerCost(maxSpawn))) + " food";
+
+	ui.find("#workerCost").innerHTML = prettify(Math.round(calcWorkerCost(1)));
+
 	updateJobButtons(); //handles the display of units in the player's kingdom.
 	updatePartyButtons(); // handles the display of units out on raids.
 	updateMorale();
@@ -1847,7 +1858,7 @@ function updatePopulationBar () {
 			+ '</div>'
 		);
 	});
-	barElt.innerHTML = ('<div style="width: ' + getUnitPercent(population.current, population.limit) + '%">' 
+	barElt.innerHTML = ('<div style="min-width: ' + getUnitPercent(population.current, population.limit) + '%">' 
 		+ h 
 		+ '</div>'
 	);
@@ -1894,7 +1905,7 @@ function updateUpgrades(){
 	// Deity techs
 	ui.show("#deityPane .notYet", !hasDomain);
 	ui.find("#renameDeity").disabled = (!civData.worship.owned);
-	ui.show("#deityDomains", ((civData.worship.owned) && hasDomain));
+	ui.show("#deityDomains", ((civData.worship.owned) && !hasDomain));
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
 	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));
@@ -2030,15 +2041,15 @@ function testAchievements(){
 // Dynamically add the raid buttons for the various civ sizes.
 function addRaidRows()
 {
-	var s="";
+	var s = '';
 	civSizes.forEach(function(elem) { 
 		s += "<button class='raid' data-action='raid' data-target='"+elem.id+"' disabled='disabled'>"+
-		"Raid "+elem.name+"</button><br />"; //xxxL10N
+		"Raid "+elem.name+"</button>"; //xxxL10N
 	});
 
 	var group = ui.find("#raidGroup");
 	group.innerHTML += s;
-	group.onmousedown=onBulkEvent;
+	group.onmousedown = onBulkEvent;
 }
 
 // Enable the raid buttons for eligible targets.
@@ -2409,7 +2420,7 @@ function doStarve() {
 	var corpsesEaten, num_starve;
 	if (civData.food.owned < 0 && civData.waste.owned) // Workers eat corpses if needed
 	{
-		corpsesEaten = Math.min(civData.corpses.owned,-civData.food.owned);
+		corpsesEaten = Math.min(civData.corpses.owned, -civData.food.owned);
 		civData.corpses.owned -= corpsesEaten;
 		civData.food.owned += corpsesEaten;
 	}
@@ -2700,13 +2711,15 @@ function invade(ecivtype){
 	};
 	lootable.forEach(function(elem){ curCiv.raid.plunderLoot[elem.id] = Math.round(baseLoot * Math.random()); });
 
+	ui.hide("#raidNews");
 	updateTargets(); //Hides raid buttons until the raid is finished
 	updatePartyButtons(); 
 }
 function onInvade(control) { return invade(dataset(control,"target")); }
 
-function plunder(){
+function plunder () {
 	var plunderMsg = "";
+	var raidNewsElt = ui.find("#raidNews");
 
 	// If we fought our largest eligible foe, but not the largest possible, raise the limit.
 	if ((curCiv.raid.targetMax != civSizes[civSizes.length-1].id) && curCiv.raid.last == curCiv.raid.targetMax)
@@ -2726,7 +2739,10 @@ function plunder(){
 	// Create message to notify player
 	plunderMsg = civSizes[curCiv.raid.last].name + " defeated! ";
 	plunderMsg += "Plundered " + getReqText(curCiv.raid.plunderLoot) + ". ";
-	gameLog(plunderMsg); 
+	gameLog(plunderMsg);
+
+	ui.show(raidNewsElt, true);
+	raidNewsElt.innerHTML = "Results of last raid: " + plunderMsg;
 
 	// Victory outcome has been handled, end raid
 	resetRaiding();
@@ -4170,10 +4186,15 @@ function doLabourers() {
 		
 		// First, check our labourers and other resources to see if we're limited.
 		var num = civData.labourer.owned;
-		wonderResources.forEach( function(elem){ num = Math.min(num,elem.owned); });
+		wonderResources.forEach(function(resource){ 
+			num = Math.min(num, resource.owned); 
+		});
 
 		//remove resources
-		wonderResources.forEach( function(elem){ elem.owned -= num; });
+		wonderResources.forEach(function(resource){ 
+			resource.owned -= num;
+			resource.net -= num;
+		});
 
 		//increase progress
 		curCiv.curWonder.progress += num / (1000000 * getWonderCostMultiplier());
@@ -4184,9 +4205,14 @@ function doLabourers() {
 		var lowItem = null;
 		var i = 0;
 		for (i=0;i < wonderResources.length;++i) { 
-			if (wonderResources[i].owned < 1) { lowItem = wonderResources[i]; break; } 
+			if (wonderResources[i].owned < 1) { 
+				lowItem = wonderResources[i]; 
+				break; 
+			} 
 		}
-		if (lowItem) { ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); }
+		if (lowItem) { 
+			ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
+		}
 	}
 	updateWonder();
 }
@@ -4488,6 +4514,9 @@ function gameLog(message){
 }
 
 function clearSpecialResourceNets () {
+	civData.food.net = 0;
+	civData.wood.net = 0;
+	civData.stone.net = 0;
 	civData.skins.net = 0;
 	civData.herbs.net = 0;
 	civData.ore.net = 0;
@@ -4499,7 +4528,9 @@ function clearSpecialResourceNets () {
 function checkLimits () {
 	//Resources occasionally go above their caps.
 	//Cull the excess /after/ other workers have taken their inputs.
-	resourceData.forEach( function(elem){ if (elem.owned > elem.limit) { elem.owned = elem.limit; } });
+	resourceData.forEach( function(elem){ 
+		if (elem.owned > elem.limit) { elem.owned = elem.limit; } 
+	});
 }
 
 function gameLoop () {
@@ -4524,7 +4555,7 @@ function gameLoop () {
 	
 	// Check for starvation
 	doStarve();
-	//xxx Need to kill workers who die from exposure.
+	// TODO: Need to kill workers who die from exposure.
 
 	checkLimits();
 
@@ -4534,7 +4565,7 @@ function gameLoop () {
 	tickGlory();
 	doShades();
 	doEsiege(civData.esiege, civData.fortification);
-	doRaid("party","player","enemy");
+	doRaid("party", "player", "enemy");
 
 	//Population-related
 	doGraveyards();

@@ -67,9 +67,14 @@ a {
 		padding-left: 2.5%;
 	}
 
-	@media screen and (max-width: 1400px) {
+	@media screen and (max-width: 1500px) {
 		.columns {
 			width: 90%;
+		}
+	}
+	@media screen and (max-width: 1350px) {
+		.columns {
+			width: 95%;
 		}
 	}
 	@media screen and (max-width: 1250px) {
@@ -259,8 +264,9 @@ button {
 		background-color: rgba(200,255,180,0.9);
 	}
 #populationCreate button {
-	min-width: 12em;
-	margin-right: 1em;
+	min-width: 3em;
+	padding-left: 1em; padding-right: 1em;
+	margin: 1em 0.5em 0.5em 0;
 }
 #upgrades button {
 	min-width: 9em;
@@ -270,7 +276,7 @@ button {
 }
 #basicResources button {
 	text-transform: capitalize;
-	min-width: 5em;
+	min-width: 6em;
 }
 #textSize button,
 #jobs button,
@@ -298,6 +304,7 @@ button {
 }
 #raidGroup button {
 	min-width: 12em;
+	display: block;
 }
 #tradeUpgradeContainer button {
 	min-width: 12em;
@@ -584,9 +591,11 @@ button {
 	#specialResourcesContainer label,
 	#basicResources label {
 		text-transform: capitalize;
-		margin-left: 1em;
 		display: inline-block;
 		min-width: 4em;
+	}
+	#basicResources label {
+		margin-left: 1em;
 	}
 	#specialResourcesContainer .net,
 	#specialResourcesContainer .perSecond {
