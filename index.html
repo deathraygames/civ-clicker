@@ -193,6 +193,10 @@
 		</div>
 		
 		<div id="deityPane" class="selectPane">
+			<div class="notYet">
+				Your civilization does not yet worship a deity. 
+				<span class="tip">You need to increase piety by assigning clerics at a temple.</span>
+			</div>
 			<div id="deityContainer">
 				<h3>Current Deity</h3>
 				<table id="activeDeity"><!-- populated by javascript --></table>
@@ -269,20 +273,27 @@
 				<span id="iconoclasmNote" class="note">: Remove an old deity to gain gold</span><br />
 				<div id="iconoclasmList"></div>
 			</div>
-			<div id="permaUpgradeContainer">
+			<div id="pantheonUpgrades">
 				<h3>Pantheon Upgrades</h3>
 				<div id="purchasedPantheon"></div>
 			</div>
 		</div>
 		<div id="conquestPane" class="selectPane">
-			<span id="standardRow"></span>
+			<span id="standardRow">
+				<!--  -->
+			</span>
+			<div class="notYet">
+				You cannot command an army yet because you don't own a battle standard.
+				<span class="tip">Try building a barracks first.</span>
+			</div>
 			<div id="conquest">
 				<h2>Army</h2>
 				<p id="customPartyQuantity">
 					Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
 				</p>
-				<table id="party"></table>
-				<br />
+				<table id="party">
+					<!-- populated by javascript -->
+				</table>
 				<div id="raidGroup">
 					<h2>To War!</h2>
 					<p id="gloryGroup">
@@ -294,11 +305,14 @@
 					<button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
 				</div>
 			</div>
-			<div>
-				Enemies Slain: <span data-action="display" data-target="enemySlain">...</span>
+			<div class="stats">
+				Total Enemies Slain: <span data-action="display" data-target="enemySlain">...</span>
 			</div>
 		</div>
 		<div id="tradePane" class="selectPane">
+			<div class="notYet">
+				You do not yet own a trading post. <span class="tip">Try trading with a trader when they (randomly) appear.</span>
+			</div>
 			<span id="tradeRow"></span>
 			<div id="tradeUpgradeContainer">
 				<span id="currencyRow"></span>

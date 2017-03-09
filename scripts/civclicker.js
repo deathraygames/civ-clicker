@@ -1845,6 +1845,8 @@ function idToType(domainId) {
 // Check also to see if the player can afford an upgrade and enable/disable as necessary
 function updateUpgrades(){
 	var deitySpecEnable;
+	var domain = getCurDeityDomain();
+	var hasDomain = (getCurDeityDomain() === "") ? false : true;
 
 	// Update all of the upgrades
 	upgradeData.forEach( function(elem){ 
@@ -1854,40 +1856,45 @@ function updateUpgrades(){
 		ui.show(("#P" + elem.id), elem.owned);
 	});
 
-	//deity techs
+	// Deity techs
+	ui.show("#deityPane .notYet", !hasDomain);
 	ui.find("#renameDeity").disabled = (!civData.worship.owned);
-	ui.show("#deityDomains",((civData.worship.owned) && (getCurDeityDomain() === "")));
-	ui.show("#battleUpgrades",(getCurDeityDomain() == "battle"));
-	ui.show("#fieldsUpgrades",(getCurDeityDomain() == "fields"));
-	ui.show("#underworldUpgrades",(getCurDeityDomain() == "underworld"));
+	ui.show("#deityDomains", ((civData.worship.owned) && hasDomain));
+	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
+	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
+	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));
 	ui.show("#zombieWorkers", (curCiv.zombie.owned > 0));
-	ui.show("#catsUpgrades",(getCurDeityDomain() == "cats"));
+	ui.show("#catsUpgrades", (getCurDeityDomain() == "cats"));
 
-	deitySpecEnable = civData.worship.owned && (getCurDeityDomain() === "") && (civData.piety.owned >= 500);
+	deitySpecEnable = civData.worship.owned && hasDomain && (civData.piety.owned >= 500);
 	ui.find("#battleDeity").disabled = !deitySpecEnable;
 	ui.find("#fieldsDeity").disabled = !deitySpecEnable;
 	ui.find("#underworldDeity").disabled = !deitySpecEnable;
 	ui.find("#catsDeity").disabled = !deitySpecEnable;
 
-	//standard
-	ui.show("#conquest",civData.standard.owned);
+	// Conquest / battle standard
+	ui.show("#conquest", civData.standard.owned);
+	ui.show("#conquest .notYet", !civData.standard.owned);
 
 	// Trade
-	ui.show("#tradeUpgradeContainer",civData.trade.owned);
+	ui.show("#tradeUpgradeContainer", civData.trade.owned);
+	ui.show("#tradePane .noetYet", !civData.trade.owned);
 }
 
 
 function updateDeity(){
+	var hasDeity = (curCiv.deities[0].name) ? true : false;
 	//Update page with deity details
 	ui.find("#deityAName").innerHTML = curCiv.deities[0].name;
 	ui.find("#deityADomain").innerHTML = getCurDeityDomain() ? ", deity of "+idToType(getCurDeityDomain()) : "";
 	ui.find("#deityADevotion").innerHTML = civData.devotion.owned;
 
 	// Display if we have an active deity, or any old ones.
-	ui.show("#deityContainer",(curCiv.deities[0].name));
-	ui.show("#activeDeity",(curCiv.deities[0].name));
-	ui.show("#oldDeities",(curCiv.deities[0].name || curCiv.deities.length > 1));
-	ui.show("#iconoclasmGroup",(curCiv.deities.length > 1));
+	ui.show("#deityContainer", hasDeity);
+	ui.show("#activeDeity", hasDeity);
+	ui.show("#oldDeities", (hasDeity || curCiv.deities.length > 1));
+	ui.show("#pantheonContainer", (hasDeity || curCiv.deities.length > 1));
+	ui.show("#iconoclasmGroup", (curCiv.deities.length > 1));
 }
 
 function getDeityRowText(deityId, deityObj)

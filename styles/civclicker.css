@@ -300,6 +300,12 @@ button {
 #basicResources button{
 	/* padding:0.3em; */
 }
+#raidGroup button {
+	min-width: 12em;
+}
+#tradeUpgradeContainer button {
+	min-width: 12em;
+}
 
 
 
@@ -356,6 +362,10 @@ button {
 }
 
 
+.tip {
+	font-style: italic;
+	color: #555;
+}
 .note,
 .cost {
 	text-align: right;
