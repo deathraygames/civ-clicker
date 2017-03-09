@@ -270,7 +270,7 @@ button {
 }
 #basicResources button {
 	text-transform: capitalize;
-	width: 8em;
+	min-width: 5em;
 }
 #textSize button,
 #jobs button,
@@ -376,15 +376,9 @@ button {
 	padding-right: 0.3em;
 	font-size: 1.2em;
 }
-	.mainNumber {
-
-	}
 	.maxNumber {        
 		font-size: 1em;
 	}
-.icon{
-	padding-right:10px;
-}
 
 
 
@@ -575,22 +569,22 @@ button {
 	cursor:pointer;
 }
 
-#basicResources{
-	margin-left:0.3em;
-}
-
-
+/* #basicResources and special resources */
 #specialResourcesContainer{
 	margin: 0.5em 0 0.5em 0;
 }
 	#specialResourcesContainer .number{
 		padding:0 0.3em 0.3em 0.3em;
 	}
-	#specialResourcesContainer img {
-		padding-right: 1em;
+	#specialResourcesContainer img,
+	#basicResources img {
+		margin-right: 1em;
 		vertical-align: middle;
 	}
-	#specialResourcesContainer label {
+	#specialResourcesContainer label,
+	#basicResources label {
+		text-transform: capitalize;
+		margin-left: 1em;
 		display: inline-block;
 		min-width: 4em;
 	}

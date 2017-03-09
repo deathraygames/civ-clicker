@@ -803,7 +803,8 @@ new Upgrade({ id:"grace", name:"Grace", subType: "prayer",
 	set cost(value) { this.data.cost = value; },
 	effectText:"Increase Morale" }),
 // Units
-new Unit({ id:"totalSick", singular:"sick worker", plural:"sick workers", subType:"special",
+new Unit({ 
+	id:"totalSick", singular:"sick citizens", plural:"sick citizens", subType:"special",
 	prereqs: undefined,  // Hide until we get one.
 	require: undefined,  // Cannot be purchased.
 	salable: false,  // Cannot be sold.
@@ -812,7 +813,8 @@ new Unit({ id:"totalSick", singular:"sick worker", plural:"sick workers", subTyp
 	set owned(value) { population[this.id]= value; },
 	init: function() { this.owned = this.initOwned; }, //xxx Verify this override is needed.
 	effectText:"Use healers and herbs to cure them" }),
-new Unit({ id:"unemployed", singular:"idle citizen", plural:"idle citizens",
+new Unit({ 
+	id:"unemployed", singular:"idle citizen", plural:"idle citizens",
 	require: undefined,  // Cannot be purchased (through normal controls) xxx Maybe change this?
 	salable: false,  // Cannot be sold.
 	customQtyId:"spawnCustomQty",
@@ -830,29 +832,34 @@ new Unit({
 	set efficiency(value) { this.efficiency_base = value; },
 	effectText:"Automatically gather food" 
 }),
-new Unit({ id:"woodcutter", singular:"woodcutter", plural:"woodcutters",
+new Unit({ 
+	id:"woodcutter", singular:"woodcutter", plural:"woodcutters",
 	source:"unemployed",
 	efficiency: 0.5,
 	effectText:"Automatically gather wood" }),
-new Unit({ id:"miner", singular:"miner", plural:"miners",
+new Unit({ 
+	id:"miner", singular:"miner", plural:"miners",
 	source:"unemployed",
 	efficiency: 0.2,
 	effectText:"Automatically gather stone" }),
-new Unit({ id:"tanner", singular:"tanner", plural:"tanners",
+new Unit({ 
+	id:"tanner", singular:"tanner", plural:"tanners",
 	source:"unemployed",
 	efficiency: 0.5,
 	prereqs:{ tannery: 1 },
 	get limit() { return civData.tannery.owned; },
 	set limit(value) { return this.limit; }, // Only here for JSLint.
 	effectText:"Convert skins to leather" }),
-new Unit({ id:"blacksmith", singular:"blacksmith", plural:"blacksmiths",
+new Unit({ 
+	id:"blacksmith", singular:"blacksmith", plural:"blacksmiths",
 	source:"unemployed",
 	efficiency: 0.5,
 	prereqs:{ smithy: 1 },
 	get limit() { return civData.smithy.owned; },
 	set limit(value) { return this.limit; }, // Only here for JSLint.
 	effectText:"Convert ore to metal" }),
-new Unit({ id:"healer", singular:"healer", plural:"healers",
+new Unit({ 
+	id:"healer", singular:"healer", plural:"healers",
 	source:"unemployed",
 	efficiency: 0.1,
 	prereqs:{ apothecary: 1 },
@@ -862,7 +869,8 @@ new Unit({ id:"healer", singular:"healer", plural:"healers",
 	get cureCount() { return this.data.cureCount; }, // Carryover fractional healing
 	set cureCount(value) { this.data.cureCount = value; }, // Only here for JSLint.
 	effectText:"Cure sick workers" }),
-new Unit({ id:"cleric", singular:"cleric", plural:"clerics",
+new Unit({ 
+	id:"cleric", singular:"cleric", plural:"clerics",
 	source:"unemployed",
 	efficiency: 0.05,
 	prereqs:{ temple: 1 },
@@ -874,7 +882,8 @@ new Unit({ id:"labourer", singular:"labourer", plural:"labourers",
 	efficiency: 1.0,
 	prereqs:{ wonderStage: 1 }, //xxx This is a hack
 	effectText:"Use resources to build wonder" }),
-new Unit({ id:"soldier", singular:"soldier", plural:"soldiers",
+new Unit({ 
+	id:"soldier", singular:"soldier", plural:"soldiers",
 	source:"unemployed",
 	combatType:"infantry", 
 	efficiency_base: 0.05,
@@ -885,7 +894,8 @@ new Unit({ id:"soldier", singular:"soldier", plural:"soldiers",
 	get limit() { return 10*civData.barracks.owned; },
 	set limit(value) { return this.limit; }, // Only here for JSLint.
 	effectText:"Protect from attack" }),
-new Unit({ id:"cavalry", singular:"cavalry", plural:"cavalry",
+new Unit({ 
+	id:"cavalry", singular:"cavalry", plural:"cavalry",
 	source:"unemployed",
 	combatType:"cavalry", 
 	efficiency_base: 0.08,
@@ -896,20 +906,23 @@ new Unit({ id:"cavalry", singular:"cavalry", plural:"cavalry",
 	get limit() { return 10*civData.stable.owned; },
 	set limit(value) { return this.limit; }, // Only here for JSLint.
 	effectText:"Protect from attack" }),
-new Unit({ id:"cat", singular:"cat", plural:"cats", subType:"special",
+new Unit({ 
+	id:"cat", singular:"cat", plural:"cats", subType:"special",
 	require: undefined,  // Cannot be purchased (through normal controls)
 	prereqs:{ cat: 1 }, // Only visible if you have one.
 	prestige : true, // Not lost on reset.
 	salable: false,  // Cannot be sold.
 	species:"animal",
 	effectText:"Our feline companions" }),
-new Unit({ id:"shade", singular:"shade", plural:"shades", subType:"special",
+new Unit({ 
+	id:"shade", singular:"shade", plural:"shades", subType:"special",
 	prereqs: undefined,  // Cannot be purchased (through normal controls) xxx Maybe change this?
 	require: undefined,  // Cannot be purchased.
 	salable: false,  // Cannot be sold.
 	species:"undead",
 	effectText:"Insubstantial spirits" }),
-new Unit({ id:"wolf", singular:"wolf", plural:"wolves",
+new Unit({ 
+	id:"wolf", singular:"wolf", plural:"wolves",
 	alignment:"enemy",
 	combatType:"animal", 
 	prereqs: undefined, // Cannot be purchased.
@@ -919,7 +932,8 @@ new Unit({ id:"wolf", singular:"wolf", plural:"wolves",
 	killExhaustion:(1/2), // Chance of an attacker leaving after killing a person
 	species:"animal",
 	effectText:"Eat your workers" }),
-new Unit({ id:"bandit", singular:"bandit", plural:"bandits",
+new Unit({ 
+	id:"bandit", singular:"bandit", plural:"bandits",
 	alignment:"enemy",
 	combatType:"infantry", 
 	prereqs: undefined, // Cannot be purchased.
@@ -927,7 +941,8 @@ new Unit({ id:"bandit", singular:"bandit", plural:"bandits",
 	onWin: function() { doLoot(this); },
 	lootFatigue:(1/8), // Max fraction that leave after cleaning out a resource
 	effectText:"Steal your resources" }),
-new Unit({ id:"barbarian", singular:"barbarian", plural:"barbarians",
+new Unit({ 
+	id:"barbarian", singular:"barbarian", plural:"barbarians",
 	alignment:"enemy",
 	combatType:"infantry", 
 	prereqs: undefined, // Cannot be purchased.
@@ -937,13 +952,15 @@ new Unit({ id:"barbarian", singular:"barbarian", plural:"barbarians",
 	killFatigue:(1/3), // Max fraction that leave after killing the last person
 	killExhaustion:(1.0), // Chance of an attacker leaving after killing a person
 	effectText:"Slaughter, plunder, and burn" }),
-new Unit({ id:"esiege", singular:"siege engine", plural:"siege engines",
+new Unit({ 
+	id:"esiege", singular:"siege engine", plural:"siege engines",
 	alignment:"enemy",
 	prereqs: undefined, // Cannot be purchased.
 	efficiency: 0.1,  // 10% chance to hit
 	species:"mechanical",
 	effectText:"Destroy your fortifications" }),
-new Unit({ id:"soldierParty", singular:"soldier", plural:"soldiers",
+new Unit({ 
+	id:"soldierParty", singular:"soldier", plural:"soldiers",
 	source:"soldier",
 	combatType:"infantry", 
 	efficiency_base: 0.05,
@@ -952,7 +969,8 @@ new Unit({ id:"soldierParty", singular:"soldier", plural:"soldiers",
 	prereqs:{ standard: true, barracks: 1 },
 	place: "party",
 	effectText:"Your raiding party" }),
-new Unit({ id:"cavalryParty", name:"cavalry",
+new Unit({ 
+	id:"cavalryParty", name:"cavalry",
 	source:"cavalry",
 	combatType:"cavalry", 
 	efficiency_base: 0.08,
@@ -961,7 +979,8 @@ new Unit({ id:"cavalryParty", name:"cavalry",
 	prereqs:{ standard: true, stable: 1 },
 	place: "party",
 	effectText:"Your mounted raiders" }),
-new Unit({ id:"siege", singular:"siege engine", plural:"siege engines",
+new Unit({ 
+	id:"siege", singular:"siege engine", plural:"siege engines",
 	efficiency: 0.1, // 10% chance to hit
 	prereqs:{ standard: true, mathematics: true },
 	require:{ wood:200, leather:50, metal:50 },
@@ -969,7 +988,8 @@ new Unit({ id:"siege", singular:"siege engine", plural:"siege engines",
 	place: "party",
 	salable: false,
 	effectText:"Destroy enemy fortifications" }),
-new Unit({ id:"esoldier", singular:"soldier", plural:"soldiers",
+new Unit({ 
+	id:"esoldier", singular:"soldier", plural:"soldiers",
 	alignment:"enemy",
 	combatType:"infantry", 
 	prereqs: undefined, // Cannot be purchased.
@@ -985,7 +1005,8 @@ new Unit({ id:"ecavalry", name:"cavalry",
 	place: "party",
 	effectText:"Mounted enemy troops" }),
 */
-new Unit({ id:"efort", singular:"fortification", plural:"fortifications",
+new Unit({ 
+	id:"efort", singular:"fortification", plural:"fortifications",
 	alignment:"enemy",
 	prereqs: undefined, // Cannot be purchased.
 	efficiency: 0.01, // -1% damage
@@ -1308,9 +1329,11 @@ function getResourceRowText(purchaseObj)
 	var objName = purchaseObj.getQtyName(0);
 	var s = (
 		'<tr id="'+ objId + 'Row" class="purchaseRow" data-target="'+ objId + '">'
-		+ '<td class="icon"><img src="images/'+objId+'.png" class="icon icon-lg" alt="'+objName+'"/></td>'
-		+ '<td><button data-action="increment">' + purchaseObj.verb + ' ' + objName + '</button></td>'
-		+ '<td class="itemname">' + objName + ': </td>'
+		+ '<td>'
+		+ '<img src="images/'+objId+'.png" class="icon icon-lg" alt="'+objName+'"/>'
+		+ '<button data-action="increment">' + purchaseObj.verb + '</button>'
+		+ '<label>' + objName + ':</label>'
+		+ '</td>'
 		+ '<td class="number mainNumber"><span data-action="display">.</span></td>'
 		+ '<td class="number maxNumber">/ max: <span id="max'+objId+'">...</span></td>'
 		+ '<td class="number net"><span data-action="displayNet">..</span>/s</td>'
@@ -2734,18 +2757,20 @@ function grace(delta){
 }
 
 //xxx Eventually, we should have events like deaths affect morale (scaled by %age of total pop)
-function adjustMorale(delta){
+function adjustMorale(delta) {
 	//Changes and updates morale given a delta value
 	if (population.current + curCiv.zombie.owned > 0) { //dividing by zero is bad for hive
 		//calculates zombie proportion (zombies do not become happy or sad)
 		var fraction = population.current / (population.current + curCiv.zombie.owned);
+		var max = 1 + (0.5 * fraction);
+		var min = 1 - (0.5 * fraction);
 		//alters morale
 		curCiv.morale.efficiency += delta * fraction;
 		//Then check limits (50 is median, limits are max 0 or 100, but moderated by fraction of zombies)
-		if (curCiv.morale.efficiency > 1 + (0.5 * fraction)){
-			curCiv.morale.efficiency = 1 + (0.5 * fraction);
-		} else if (curCiv.morale.efficiency < 1 - (0.5 * fraction)){
-			curCiv.morale.efficiency = 1 - (0.5 * fraction);
+		if (curCiv.morale.efficiency > max){
+			curCiv.morale.efficiency = max;
+		} else if (curCiv.morale.efficiency < min){
+			curCiv.morale.efficiency = min;
 		}
 		updateMorale(); //update to player
 	}
@@ -4648,6 +4673,7 @@ setup.game = function () {
 setup.loop = function () {
 	// This sets up the main game loop, which is scheduled to execute once per second.
 	console.log("Setting up Main Loop");
+	gameLoop();
 	loopTimer = window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
 };
 
