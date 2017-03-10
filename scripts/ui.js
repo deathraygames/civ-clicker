@@ -18,9 +18,16 @@
 **/
 
 (function(){
-
 	var ui = {
-
+		findAll: function (selector) {
+			if (typeof selector === 'string') {
+				return document.querySelectorAll(selector);
+			} else if (typeof selector === 'object') {
+				return selector;
+			} else {
+				return undefined;
+			}			
+		},
 		find: function (selector) {
 			if (typeof selector === 'string') {
 				/*
@@ -40,7 +47,7 @@
 			var elt = ui.find(selector);
 			return (elt.offsetParent === null);
 		},
-		toggle: function (selector) {
+		toggle: function (selector, force) {
 			var elt = ui.find(selector);
 			if (ui.isHidden(elt)) {
 				elt.style.display = "block";

@@ -76,36 +76,7 @@ a {
 		padding-left: 2.5%;
 	}
 
-	@media screen and (max-width: 1500px) {
-		.columns {
-			width: 90%;
-		}
-	}
-	@media screen and (max-width: 1350px) {
-		.columns {
-			width: 95%;
-		}
-	}
-	@media screen and (max-width: 1250px) {
-		.columns {
-			width: 100%;
-		}
-	}
-	@media screen and (max-width: 1000px) {
-		.columns {
-			width: 100%;
-			padding: 0 1em;
-		}
-		.column {
-			width: 100%;
-			float: none;
-		}
-		.column.left, 
-		.column.right {
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
+
 
 .landCols {
 
@@ -115,8 +86,8 @@ a {
 	}
 
 .icon-lg{
-	height: 38px;
-	width: 38px;
+	height: 40px;
+	width: 40px;
 }
 .icon-sm{
 	height:16px;
@@ -274,8 +245,7 @@ button {
 	}
 #populationCreate button {
 	min-width: 3em;
-	padding-left: 1em; padding-right: 1em;
-	margin: 1em 0.5em 0.5em 0;
+	padding-left: 0.5em; padding-right: 0.5em;
 }
 #upgrades button {
 	min-width: 9em;
@@ -328,9 +298,10 @@ button {
 
 .paneSelector {
 	float:left;
-	text-align:center;
+	position: relative;
+	text-align: center;
 	margin-top: 1.5em;
-	padding: 0.0em 0.5em;
+	padding: 0.0em 1em;
 	line-height:2em;
 	border: 1px solid rgba(0,0,0,0.3);
 	background-color: rgba(0,0,0,0.1);
@@ -347,7 +318,8 @@ button {
 
 	.paneSelector.selected{
 		margin-top: 1em;
-		padding: 0.25em 0.5em;
+		padding-top: 0.25em;
+		padding-bottom: 0.25em;
 		border-color: rgba(0,0,0,0.5);
 		border-bottom-color: rgba(255,255,255,0.5);
 		background: rgba(255,255,255,0.5);
@@ -355,6 +327,24 @@ button {
 		font-weight: bold;
 		/* text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; */
 	}
+.paneSelector .alert {
+	display: none;
+	position: absolute;
+	font-size: 1.2em;
+	top: -0.5em;
+	right: -0.25em;
+	width: 1.2em;
+	height: 1.2em;
+	line-height: 1.5em;
+	text-align: center;
+	background: #ffff99;
+	border: solid 2px white;
+	border-radius: 1.5em;
+	font-family: 'Suez One', serif;
+	color: #333;
+	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.2);
+	z-index: 2;
+}
 
 .selectPane {
 	display: none;
@@ -477,13 +467,19 @@ button {
 }
 
 
+#achievements {
+
+}
+#achievements:after /* clearfix */ { content: ""; display: table; clear: both; }
 .achievement{
 	display: block;
 	float: left;
-	width: 50px;
-	height: 50px;
-	background-color: #aaa;
+	width: 60px;
+	height: 60px;
+	background-color: #737373;
 	background-image: url('../images/achLocked.jpg');
+	background-position: center center;
+	background-repeat: no-repeat;
 	margin: 0.5em;
 	font-family: 'Suez One', serif;
 }
@@ -494,8 +490,8 @@ button {
 .unlockedAch{
 	box-sizing: border-box;
 	border: 5px ridge #FBDA20;
-	width: 60px;
-	height: 60px;
+	width: 70px;
+	height: 70px;
 	padding: 0.2em;
 	margin: -5px 0 0 -5px;
 	font-size: 0.9em;
@@ -548,15 +544,26 @@ button {
 	color:red;
 }
 
-#tradeContainer{
+#tradeContainer,
+#noTrader {
 	display: none;
 	padding: 0.5em 0;
 	margin: 0.5em 0;
 	text-align: center;
+}
+#tradeContainer {
 	background-color: #dd9;
 	border-radius: 0.5em;
 	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.1);
+	border: solid 2px white;
 }
+#noTrader {
+	min-height: 2em;
+	line-height: 2em;
+	background-color: rgba(0,0,0,0.05);
+	border: dashed 2px rgba(0,0,0,0.1);
+}
+
 #tradeButton {
 	height: 2em;
 	min-width: 50%;
@@ -581,23 +588,25 @@ button {
 	cursor:pointer;
 }
 
+.resources {
+
+}
+	.resources img {
+		margin-right: 1em;
+		vertical-align: middle;
+	}
+	.resources label {
+		text-transform: capitalize;
+		display: inline-block;
+		min-width: 4em;
+	}
+
 /* #basicResources and special resources */
 #specialResourcesContainer{
 	margin: 0.5em 0 0.5em 0;
 }
 	#specialResourcesContainer .number{
 		padding:0 0.3em 0.3em 0.3em;
-	}
-	#specialResourcesContainer img,
-	#basicResources img {
-		margin-right: 1em;
-		vertical-align: middle;
-	}
-	#specialResourcesContainer label,
-	#basicResources label {
-		text-transform: capitalize;
-		display: inline-block;
-		min-width: 4em;
 	}
 	#basicResources label {
 		margin-left: 1em;
@@ -745,3 +754,42 @@ footer .title {
 		padding: 0.5em;
 		margin: 0 1em;
 	}
+
+
+
+/* Responsiveness */
+
+@media screen and (max-width: 1500px) {
+	.columns {
+		width: 90%;
+	}
+}
+@media screen and (max-width: 1350px) {
+	.columns {
+		width: 95%;
+	}
+}
+@media screen and (max-width: 1250px) {
+	.columns {
+		width: 100%;
+	}
+	.paneSelector {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+}
+@media screen and (max-width: 1000px) {
+	.columns {
+		width: 100%;
+		padding: 0 1em;
+	}
+	.column {
+		width: 100%;
+		float: none;
+	}
+	.column.left, 
+	.column.right {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}

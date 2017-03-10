@@ -82,6 +82,7 @@ function updateAfterReset () {
 
 	ui.find("#conquest").style.display = "none";
 
+	ui.find(".alert").style.display = "none";
 	ui.find("#tradeContainer").style.display = "none";
 	ui.find("#tradeUpgradeContainer").style.display = "none";
 	ui.find("#iconoclasmList").innerHTML = "";
@@ -89,15 +90,18 @@ function updateAfterReset () {
 }
 
 function updateTrader () {
-	if (isTraderHere()) {
-		ui.show("#tradeContainer", true);
+	var isHere = isTraderHere();
+	if (isHere) {
 		ui.find("#tradeType").innerHTML = civData[curCiv.trader.materialId].getQtyName(curCiv.trader.requested);
 		ui.find("#tradeRequested").innerHTML = prettify(curCiv.trader.requested);
 		ui.find("#traderTimer").innerHTML = curCiv.trader.timer + " second" + ((curCiv.trader.timer != 1) ? "s" : "");
 	} else {
-		ui.show("#tradeContainer", false);
+		
 	}
-
+	ui.show("#tradeContainer", isHere);
+	ui.show("#noTrader", !isHere);
+	ui.show("#tradeSelect .alert", isHere);
+	return isHere;
 }
 
 //xxx This should become an onGain() member method of the building classes
@@ -438,7 +442,7 @@ function updateUpgrades(){
 	});
 
 	// Deity techs
-	ui.show("#deityPane .notYet", !hasDomain);
+	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
 	ui.find("#renameDeity").disabled = (!civData.worship.owned);
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
@@ -447,7 +451,12 @@ function updateUpgrades(){
 	ui.show("#catsUpgrades", (getCurDeityDomain() == "cats"));
 
 	ui.show("#deityDomains", canSelectDomain);
-	ui.find("#deityDomains button.purchaseFor500Piety").disabled = (!canSelectDomain || (civData.piety.owned < 500));
+	ui.findAll("#deityDomains button.purchaseFor500Piety").forEach(function(button){
+		button.disabled = (!canSelectDomain || (civData.piety.owned < 500));
+	});
+	//ui.show("#deitySelect .alert", canSelectDomain);
+
+	ui.show("#" + domain + "Upgrades", hasDomain);
 
 	// Conquest / battle standard
 	ui.show("#conquest", civData.standard.owned);
@@ -596,8 +605,21 @@ function addWonderSelectText() {
 }
 
 //updates the display of wonders and wonder building
-function updateWonder() {
+function updateWonder () {
 	var haveTech = (civData.architecture.owned && civData.civilservice.owned);
+	var isLimited = isWonderLimited();
+	var lowItem = getWonderLowItem();
+	
+	ui.show("#lowResources", isLimited);
+	ui.show("#upgradesSelect .alert", isLimited);
+
+	if (lowItem) { 
+		ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
+	}
+
+	if (curCiv.curWonder.progress >= 100) {
+		ui.find("#lowResources").style.display = "none";
+	}
 
 	// Display this section if we have any wonders or could build one.
 	ui.show("#wondersContainer",(haveTech || curCiv.wonders.length > 0));

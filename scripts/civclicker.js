@@ -1038,9 +1038,8 @@ function selectDeity(domain,force){
 	}
 	curCiv.deities[0].domain = domain;
 
-	document.getElementById(domain+"Upgrades").style.display = "inline";
-	ui.find("#deityDomains").style.display = "none";
 	makeDeitiesTables();
+	updateUpgrades();
 }
 
 function digGraves(num){
@@ -1377,8 +1376,8 @@ function wonderSelect(resourceId){
 /* Trade functions */
 
 function startTrader(){
-	// Set timer length (10 sec + 5 sec/upgrade)
-	curCiv.trader.timer = 10 + (5 * (civData.currency.owned + civData.commerce.owned + civData.stay.owned));
+	// Set timer length (12 sec + 5 sec/upgrade)
+	curCiv.trader.timer = 12 + (5 * (civData.currency.owned + civData.commerce.owned + civData.stay.owned));
 
 	//then set material and requested amount
 	var tradeItems = [ // Item and base amount
@@ -2260,7 +2259,9 @@ function tickAutosave() {
 function doFarmers() {
 	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
 	var millMod = 1;
-	if (population.current > 0 || curCiv.zombie.owned > 0) { millMod = population.current / (population.current + curCiv.zombie.owned); }
+	if (population.current > 0 || curCiv.zombie.owned > 0) { 
+		millMod = population.current / (population.current + curCiv.zombie.owned); 
+	}
 	civData.food.net = (
 		civData.farmer.owned 
 		* (1 + (civData.farmer.efficiency * curCiv.morale.efficiency)) 
@@ -2654,51 +2655,61 @@ function doRaid(place, attackerID, defenderID) {
 function doLabourers() {
 	if (curCiv.curWonder.stage !== 1) { return; }
 
-	if (curCiv.curWonder.progress >= 100){
+	var prod = 0;
+
+	if (curCiv.curWonder.progress >= 100) {
 		//Wonder is finished! First, send workers home
 		civData.unemployed.owned += civData.labourer.owned;
 		civData.unemployed.ill += civData.labourer.ill;
 		civData.labourer.owned = 0;
 		civData.labourer.ill = 0;
 		updatePopulation();
-		//hide limited notice
-		ui.find("#lowResources").style.display = "none";
+		
 		//then set wonder.stage so things will be updated appropriately
 		++curCiv.curWonder.stage;
-	} else {
-		//we're still building
+	} else { //we're still building
 		
-		// First, check our labourers and other resources to see if we're limited.
-		var num = civData.labourer.owned;
-		wonderResources.forEach(function(resource){ 
-			num = Math.min(num, resource.owned); 
-		});
+		prod = getWonderProduction();
 
 		//remove resources
 		wonderResources.forEach(function(resource){ 
-			resource.owned -= num;
-			resource.net -= num;
+			resource.owned -= prod;
+			resource.net -= prod;
 		});
 
 		//increase progress
-		curCiv.curWonder.progress += num / (1000000 * getWonderCostMultiplier());
-		
-		//show/hide limited notice
-		ui.show("#lowResources",(num < civData.labourer.owned));
-
-		var lowItem = null;
-		var i = 0;
-		for (i=0;i < wonderResources.length;++i) { 
-			if (wonderResources[i].owned < 1) { 
-				lowItem = wonderResources[i]; 
-				break; 
-			} 
-		}
-		if (lowItem) { 
-			ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
-		}
+		curCiv.curWonder.progress += prod / (1000000 * getWonderCostMultiplier());
 	}
-	updateWonder();
+}
+
+function getWonderLowItem () {
+	var lowItem = null;
+	var i = 0;
+	for (i=0;i < wonderResources.length;++i) { 
+		if (wonderResources[i].owned < 1) { 
+			lowItem = wonderResources[i]; 
+			break; 
+		} 
+	}
+	return lowItem;	
+}
+
+function getWonderProduction () {
+	var prod = civData.labourer.owned;
+	// First, check our labourers and other resources to see if we're limited.
+	wonderResources.forEach(function(resource){ 
+		prod = Math.min(prod, resource.owned); 
+	});
+	return prod;
+}
+
+function isWonderLimited () {
+	var prod = getWonderProduction();
+	if (curCiv.curWonder.stage !== 1) { 
+		return false; 
+	}
+	return (prod < civData.labourer.owned);
+
 }
 
 function doMobs() {

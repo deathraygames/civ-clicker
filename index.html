@@ -93,113 +93,221 @@
 
 <div id="main" class="columns">
 <div id="leftColumn" class="column left">
-	<h3>Resources</h3>
 	<div id="basicResourcesContainer" class="civSection">
-		
-		<table id="basicResources">
+		<table id="basicResources" class="resources">
 			<!-- populated by javascript -->
 		</table>
 	</div>
-	<div id="specialResourcesContainer" class="civSection">
-		<table>
-			<tr>
-				<td>
-					<img src="images/skins.png" class="icon icon-lg" alt="Skins"/>
-					<label>Skins:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="skins">0</span>
-				</td>
-				<td>
-					<span class="number net" data-action="displayNet" data-target="skins">0</span><span class="perSecond">/s</span>
-				</td>
-				<td>
-					<img src="images/leather.png" class="icon icon-lg" alt="Leather"/>
-					<label>Leather:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="leather">0</span>
-				</td>
-				<td>
-					<span class="number net" data-action="displayNet" data-target="leather">0</span><span class="perSecond">/s</span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="images/herbs.png" class="icon icon-lg" alt="Herbs"/>
-					<label>Herbs:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="herbs">0</span>
-				</td>
-				<td>
-					<span class="number net" data-action="displayNet" data-target="herbs">0</span><span class="perSecond">/s</span>
-				</td>
-				<td>
-					<img src="images/piety.png" class="icon icon-lg" alt="Piety"/>
-					<label>Piety:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="piety">0</span>
-				</td>
-				<td>
-					<span class="number net" data-action="displayNet" data-target="piety">0</span><span class="perSecond">/s</span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="images/ore.png" class="icon icon-lg" alt="Ore"/>
-					<label>Ore:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="ore">0</span>
-				</td>
-				<td>
-					<span class="number net" data-action="displayNet" data-target="ore">0</span><span class="perSecond">/s</span>
-				</td>
-				<td>
-					<img src="images/metal.png" class="icon icon-lg" alt="Metal"/>
-					<label>Metal:</label>
-				</td>
-				<td>
-					<span class="number" data-action="display" data-target="metal">0</span>
-				</td>
-				<td>
-					<span class="number" data-action="displayNet" data-target="metal">0</span><span class="perSecond">/s</span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="images/gold.png" class="icon icon-lg" alt="Gold" />
-					<label>Gold:</label>
-				</td>
-				<td colspan="2">
-					<span class="number" data-action="display" data-target="gold">0</span>
-				</td>
-				<td>
-					<img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
-					<label>Corpses:</label>
-				</td>
-				<td colspan="2">
-					<span class="number" data-action="display" data-target="corpses">0</span>
-				</td>
-			</tr>
+	<div id="populationContainer" class="civSection">
+		<div id="populationNumbers">
+			<table class="resources">
+				<tbody>
+					<tr>
+						<td>
+							<img src="images/backup.png" class="icon icon-lg" alt="Population"/>
+							<label>Population:</label>
+						</td>
+						<td class="number"><span data-action="display_pop" data-target="current">...</span></td>
+						<td class="number maxNumber">
+							/ max: <span data-action="display_pop" data-target="limit">...</span>
+						</td>
+						<td class="note">
+							Build more housing to grow your civilization
+						</td>
+					</tr>
+					<tr id="zombieWorkers">
+						<td>
+							<img src="images/shambling-zombie.png" class="icon icon-lg" alt="Zombies"/>
+							<label>Zombies:</label>
+						</td>
+						<td class="number"><span data-action="display" data-target="zombie">...</span></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<img src="images/smitten.png" class="icon icon-lg" alt="Happiness"/>
+							<label>Happiness:</label>
+						</td>
+						<td colspan="3" id="morale">
+							<ol class="happinessRanks">
+								<li>Blissful</li>
+								<li>Happy</li>
+								<li>Content</li>
+								<li>Unhappy</li>
+								<li>Angry</li>
+							</ol>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="jobsContainer" class="civSection">
+		<div id="populationBar" class="bar" title="Population">
+			<!-- populated by javascript -->
+		</div>
+		<div id="populationCreate">
+			<div>
+				Recruit new citizens as
+				<select type="dropdown" id="newSpawnJobSelection">
+					<option value="unemployed">Idle Citizens</option>
+					<option value="farmer">Farmers</option>
+					<option value="woodcutter">Woodcutters</option>
+					<option value="miner">Miners</option>
+				</select>
+				<span class="cost">for <span id="workerCost">...</span> food</span><span class="note">.</span>
+				<button class="unit1" id="spawn1button" onmousedown="spawn(1)">+1</button>
+				<button class="unit10" id="spawn10button" onmousedown="spawn(10)">+10</button>
+				<button class="unit100" id="spawn100button" onmousedown="spawn(100)">+100</button>
+				<button class="unit1000" id="spawn1000button" onmousedown="spawn(1000)">+1k</button>
+				<button class="unitInfinity" id="spawnMaxbutton" onmousedown="spawn(Infinity)">+<span id="workerNumMax">Max</span></button>
+			</div>
+			<div id="customSpawnQuantity">
+				<button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
+			</div>
+		</div>
+		<p id="customJobQuantity">
+			Custom Quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
+		</p>
+		<table id="jobs">
+			<!-- populated by javascript -->
 		</table>
 	</div>
-	<div id="tradeContainer">
-		Trader offers 1 gold for <span id="tradeRequested">...</span> <span id="tradeType">...</span>
-		for the next <span id="traderTimer">...</span>.
-		<br />
-		<button id="tradeButton" onmousedown="trade()">Trade</button>
+	<div id="eventsContainer" class="civSection">
+		<h3>Events</h3>
+		<table id="logTable">
+			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
+			<tr id="log1"><td colspan="3"></td></tr>
+			<tr id="log2"><td colspan="3"></td></tr>
+			<tr id="log3"><td colspan="3"></td></tr>
+			<tr id="log4"><td colspan="3"></td></tr>
+			<!-- <tr id="log5"><td colspan="3"></td></tr>
+			<tr id="log6"><td colspan="3"></td></tr>
+			<tr id="log7"><td colspan="3"></td></tr>
+			<tr id="log8"><td colspan="3"></td></tr>
+			<tr id="log9"><td colspan="3"></td></tr> -->
+		</table>
 	</div>
+</div>
+
+<div id="rightColumn" class="column right">
+	<div id="specialResourcesContainer" class="civSection">
+		<table class="resources">
+			<tbody>
+				<tr>
+					<td>
+						<img src="images/skins.png" class="icon icon-lg" alt="Skins"/>
+						<label>Skins:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="skins">0</span>
+					</td>
+					<td>
+						<span class="number net" data-action="displayNet" data-target="skins">0</span><span class="perSecond">/s</span>
+					</td>
+					<td>
+						<img src="images/leather.png" class="icon icon-lg" alt="Leather"/>
+						<label>Leather:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="leather">0</span>
+					</td>
+					<td>
+						<span class="number net" data-action="displayNet" data-target="leather">0</span><span class="perSecond">/s</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/herbs.png" class="icon icon-lg" alt="Herbs"/>
+						<label>Herbs:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="herbs">0</span>
+					</td>
+					<td>
+						<span class="number net" data-action="displayNet" data-target="herbs">0</span><span class="perSecond">/s</span>
+					</td>
+					<td>
+						<img src="images/piety.png" class="icon icon-lg" alt="Piety"/>
+						<label>Piety:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="piety">0</span>
+					</td>
+					<td>
+						<span class="number net" data-action="displayNet" data-target="piety">0</span><span class="perSecond">/s</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/ore.png" class="icon icon-lg" alt="Ore"/>
+						<label>Ore:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="ore">0</span>
+					</td>
+					<td>
+						<span class="number net" data-action="displayNet" data-target="ore">0</span><span class="perSecond">/s</span>
+					</td>
+					<td>
+						<img src="images/metal.png" class="icon icon-lg" alt="Metal"/>
+						<label>Metal:</label>
+					</td>
+					<td>
+						<span class="number" data-action="display" data-target="metal">0</span>
+					</td>
+					<td>
+						<span class="number" data-action="displayNet" data-target="metal">0</span><span class="perSecond">/s</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/gold.png" class="icon icon-lg" alt="Gold" />
+						<label>Gold:</label>
+					</td>
+					<td colspan="2">
+						<span class="number" data-action="display" data-target="gold">0</span>
+					</td>
+					<td>
+						<img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
+						<label>Corpses:</label>
+					</td>
+					<td colspan="2">
+						<span class="number" data-action="display" data-target="corpses">0</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
 	<div id="panesSelectors" class="civSection">
 		<div id="selectors" class="panesTabs">
-			<div id="buildingsSelect" class="paneSelector selected" data-target="buildingsPane" onclick="paneSelect(this)">Buildings</div>
-			<div id="upgradesSelect" class="paneSelector" data-target="upgradesPane" onclick="paneSelect(this)">Upgrades</div>
-			<div id="deitySelect" class="paneSelector" data-target="deityPane" onclick="paneSelect(this)">Deity</div>
-			<div id="conquestSelect" class="paneSelector" data-target="conquestPane" onclick="paneSelect(this)">Conquest</div>
-			<div id="tradeSelect" class="paneSelector" data-target="tradePane" onclick="paneSelect(this)">Trade</div>
-			<div id="achievementsSelect" class="paneSelector" data-target="achievementsPane" onclick="paneSelect(this)">Achievements</div>
+			<div id="buildingsSelect" class="paneSelector selected" data-target="buildingsPane" onclick="paneSelect(this)">
+				Buildings
+				<div class="alert">!</div>
+			</div>
+			<div id="upgradesSelect" class="paneSelector" data-target="upgradesPane" onclick="paneSelect(this)">
+				Upgrades
+				<div class="alert">!</div>
+			</div>
+			<div id="deitySelect" class="paneSelector" data-target="deityPane" onclick="paneSelect(this)">
+				Deity
+				<div class="alert">!</div>
+			</div>
+			<div id="conquestSelect" class="paneSelector" data-target="conquestPane" onclick="paneSelect(this)">
+				Conquest
+				<div class="alert">!</div>
+			</div>
+			<div id="tradeSelect" class="paneSelector" data-target="tradePane" onclick="paneSelect(this)">
+				Trade
+				<div class="alert">!</div>
+			</div>
+			<div id="achievementsSelect" class="paneSelector" data-target="achievementsPane" onclick="paneSelect(this)">
+				Achievements
+				<div class="alert">!</div>
+			</div>
 		</div>
 		
 		<div id="buildingsPane" class="selectPane selected">
@@ -211,7 +319,7 @@
 					Total Land: <span id="totalLand">...</span><br />
 				</div>
 			</div>
-			<div id="landBar" class="bar">
+			<div id="landBar" class="bar" title="Land usage">
 				<!-- populated by javascript -->
 			</div>
 			<p id="customBuildQuantity">
@@ -226,6 +334,21 @@
 		</div>
 		
 		<div id="upgradesPane" class="selectPane">
+			<div id="wondersContainer">
+				<h3>Wonders</h3>
+				<span id="startWonderLine"><button id="startWonder" onmousedown="startWonder()">Start Building Wonder</button></span>
+				<div id="wonderInProgress">
+					<span class="wonderTitle">Progress on <span id="wonderNameP">Wonder</span> - <span id="progressNumber">0</span>%</span> - <button id="renameWonder" onmousedown="renameWonder()">Rename</button>
+					<div id="progressContainer"><div id="progressBar"></div></div>
+					<div id="lowResources">Limited<span id="limited"> by low resources</span></div>
+					<div id="speedWonderGroup"><br /><button id="speedWonder" onmousedown="speedWonder()">Speed Wonder</button>
+					<span id="speedWonderCost" class="cost">100 gold</span><span class="note">: Increase wonder progress</span></div>
+				</div>
+				<div id="wonderCompleted">
+					<div class="wonderTitle"><span id="wonderNameC">Wonder</span> Completed! Choose Bonus:</div>
+				</div>
+				<table id="pastWonders"><tr><td></td></tr></table>
+			</div>
 			<table id="upgrades"></table>
 		</div>
 		
@@ -236,7 +359,9 @@
 			</div>
 			<div id="deityContainer">
 				<h3>Current Deity</h3>
-				<table id="activeDeity"><!-- populated by javascript --></table>
+				<table id="activeDeity">
+					<!-- populated by javascript -->
+				</table>
 			</div>
 			<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
 			<div id="worshipRow">
@@ -244,7 +369,7 @@
 			</div>
 			<div id="deityDomains">
 				<p>
-					You may select only one deity:
+					You may select only one domain for your deity:
 				</p>
 				<ul>
 					<li id="battleRow" class="purchaseRow" data-target="battle"> 
@@ -341,7 +466,7 @@
 				<!--  -->
 			</span>
 			<div id="conquest">
-				<h2>Army</h2>
+				<h3>Army</h3>
 				<p id="customPartyQuantity">
 					Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
 				</p>
@@ -352,13 +477,13 @@
 					<!-- -->
 				</div>
 				<div id="raidGroup">
-					<h2>To War!</h2>
+					<h3>To War!</h3>
 					<p id="gloryGroup">
 						Glory: <span id="gloryTimer">0</span> seconds remain
 					</p>
 				</div>
 				<div id="victoryGroup">
-					<h2>Victory!</h2>
+					<h3>Victory!</h3>
 					<button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
 				</div>
 			</div>
@@ -370,7 +495,18 @@
 			<div class="notYet">
 				You do not yet own a trading post. <span class="tip">Try trading with a trader when they (randomly) appear.</span>
 			</div>
-			<span id="tradeRow"></span>
+			<div id="tradeContainer">
+				Trader offers 1 gold for <span id="tradeRequested">...</span> <span id="tradeType">...</span>
+				for the next <span id="traderTimer">...</span>.
+				<br />
+				<button id="tradeButton" onmousedown="trade()">Trade</button>
+			</div>
+			<div id="noTrader">
+				No trader visiting
+			</div>
+			<span id="tradeRow">
+				<!-- populated by javascript -->
+			</span>
 			<div id="tradeUpgradeContainer">
 				<span id="currencyRow"></span>
 				<span id="commerceRow"></span>
@@ -394,108 +530,7 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div id="rightColumn" class="column right">
-	<div id="populationContainer" class="civSection">
-		<h3>Population</h3>
-		<div id="populationNumbers">
-			<table>
-				<tbody>
-					<tr>
-						<td>Citizen Population: </td>
-						<td class="number"><span data-action="display_pop" data-target="current">...</span></td>
-						<td class="number maxNumber">
-							/ max: <span data-action="display_pop" data-target="limit">...</span>
-						</td>
-						<td class="note">
-							Build more housing to grow your civilization
-						</td>
-					</tr>
-					<tr id="zombieWorkers">
-						<td>Zombies: </td>
-						<td class="number"><span data-action="display" data-target="zombie">...</span></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Happiness: </td>
-						<td colspan="3" id="morale">
-							<ol class="happinessRanks">
-								<li>Blissful</li>
-								<li>Happy</li>
-								<li>Content</li>
-								<li>Unhappy</li>
-								<li>Angry</li>
-							</ol>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div id="populationCreate">
-			<div>
-				Recruit new citizens as
-				<select type="dropdown" id="newSpawnJobSelection">
-					<option value="unemployed">Idle Citizens</option>
-					<option value="farmer">Farmers</option>
-					<option value="woodcutter">Woodcutters</option>
-					<option value="miner">Miners</option>
-				</select>
-				<span class="cost">for <span id="workerCost">...</span> food</span><span class="note">.</span>
-			</div>
-			<div>
-				<button class="unit1" id="spawn1button" onmousedown="spawn(1)">Recruit +1</button>
-				<button class="unit10" id="spawn10button" onmousedown="spawn(10)">+10</button>
-				<button class="unit100" id="spawn100button" onmousedown="spawn(100)">+100</button>
-				<button class="unit1000" id="spawn1000button" onmousedown="spawn(1000)">+1000</button>
-				<button class="unitInfinity" id="spawnMaxbutton" onmousedown="spawn(Infinity)">+<span id="workerNumMax">Max</span></button>
-			</div>
-			<div id="customSpawnQuantity">
-				<button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
-			</div>
-		</div>
-		<div id="populationBar" class="bar">
-			<!-- populated by javascript -->
-		</div>
-	</div>
-	<div id="jobsContainer" class="civSection">
-		<h3>Jobs</h3>
-		<p id="customJobQuantity">
-			Custom Quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
-		</p>
-		<table id="jobs"></table>
-	</div>
-	<div id="wondersContainer" class="civSection">
-		<h3>Wonders</h3>
-		<span id="startWonderLine"><button id="startWonder" onmousedown="startWonder()">Start Building Wonder</button></span>
-		<div id="wonderInProgress">
-			<span class="wonderTitle">Progress on <span id="wonderNameP">Wonder</span> - <span id="progressNumber">0</span>%</span> - <button id="renameWonder" onmousedown="renameWonder()">Rename</button>
-			<div id="progressContainer"><div id="progressBar"></div></div>
-			<div id="lowResources">Limited<span id="limited"> by low resources</span></div>
-			<div id="speedWonderGroup"><br /><button id="speedWonder" onmousedown="speedWonder()">Speed Wonder</button>
-			<span id="speedWonderCost" class="cost">100 gold</span><span class="note">: Increase wonder progress</span></div>
-		</div>
-		<div id="wonderCompleted">
-			<div class="wonderTitle"><span id="wonderNameC">Wonder</span> Completed! Choose Bonus:</div>
-		</div>
-		<table id="pastWonders"><tr><td></td></tr></table>
-	</div>
-	<div id="eventsContainer" class="civSection">
-		<h3>Events</h3>
-		<table id="logTable">
-			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
-			<tr id="log1"><td colspan="3"></td></tr>
-			<tr id="log2"><td colspan="3"></td></tr>
-			<tr id="log3"><td colspan="3"></td></tr>
-			<tr id="log4"><td colspan="3"></td></tr>
-			<!-- <tr id="log5"><td colspan="3"></td></tr>
-			<tr id="log6"><td colspan="3"></td></tr>
-			<tr id="log7"><td colspan="3"></td></tr>
-			<tr id="log8"><td colspan="3"></td></tr>
-			<tr id="log9"><td colspan="3"></td></tr> -->
-		</table>
-	</div>
 </div>
 </div>
 <footer>
