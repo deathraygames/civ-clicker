@@ -1,21 +1,26 @@
 
+// Requires 
+
 function getCivData () {
 	// Initialize Data
 	var civData = [
 	// Resources
-	new Resource({ id:"food", name:"food", increment:1, specialChance:0.1,
+	new Resource({ 
+		id:"food", name:"food", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "skins", verb: "harvest", activity: "harvesting", //I18N
 		get limit() { return 200 + (civData.barn.owned * (civData.granaries.owned?2:1) * 200); },
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
-	new Resource({ id:"wood", name:"wood", increment:1, specialChance:0.1,
+	new Resource({ 
+		id:"wood", name:"wood", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "herbs", verb: "cut", activity: "woodcutting", //I18N
 		get limit() { return 200 + (civData.woodstock.owned  * 200); },
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
-	new Resource({ id:"stone", name:"stone", increment:1, specialChance:0.1,
+	new Resource({ 
+		id:"stone", name:"stone", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "ore", verb: "mine", activity: "mining", //I18N
 		get limit() { return 200 + (civData.stonestock.owned  * 200); },
@@ -38,44 +43,55 @@ function getCivData () {
 		vulnerable:false, // Cannot be stolen
 		initOwned:1000,  
 		effectText:"Conquer more from your neighbors." }),
-	new Building({ id:"tent", singular:"tent", plural:"tents",
+	new Building({ 
+		id:"tent", singular:"tent", plural:"tents",
 		require: { wood:2, skins:2 },
 		effectText:"+1 max pop." }),
-	new Building({ id:"hut", singular:"wooden hut", plural:"wooden huts",
+	new Building({ 
+		id:"hut", singular:"wooden hut", plural:"wooden huts",
 		require : { wood:20, skins:1 },
 		effectText:"+3 max pop." }),
-	new Building({ id:"cottage", singular:"cottage", plural:"cottages",
+	new Building({ 
+		id:"cottage", singular:"cottage", plural:"cottages",
 		prereqs:{ masonry: true },
 		require:{ wood:10, stone:30 },
 		effectText:"+6 max pop." }),
-	new Building({ id:"house", singular:"house", plural:"houses",
+	new Building({ 
+		id:"house", singular:"house", plural:"houses",
 		prereqs:{ construction: true },
 		require:{ wood:30, stone:70 },
 		get effectText() { var num = 10 + 2*(civData.slums.owned + civData.tenements.owned); return "+"+num+" max pop."; },
 		set effectText(value) { return this.require; }, // Only here for JSLint.
 		update: function() { document.getElementById(this.id+"Note").innerHTML = ": "+this.effectText; } }),
-	new Building({ id:"mansion", singular:"mansion", plural:"mansions",
+	new Building({ 
+		id: "mansion", singular:"mansion", plural:"mansions",
 		prereqs:{ architecture: true },
 		require:{ wood:200, stone:200, leather:20 },
 		effectText:"+50 max pop." }),
-	new Building({ id:"barn", singular:"barn", plural:"barns",
+	new Building({ 
+		id: "barn", singular:"barn", plural:"barns",
 		require:{ wood:100 },
 		effectText:"+200 food storage" }),
-	new Building({ id:"woodstock", singular:"wood stockpile", plural:"wood stockpiles",
+	new Building({ 
+		id: "woodstock", singular:"wood stockpile", plural:"wood stockpiles",
 		require:{ wood:100 },
 		effectText:"+200 wood storage" }),
-	new Building({ id:"stonestock", singular:"stone stockpile", plural:"stone stockpiles",
+	new Building({ 
+		id: "stonestock", singular:"stone stockpile", plural:"stone stockpiles",
 		require:{ wood:100 },
 		effectText:"+200 stone storage" }),
-	new Building({ id:"tannery", singular:"tannery", plural:"tanneries",
+	new Building({ 
+		id: "tannery", singular:"tannery", plural:"tanneries",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, skins:2 },
 		effectText:"allows 1 tanner" }),
-	new Building({ id:"smithy", singular:"smithy", plural:"smithies",
+	new Building({ 
+		id: "smithy", singular:"smithy", plural:"smithies",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, ore:2 },
 		effectText:"allows 1 blacksmith" }),
-	new Building({ id:"apothecary", singular:"apothecary", plural:"apothecaries",
+	new Building({ 
+		id: "apothecary", singular:"apothecary", plural:"apothecaries",
 		prereqs:{ masonry: true },
 		require:{ wood:30, stone:70, herbs:2 },
 		effectText:"allows 1 healer" }),
@@ -92,27 +108,32 @@ function getCivData () {
 			} 
 		}
 	}),
-	new Building({ id:"barracks", name:"barracks",
+	new Building({ 
+		id: "barracks", name: "barracks",
 		prereqs:{ masonry: true },
 		require:{ food:20, wood:60, stone:120, metal:10 },
 		effectText:"allows 10 soldiers" }),
-	new Building({ id:"stable", singular:"stable", plural:"stables",
+	new Building({ 
+		id: "stable", singular:"stable", plural:"stables",
 		prereqs:{ horseback: true },
 		require:{ food:60, wood:60, stone:120, leather:10 },
 		effectText:"allows 10 cavalry" }),
-	new Building({ id:"graveyard", singular:"graveyard", plural:"graveyards",
+	new Building({ 
+		id: "graveyard", singular:"graveyard", plural:"graveyards",
 		prereqs:{ masonry: true },
 		require:{ wood:50, stone:200, herbs:50 },
 		vulnerable: false, // Graveyards can't be sacked
 		effectText:"contains 100 graves",
 		onGain: function(num) { if (num === undefined) { num = 1; } digGraves(num); }}),
-	new Building({ id:"mill", singular:"mill", plural:"mills",
+	new Building({ 
+		id: "mill", singular:"mill", plural:"mills",
 		prereqs:{ wheel: true },
 		get require() { return { wood  : 100 * (this.owned + 1) * Math.pow(1.05,this.owned),
 								 stone : 100 * (this.owned + 1) * Math.pow(1.05,this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"improves farmers" }),
-	new Building({ id:"fortification", singular:"fortification", plural:"fortifications", efficiency: 0.01,
+	new Building({ 
+		id: "fortification", singular:"fortification", plural:"fortifications", efficiency: 0.01,
 		prereqs:{ architecture: true },
 		//xxx This is testing a new technique that allows a function for the cost items.
 		// Eventually, this will take a qty parameter
@@ -122,176 +143,216 @@ function getCivData () {
 	// Altars
 	// The 'name' on the altars is really the label on the button to make them.
 	//xxx This should probably change.
-	new Building({ id:"battleAltar", name:"Build Altar", singular:"battle altar", plural:"battle altars", 
+	new Building({ 
+		id: "battleAltar", name:"Build Altar", singular:"battle altar", plural:"battle altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "battle" },
 		get require() { return { stone:200, piety:200, metal : 50 + (50 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
-	new Building({ id:"fieldsAltar", name:"Build Altar", singular:"fields altar", plural:"fields altars", 
+	new Building({ 
+		id: "fieldsAltar", name:"Build Altar", singular:"fields altar", plural:"fields altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "fields" },
 		get require() { return { stone:200, piety:200,
 				food : 500 + (250 * this.owned), wood : 500 + (250 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
-	new Building({ id:"underworldAltar", name:"Build Altar", singular:"underworld altar", plural:"underworld altars",
+	new Building({ 
+		id: "underworldAltar", name:"Build Altar", singular:"underworld altar", plural:"underworld altars",
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "underworld" },
 		get require() { return { stone:200, piety:200, corpses : 1 + this.owned }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
-	new Building({ id:"catAltar", name:"Build Altar", singular:"cat altar", plural:"cat altars", 
+	new Building({ 
+		id: "catAltar", name:"Build Altar", singular:"cat altar", plural:"cat altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "cats" },
 		get require() { return { stone:200, piety:200, herbs : 100 + (50 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
 	// Upgrades
-	new Upgrade({ id:"skinning", name:"Skinning", subType: "upgrade",
+	new Upgrade({ 
+		id: "skinning", name:"Skinning", subType: "upgrade",
 		require: { skins: 10 },
 		effectText:"Farmers can collect skins" }),
-	new Upgrade({ id:"harvesting", name:"Harvesting", subType: "upgrade",
+	new Upgrade({ 
+		id: "harvesting", name:"Harvesting", subType: "upgrade",
 		require: { herbs: 10 },
 		effectText:"Woodcutters can collect herbs" }),
-	new Upgrade({ id:"prospecting", name:"Prospecting", subType: "upgrade",
+	new Upgrade({ 
+		id: "prospecting", name:"Prospecting", subType: "upgrade",
 		require: { ore: 10 },
 		effectText:"Miners can collect ore" }),
-	new Upgrade({ id:"domestication", name:"Domestication", subType: "upgrade",
+	new Upgrade({ 
+		id: "domestication", name:"Domestication", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { leather: 20 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"ploughshares", name:"Ploughshares", subType: "upgrade",
+	new Upgrade({ 
+		id: "ploughshares", name:"Ploughshares", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { metal:20 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"irrigation", name:"Irrigation", subType: "upgrade",
+	new Upgrade({ 
+		id: "irrigation", name:"Irrigation", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 500, stone: 200 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"butchering", name:"Butchering", subType: "upgrade",
+	new Upgrade({ 
+		id: "butchering", name:"Butchering", subType: "upgrade",
 		prereqs:{ construction: true, skinning: true },
 		require: { leather: 40 },
 		effectText:"More farmers collect more skins" }),
-	new Upgrade({ id:"gardening", name:"Gardening", subType: "upgrade",
+	new Upgrade({ 
+		id: "gardening", name:"Gardening", subType: "upgrade",
 		prereqs:{ construction: true, harvesting: true },
 		require: { herbs: 40 },
 		effectText:"More woodcutters collect more herbs" }),
-	new Upgrade({ id:"extraction", name:"Extraction", subType: "upgrade",
+	new Upgrade({ 
+		id: "extraction", name:"Extraction", subType: "upgrade",
 		prereqs:{ construction: true, prospecting: true },
 		require: { metal: 40 },
 		effectText:"More miners collect more ore" }),
-	new Upgrade({ id:"flensing", name:"Flensing", subType: "upgrade",
+	new Upgrade({ 
+		id: "flensing", name:"Flensing", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { metal: 1000 },
 		effectText:"Collect skins more frequently" }),
-	new Upgrade({ id:"macerating", name:"Macerating", subType: "upgrade",
+	new Upgrade({ 
+		id: "macerating", name:"Macerating", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { leather: 500, stone: 500 },
 		effectText:"Collect ore more frequently" }),
-	new Upgrade({ id:"croprotation", name:"Crop Rotation", subType: "upgrade",
+	new Upgrade({ 
+		id: "croprotation", name:"Crop Rotation", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { herbs: 5000, piety: 1000 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"selectivebreeding", name:"Selective Breeding", subType: "upgrade",
+	new Upgrade({ 
+		id: "selectivebreeding", name:"Selective Breeding", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { skins: 5000, piety: 1000 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"fertilisers", name:"Fertilisers", subType: "upgrade",
+	new Upgrade({ 
+		id: "fertilisers", name:"Fertilisers", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { ore: 5000, piety: 1000 },
 		effectText:"Increase farmer food output" }),
-	new Upgrade({ id:"masonry", name:"Masonry", subType: "upgrade",
+	new Upgrade({ 
+		id: "masonry", name:"Masonry", subType: "upgrade",
 		require: { wood: 100, stone: 100 },
 		effectText:"Unlock more buildings and upgrades" }),
-	new Upgrade({ id:"construction", name:"Construction", subType: "upgrade",
+	new Upgrade({ 
+		id: "construction", name:"Construction", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 1000, stone: 1000 },
 		effectText:"Unlock more buildings and upgrades" }),
-	new Upgrade({ id:"architecture", name:"Architecture", subType: "upgrade",
+	new Upgrade({ 
+		id: "architecture", name:"Architecture", subType: "upgrade",
 		prereqs:{ construction: true },
 		require: { wood: 10000, stone: 10000 },
 		effectText:"Unlock more buildings and upgrades" }),
-	new Upgrade({ id:"tenements", name:"Tenements", subType: "upgrade",
+	new Upgrade({ 
+		id: "tenements", name:"Tenements", subType: "upgrade",
 		prereqs:{ construction: true },
 		require: { food: 200, wood: 500, stone: 500 },
 		effectText:"Houses support +2 workers",
 		onGain: function() { updatePopulationUI(); } //due to population limits changing
 	}),
-	new Upgrade({ id:"slums", name:"Slums", subType: "upgrade",
+	new Upgrade({ 
+		id: "slums", name:"Slums", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { food: 500, wood: 1000, stone: 1000 },
 		effectText:"Houses support +2 workers",
 		onGain: function() { updatePopulationUI(); } //due to population limits changing
 	}),
-	new Upgrade({ id:"granaries", name:"Granaries", subType: "upgrade",
+	new Upgrade({ 
+		id: "granaries", name:"Granaries", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 1000, stone: 1000 },
 		effectText:"Barns store double the amount of food",
 		onGain: function() { updateResourceTotals(); } //due to resource limits increasing
 	}),
-	new Upgrade({ id:"palisade", name:"Palisade", subType: "upgrade",
+	new Upgrade({ 
+		id: "palisade", name:"Palisade", subType: "upgrade",
 		efficiency: 0.01, // Subtracted from attacker efficiency.
 		prereqs:{ construction: true },
 		require: { wood: 2000, stone: 1000 },
 		effectText:"Enemies do less damage" }),
-	new Upgrade({ id:"weaponry", name:"Basic Weaponry", subType: "upgrade",
+	new Upgrade({ 
+		id: "weaponry", name:"Basic Weaponry", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 500, metal: 500 },
 		effectText:"Improve soldiers" }),
-	new Upgrade({ id:"shields", name:"Basic Shields", subType: "upgrade",
+	new Upgrade({ 
+		id: "shields", name:"Basic Shields", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 500, leather: 500 },
 		effectText:"Improve soldiers" }),
-	new Upgrade({ id:"horseback", name:"Horseback Riding", subType: "upgrade",
+	new Upgrade({ 
+		id: "horseback", name:"Horseback Riding", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { food: 500, wood: 500 },
 		effectText:"Build stables" }),
-	new Upgrade({ id:"wheel", name:"The Wheel", subType: "upgrade",
+	new Upgrade({ 
+		id: "wheel", name:"The Wheel", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 500, stone: 500 },
 		effectText:"Build mills" }),
-	new Upgrade({ id:"writing", name:"Writing", subType: "upgrade",
+	new Upgrade({ 
+		id: "writing", name:"Writing", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { skins: 500 },
 		effectText:"Increase cleric piety generation" }),
-	new Upgrade({ id:"administration", name:"Administration", subType: "upgrade",
+	new Upgrade({ 
+		id: "administration", name:"Administration", subType: "upgrade",
 		prereqs:{ writing: true },
 		require: { stone: 1000, skins: 1000 },
 		effectText:"Increase land gained from raiding" }),
-	new Upgrade({ id:"codeoflaws", name:"Code of Laws", subType: "upgrade",
+	new Upgrade({ 
+		id: "codeoflaws", name:"Code of Laws", subType: "upgrade",
 		prereqs:{ writing: true },
 		require: { stone: 1000, skins: 1000 },
 		effectText:"Reduce unhappiness caused by overcrowding" }),
-	new Upgrade({ id:"mathematics", name:"Mathematics", subType: "upgrade",
+	new Upgrade({ 
+		id: "mathematics", name:"Mathematics", subType: "upgrade",
 		prereqs:{ writing: true },
 		require: { herbs: 1000, piety: 1000 },
 		effectText:"Create siege engines" }),
-	new Upgrade({ id:"aesthetics", name:"Aesthetics", subType: "upgrade",
+	new Upgrade({ 
+		id: "aesthetics", name:"Aesthetics", subType: "upgrade",
 		prereqs:{ writing: true },
 		require: { piety: 5000 },
 		effectText:"Building temples increases morale" }),
-	new Upgrade({ id:"civilservice", name:"Civil Service", subType: "upgrade",
+	new Upgrade({ 
+		id: "civilservice", name:"Civil Service", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { piety: 5000 },
 		effectText:"Increase basic resources from clicking" }),
-	new Upgrade({ id:"feudalism", name:"Feudalism", subType: "upgrade",
+	new Upgrade({ 
+		id: "feudalism", name:"Feudalism", subType: "upgrade",
 		prereqs:{ civilservice: true },
 		require: { piety: 10000 },
 		effectText:"Further increase basic resources from clicking" }),
-	new Upgrade({ id:"guilds", name:"Guilds", subType: "upgrade",
+	new Upgrade({ 
+		id: "guilds", name:"Guilds", subType: "upgrade",
 		prereqs:{ civilservice: true },
 		require: { piety: 10000 },
 		effectText:"Increase special resources from clicking" }),
-	new Upgrade({ id:"serfs", name:"Serfs", subType: "upgrade",
+	new Upgrade({ 
+		id: "serfs", name:"Serfs", subType: "upgrade",
 		prereqs:{ civilservice: true },
 		require: { piety: 20000 },
 		effectText:"Idle workers increase resources from clicking" }),
-	new Upgrade({ id:"nationalism", name:"Nationalism", subType: "upgrade",
+	new Upgrade({ 
+		id: "nationalism", name:"Nationalism", subType: "upgrade",
 		prereqs:{ civilservice: true },
 		require: { piety: 50000 },
 		effectText:"Soldiers increase basic resources from clicking" }),
-	new Upgrade({ id:"worship", name:"Worship", subType: "deity",
+	new Upgrade({ 
+		id: "worship", name:"Worship", subType: "deity",
 		prereqs:{ temple: 1 },
 		require: { piety: 1000 },
 		effectText:"Begin worshipping a deity (requires temple)",
@@ -680,9 +741,9 @@ function getCivData () {
 	indexArrayByAttr(civData,"id");
 
 	// Initialize our data. 
-	// TODO: Should this move to initCivclicker()?
-	civData.forEach( function(elem){ if (elem instanceof CivObj) { elem.init(); } });
-
+	civData.forEach(function(elem){ 
+		if (elem instanceof CivObj) { elem.init(); } 
+	});
 
 	return civData;
 }

@@ -9,14 +9,16 @@ VersionData.prototype.toNumber = function() { return this.major*1000 + this.mino
 VersionData.prototype.toString = function() { return String(this.major) + "." 
 	+ String(this.minor) + "." + String(this.sub) + String(this.mod); };
 
-//xxxTODO: Create a mechanism to automate the creation of a class hierarchy,
+// TODO: Create a mechanism to automate the creation of a class hierarchy,
 // specifying base class, shared props, instance props.
 function CivObj(props, asProto)
 {
 	if (!(this instanceof CivObj)) { return new CivObj(props); } // Prevent accidental namespace pollution
 	//xxx Should these just be taken off the prototype's property names?
-	var names = asProto ? null : ["id","name","subType","owned","prereqs","require","salable","vulnerable","effectText"
-								 ,"prestige","initOwned","init","reset","limit","hasVariableCost"];
+	var names = asProto ? null : [
+		"id","name","subType","owned","prereqs","require","salable","vulnerable","effectText"
+		,"prestige","initOwned","init","reset","limit","hasVariableCost"
+	];
 	Object.call(this,props);
 	copyProps(this,props,names,true);
 	return this;
@@ -156,16 +158,25 @@ Unit.prototype = new CivObj({
 	constructor: Unit,
 	type: 			"unit",
 	salable: 		true,
-	get customQtyId() { return this.place + "CustomQty"; },
-	set customQtyId(value) { return this.customQtyId; }, // Only here for JSLint.
+	get customQtyId() { 
+		return this.place + "CustomQty"; 
+	},
+	set customQtyId(value) { 
+		return this.customQtyId; 
+	}, // Only here for JSLint.
 	alignment: 		"player", // Also: "enemy"
 	species: 		"human", // Also:  "animal", "mechanical", "undead"
 	place: 			"home", // Also:  "party"
 	combatType: 	"",  // Default noncombatant.  Also "infantry","cavalry","animal"
 	onWin: function() { return; }, // Do nothing.
-	get vulnerable() { return ((this.place == "home")&&(this.alignment=="player")&&(this.subType=="normal")); },
-	set vulnerable(value) { return this.vulnerable; }, // Only here for JSLint.
-	init: function(fullInit) { CivObj.prototype.init.call(this,fullInit);
+	get vulnerable() { 
+		return ((this.place == "home")&&(this.alignment=="player")&&(this.subType=="normal")); 
+	},
+	set vulnerable(value) { 
+		return this.vulnerable; 
+	}, // Only here for JSLint.
+	init: function(fullInit) { 
+		CivObj.prototype.init.call(this,fullInit);
 		// Right now, only vulnerable human units can get sick.
 		if (this.vulnerable && (this.species=="human")) {
 			this.illObj = { owned: 0 };
@@ -175,16 +186,36 @@ Unit.prototype = new CivObj({
 	//xxx Right now, ill numbers are being stored as a separate structure inside curCiv.
 	// It would probably be better to make it an actual 'ill' property of the Unit.
 	// That will require migration code.
-	get illObj() { return curCiv[this.id+"Ill"]; },
-	set illObj(value) { curCiv[this.id+"Ill"] = value; }, 
-	get ill() { return isValid(this.illObj) ? this.illObj.owned : undefined; },
-	set ill(value) { if (isValid(this.illObj)) { this.illObj.owned = value; } },
-	get partyObj() { return civData[this.id+"Party"]; },
-	set partyObj(value) { return this.partyObj; }, // Only here for JSLint.
-	get party() { return isValid(this.partyObj) ? this.partyObj.owned : undefined; },
-	set party(value) { if (isValid(this.partyObj)) { this.partyObj.owned = value; } },
+	get illObj() { 
+		return curCiv[this.id+"Ill"]; 
+	},
+	set illObj(value) { 
+		curCiv[this.id+"Ill"] = value; 
+	}, 
+	get ill() { 
+		return isValid(this.illObj) ? this.illObj.owned : undefined; 
+	},
+	set ill(value) { 
+		if (isValid(this.illObj)) { this.illObj.owned = value; } 
+	},
+	get partyObj() { 
+		return civData[this.id+"Party"]; 
+	},
+	set partyObj(value) { 
+		return this.partyObj; 
+	}, // Only here for JSLint.
+	get party() { 
+		return isValid(this.partyObj) ? this.partyObj.owned : undefined; 
+	},
+	set party(value) { 
+		if (isValid(this.partyObj)) { 
+			this.partyObj.owned = value; 
+		} 
+	},
 	// Is this unit just some other sort of unit in a different place (but in the same limit pool)?
-	isDest: function() { return (this.source !== undefined) && (civData[this.source].partyObj === this); },
+	isDest: function() { 
+		return (this.source !== undefined) && (civData[this.source].partyObj === this); 
+	},
 	get limit() { 
 		return (this.isDest()) ? civData[this.source].limit 
 											 : Object.getOwnPropertyDescriptor(CivObj.prototype,"limit").get.call(this); 
@@ -194,13 +225,20 @@ Unit.prototype = new CivObj({
 	}, // Only here for JSLint.
 
 	// The total quantity of this unit, regardless of status or place.
-	get total() { return (this.isDest()) ? civData[this.source].total : (this.owned + (this.ill||0) + (this.party||0)); },
-	set total(value) { return this.total; } // Only here for JSLint.
+	get total() { 
+		return (this.isDest()) ? civData[this.source].total : (this.owned + (this.ill||0) + (this.party||0)); 
+	},
+	set total(value) { 
+		return this.total; 
+	} // Only here for JSLint.
 },true);
 
 function Achievement(props) // props is an object containing the desired properties.
 {
-	if (!(this instanceof Achievement)) { return new Achievement(props); } // Prevent accidental namespace pollution
+	if (!(this instanceof Achievement)) { 
+		// Prevent accidental namespace pollution
+		return new Achievement(props); 
+	} 
 	CivObj.call(this,props);
 	copyProps(this,props,null,true);
 	// Occasional Properties: test
@@ -213,6 +251,6 @@ Achievement.prototype = new CivObj({
 	initOwned: false,
 	prestige : true, // Achievements are not lost on reset.
 	vulnerable : false,
-	get limit() { return 1; }, // Can't re-buy these.
-	set limit(value) { return this.limit; } // Only here for JSLint.
+	get limit() { 		return 1; }, // Can't re-buy these.
+	set limit(value) { 	return this.limit; } // Only here for JSLint.
 },true);

@@ -1457,8 +1457,8 @@ function handleStorageError(err)
 		{ msg = "Browser security settings blocked access to local storage."; }
 	else 
 		{ msg = "Cannot access localStorage - browser may not support localStorage, or storage may be corrupt"; }
-	console.log(err.toString());
-	console.log(msg);
+	console.error(err.toString());
+	console.error(msg);
 }
 
 // Migrate an old savegame to the current format.
@@ -2218,13 +2218,6 @@ function reset(){
 	// Insert space for a fresh deity.
 	curCiv.deities.unshift({ name:"", domain:"", maxDev:0 });
 
-	updateRequirements(civData.mill);
-	updateRequirements(civData.fortification);
-	updateRequirements(civData.battleAltar);
-	updateRequirements(civData.fieldsAltar);
-	updateRequirements(civData.underworldAltar);
-	updateRequirements(civData.catAltar);
-
 	population = {
 		current:0,
 		limit:0,
@@ -2245,51 +2238,7 @@ function reset(){
 	curCiv.curWonder.rushed = false;
 	curCiv.curWonder.progress = 0;
 
-	ui.find("#graceCost").innerHTML = prettify(civData.grace.cost);
-	//Update page with all new values
-	updateResourceTotals();
-	updateUpgrades();
-	updateDeity();
-	makeDeitiesTables();
-	updateDevotion();
-	updateTargets();
-	updateJobButtons();
-	updatePartyButtons();
-	updateWonder();
-	//Reset upgrades and other interface elements that might have been unlocked
-	//xxx Some of this probably isn't needed anymore; the update routines will handle it.
-	ui.find("#renameDeity").disabled = "true";
-	ui.find("#raiseDead").disabled = "true";
-	ui.find("#raiseDead100").disabled = "true";
-	ui.find("#raiseDeadMax").disabled = "true";
-	ui.find("#smite").disabled = "true";
-	ui.find("#wickerman").disabled = "true";
-	ui.find("#pestControl").disabled = "true";
-	ui.find("#grace").disabled = "true";
-	ui.find("#walk").disabled = "true";
-	ui.find("#ceaseWalk").disabled = "true";
-	ui.find("#lure").disabled = "true";
-	ui.find("#companion").disabled = "true";
-	ui.find("#comfort").disabled = "true";
-	ui.find("#book").disabled = "true";
-	ui.find("#feast").disabled = "true";
-	ui.find("#blessing").disabled = "true";
-	ui.find("#waste").disabled = "true";
-	ui.find("#riddle").disabled = "true";
-	ui.find("#throne").disabled = "true";
-	ui.find("#glory").disabled = "true";
-	ui.find("#summonShade").disabled = "true";
-
-	ui.show("#deitySelect",(civData.temple.owned > 0));
-	ui.show("#conquestSelect",(civData.barracks.owned > 0));
-	ui.show("#tradeSelect",(civData.gold.owned > 0));
-
-	ui.find("#conquest").style.display = "none";
-
-	ui.find("#tradeContainer").style.display = "none";
-	ui.find("#tradeUpgradeContainer").style.display = "none";
-	ui.find("#iconoclasmList").innerHTML = "";
-	ui.find("#iconoclasm").disabled = false;
+	updateAfterReset();
 	gameLog("Game Reset"); //Inform player.
 
 	renameCiv();
@@ -2937,7 +2886,10 @@ function setCustomQuantities(value){
 		ui.show(elems[i],settings.customIncr); 
 	}
 }
-function onToggleCustomQuantities(control){ return setCustomQuantities(control.checked); }
+
+function onToggleCustomQuantities(control){ 
+	return setCustomQuantities(control.checked); 
+}
 
 // Toggles the display of the .notes class
 function setNotes(value){
@@ -2950,6 +2902,7 @@ function setNotes(value){
 		ui.show(elems[i],settings.notes);
 	}
 }
+
 function onToggleNotes(control){ 
 	return setNotes(control.checked); 
 }
@@ -3059,11 +3012,13 @@ function clearSpecialResourceNets () {
 	civData.metal.net = 0;
 }
 
-function checkLimits () {
+function checkResourceLimits () {
 	//Resources occasionally go above their caps.
 	//Cull the excess /after/ other workers have taken their inputs.
-	resourceData.forEach( function(elem){ 
-		if (elem.owned > elem.limit) { elem.owned = elem.limit; } 
+	resourceData.forEach(function(resource){ 
+		if (resource.owned > resource.limit) { 
+			resource.owned = resource.limit; 
+		} 
 	});
 }
 
@@ -3078,7 +3033,6 @@ function gameLoop () {
 	// start of each new tick.
 	clearSpecialResourceNets();
 
-
 	// Production workers do their thing.
 	doFarmers();
 	doWoodcutters();
@@ -3091,7 +3045,7 @@ function gameLoop () {
 	doStarve();
 	// TODO: Need to kill workers who die from exposure.
 
-	checkLimits();
+	checkResourceLimits();
 
 	//Timers - routines that do not occur every second
 	doMobs();

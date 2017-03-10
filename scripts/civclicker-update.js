@@ -37,6 +37,61 @@ function updateReset(){
 	ui.show("#resetBoth"  , (civData.worship.owned && curCiv.curWonder.stage === 3));
 }
 
+function updateAfterReset () {
+	updateRequirements(civData.mill);
+	updateRequirements(civData.fortification);
+	updateRequirements(civData.battleAltar);
+	updateRequirements(civData.fieldsAltar);
+	updateRequirements(civData.underworldAltar);
+	updateRequirements(civData.catAltar);
+
+	ui.find("#graceCost").innerHTML = prettify(civData.grace.cost);
+	//Update page with all new values
+	updateResourceTotals();
+	updateUpgrades();
+	updateDeity();
+	makeDeitiesTables();
+	updateDevotion();
+	updateTargets();
+	updateJobButtons();
+	updatePartyButtons();
+	updateWonder();
+	//Reset upgrades and other interface elements that might have been unlocked
+	//xxx Some of this probably isn't needed anymore; the update routines will handle it.
+	ui.find("#renameDeity").disabled = "true";
+	ui.find("#raiseDead").disabled = "true";
+	ui.find("#raiseDead100").disabled = "true";
+	ui.find("#raiseDeadMax").disabled = "true";
+	ui.find("#smite").disabled = "true";
+	ui.find("#wickerman").disabled = "true";
+	ui.find("#pestControl").disabled = "true";
+	ui.find("#grace").disabled = "true";
+	ui.find("#walk").disabled = "true";
+	ui.find("#ceaseWalk").disabled = "true";
+	ui.find("#lure").disabled = "true";
+	ui.find("#companion").disabled = "true";
+	ui.find("#comfort").disabled = "true";
+	ui.find("#book").disabled = "true";
+	ui.find("#feast").disabled = "true";
+	ui.find("#blessing").disabled = "true";
+	ui.find("#waste").disabled = "true";
+	ui.find("#riddle").disabled = "true";
+	ui.find("#throne").disabled = "true";
+	ui.find("#glory").disabled = "true";
+	ui.find("#summonShade").disabled = "true";
+
+	ui.show("#deitySelect",(civData.temple.owned > 0));
+	ui.show("#conquestSelect",(civData.barracks.owned > 0));
+	ui.show("#tradeSelect",(civData.gold.owned > 0));
+
+	ui.find("#conquest").style.display = "none";
+
+	ui.find("#tradeContainer").style.display = "none";
+	ui.find("#tradeUpgradeContainer").style.display = "none";
+	ui.find("#iconoclasmList").innerHTML = "";
+	ui.find("#iconoclasm").disabled = false;
+}
+
 function updateTrader () {
 	if (isTraderHere()) {
 		ui.show("#tradeContainer", true);
