@@ -9,7 +9,10 @@ function getCivData () {
 		id:"food", name:"food", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "skins", verb: "harvest", activity: "harvesting", //I18N
-		get limit() { return 200 + (civData.barn.owned * (civData.granaries.owned?2:1) * 200); },
+		get limit() { 
+			var barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
+			return 200 + (civData.barn.owned * barnBonus); 
+		},
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
 	new Resource({ 
@@ -60,9 +63,16 @@ function getCivData () {
 		id:"house", singular:"house", plural:"houses",
 		prereqs:{ construction: true },
 		require:{ wood:30, stone:70 },
-		get effectText() { var num = 10 + 2*(civData.slums.owned + civData.tenements.owned); return "+"+num+" max pop."; },
+		get effectText() { 
+			var maxPop = 10 + 2*(civData.slums.owned + civData.tenements.owned); 
+			return "+" + maxPop + " max pop."; 
+		},
 		set effectText(value) { return this.require; }, // Only here for JSLint.
-		update: function() { document.getElementById(this.id+"Note").innerHTML = ": "+this.effectText; } }),
+		update: function() { 
+			// TODO: need better way to do this
+			document.getElementById(this.id+"Note").innerHTML = ": " + this.effectText; 
+		} 
+	}),
 	new Building({ 
 		id: "mansion", singular:"mansion", plural:"mansions",
 		prereqs:{ architecture: true },
@@ -70,16 +80,27 @@ function getCivData () {
 		effectText:"+50 max pop." }),
 	new Building({ 
 		id: "barn", singular:"barn", plural:"barns",
-		require:{ wood:100 },
-		effectText:"+200 food storage" }),
+		require:{ wood: 100 },
+		get effectText() {
+			var barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
+			return "+" + barnBonus + " food storage"; 
+		},
+		set effectText(value) { return this.effectText; },
+		update: function() { 
+			// TODO: need better way to do this
+			document.getElementById(this.id+"Note").innerHTML = ": " + this.effectText; 
+		} 
+	}),
 	new Building({ 
 		id: "woodstock", singular:"wood stockpile", plural:"wood stockpiles",
 		require:{ wood:100 },
-		effectText:"+200 wood storage" }),
+		effectText: "+200 wood storage" 
+	}),
 	new Building({ 
 		id: "stonestock", singular:"stone stockpile", plural:"stone stockpiles",
 		require:{ wood:100 },
-		effectText:"+200 stone storage" }),
+		effectText: "+200 stone storage" 
+	}),
 	new Building({ 
 		id: "tannery", singular:"tannery", plural:"tanneries",
 		prereqs:{ masonry: true },
@@ -128,16 +149,24 @@ function getCivData () {
 	new Building({ 
 		id: "mill", singular:"mill", plural:"mills",
 		prereqs:{ wheel: true },
-		get require() { return { wood  : 100 * (this.owned + 1) * Math.pow(1.05,this.owned),
-								 stone : 100 * (this.owned + 1) * Math.pow(1.05,this.owned) }; },
+		get require() { 
+			return { 
+				wood: 100 * (this.owned + 1) * Math.pow(1.05,this.owned),
+				stone: 100 * (this.owned + 1) * Math.pow(1.05,this.owned) 
+			}; 
+		},
 		set require(value) { return this.require; }, // Only here for JSLint.
-		effectText:"improves farmers" }),
+		effectText: "improves farmers" }),
 	new Building({ 
 		id: "fortification", singular:"fortification", plural:"fortifications", efficiency: 0.01,
 		prereqs:{ architecture: true },
 		//xxx This is testing a new technique that allows a function for the cost items.
 		// Eventually, this will take a qty parameter
-		get require() { return { stone : function() { return 100 * (this.owned + 1) * Math.pow(1.05,this.owned); }.bind(this) }; },
+		get require() { 
+			return { 
+				stone : function() { return 100 * (this.owned + 1) * Math.pow(1.05,this.owned); }.bind(this) 
+			}; 
+		},
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"helps protect against attack" }),
 	// Altars

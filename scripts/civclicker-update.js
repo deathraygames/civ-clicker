@@ -130,7 +130,7 @@ function updatePurchaseRow(purchaseObj){
 
 	var buyElems=elem.querySelectorAll("[data-action='purchase']");
 	var i, purchaseQty,absQty,curElem;
-	for (i=0;i<buyElems.length;++i)
+	for (i = 0; i < buyElems.length; ++i)
 	{
 		curElem = buyElems[i];
 		purchaseQty = dataset(curElem,"quantity");
@@ -288,7 +288,8 @@ function updatePopulationUI() {
 		elem.innerHTML = prettify(Math.floor(population[dataset(elem,"target")]));
 	}
 
-	civData.house.update(); //xxx Effect might change dynamically.  Need a more general way to do this.
+	civData.house.update(); // TODO: Effect might change dynamically.  Need a more general way to do this.
+	civData.barn.update();
 
 	ui.show("#graveTotal", (curCiv.grave.owned > 0));
 
@@ -449,7 +450,6 @@ function updateUpgrades(){
 	ui.find("#deityDomains button.purchaseFor500Piety").disabled = (!canSelectDomain || (civData.piety.owned < 500));
 
 	// Conquest / battle standard
-	console.log((!civData.standard.owned));
 	ui.show("#conquest", civData.standard.owned);
 	ui.show("#conquestPane .notYet", (!civData.standard.owned));
 
