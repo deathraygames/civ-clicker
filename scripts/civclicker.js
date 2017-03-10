@@ -2197,6 +2197,7 @@ function renameDeity(newName){
 }
 
 function reset(){
+	console.log("Reset");
 	//Resets the game, keeping some values but resetting most back to their initial values.
 	var msg = "Really reset? You will keep past deities and wonders (and cats)"; //Check player really wanted to do that.
 	if (!confirm(msg)) { return false; } // declined
@@ -3179,6 +3180,7 @@ setup.game = function () {
 		renameCiv();
 		renameRuler();
 	}
+
 	setDefaultSettings();
 };
 
