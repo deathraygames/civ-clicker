@@ -28,7 +28,16 @@ body {
 }
 body.hasBackground {
 	background: #EAF0EA;
+	background-attachment: fixed;
+	background-size: 100%;
 }
+body.hasBackground.classic {
+	background-image: url('../images/constable_original.jpg');
+}
+body.hasBackground.wivenhoe {
+	background-image: url('../images/constable_wivenhoe_park_essex_faded.jpg');
+}
+
 
 
 a {
