@@ -90,8 +90,12 @@
 				switch (tagName) {
 					case "SPAN": displayVal = "inline"; break;
 					case "BUTTON": displayVal = "inline-block"; break;
-					case "DIV": displayVal = "block"; break;
-					case "P": displayVal = "block"; break;
+					case "DIV": 
+					case "UL":
+					case "OL":
+					case "P":
+						displayVal = "block"; 
+						break;
 					case "TABLE": displayVal = "table"; break;
 					case "CAPTION": displayVal = "table-caption"; break;
 					case "THEAD": displayVal = "table-header-group"; break;

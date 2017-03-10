@@ -401,11 +401,9 @@ button {
 #deityDomains{
 	display: none;
 }
-#deityDomains .purchaseRow{
-	/* We control the display of these through #deityDomains, so */
-	/*   suppress the usual .purchaseRow display:none */
-	display:inline;
-}
+	#deityDomains li {
+		display: block;
+	}
 
 #battleUpgrades,
 #fieldsUpgrades,
@@ -428,9 +426,7 @@ button {
 	margin-left:1em;
 }
 
-.purchaseRow{
-	display: none;
-}
+
 
 #victoryGroup{
 	display: none;
@@ -632,11 +628,14 @@ button {
 		width: 0;
 	}
 	.bar > div {
-		background-color: #ccc;
+		background-color: #bbb;
 	}
 	.bar > div > div {
 		float: left;
 	}
+#landBar > div {
+	background-color: #aca;
+}
 #progressContainer {
 	border: 1px solid rgba(0,0,0,0.2);
 }

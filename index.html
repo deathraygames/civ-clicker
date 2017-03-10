@@ -243,18 +243,35 @@
 				<!-- populated by updatePurchaseRow -->
 			</div>
 			<div id="deityDomains">
-				<span id="battleRow" class="purchaseRow" data-target="battle"> <span class="upgradetrue" data-quantity="true">
-				<button id="battleDeity" class="xtrue" onmousedown="selectDeity('battle')">Battle</button></span>
-				<span><span id="battleCost" class="cost">500 piety</span><span id="battleNote" class="note">: (You can only pick one of these)</span></span><br /></span>
-				<span id="fieldsRow" class="purchaseRow" data-target="fields"> <span class="upgradetrue" data-quantity="true">
-				<button id="fieldsDeity" class="xtrue" onmousedown="selectDeity('fields')">Fields</button></span>
-				<span><span id="fieldsCost" class="cost">500 piety</span><span id="fieldsNote" class="note">: (You can only pick one of these)</span></span><br /></span>
-				<span id="underworldRow" class="purchaseRow" data-target="underworld"> <span class="upgradetrue" data-quantity="true">
-				<button id="underworldDeity" class="xtrue" onmousedown="selectDeity('underworld')">Underworld</button></span>
-				<span><span id="underworldCost" class="cost">500 piety</span><span id="underworldNote" class="note">: (You can only pick one of these)</span></span><br /></span>
-				<span id="catsRow" class="purchaseRow" data-target="cats"> <span class="upgradetrue" data-quantity="true">
-				<button id="catsDeity" class="xtrue" onmousedown="selectDeity('cats')">Cats</button></span>
-				<span><span id="catsCost" class="cost">500 piety</span><span id="catsNote" class="note">: (You can only pick one of these)</span></span><br /></span>
+				<p>
+					You may select only one deity:
+				</p>
+				<ul>
+					<li id="battleRow" class="purchaseRow" data-target="battle"> 
+						<span class="upgradetrue" data-quantity="true">
+							<button id="battleDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('battle')">Battle</button>
+						</span>
+						<span id="battleCost" class="cost">500 piety</span>
+					</li>
+					<li id="fieldsRow" class="purchaseRow" data-target="fields">
+						<span class="upgradetrue" data-quantity="true">
+							<button id="fieldsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('fields')">Fields</button>
+						</span>
+						<span id="fieldsCost" class="cost">500 piety</span>
+					</li>		
+					<li id="underworldRow" class="purchaseRow" data-target="underworld">
+						<span class="upgradetrue" data-quantity="true">
+							<button id="underworldDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('underworld')">Underworld</button>
+						</span>
+						<span id="underworldCost" class="cost">500 piety</span>
+					</li>
+					<li id="catsRow" class="purchaseRow" data-target="cats">
+						<span class="upgradetrue" data-quantity="true">
+							<button id="catsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('cats')">Cats</button>
+						</span>
+						<span id="catsCost" class="cost">500 piety</span>
+					</li>
+				</ul>
 			</div>
 			<div id="battleUpgrades">
 				<h3>The Strength of Battle</h3>

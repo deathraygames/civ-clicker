@@ -80,10 +80,6 @@ function updateAfterReset () {
 	ui.find("#glory").disabled = "true";
 	ui.find("#summonShade").disabled = "true";
 
-	ui.show("#deitySelect",(civData.temple.owned > 0));
-	ui.show("#conquestSelect",(civData.barracks.owned > 0));
-	ui.show("#tradeSelect",(civData.gold.owned > 0));
-
 	ui.find("#conquest").style.display = "none";
 
 	ui.find("#tradeContainer").style.display = "none";
@@ -428,9 +424,9 @@ function updateLandBar () {
 // Check to see if the player has an upgrade and hide as necessary
 // Check also to see if the player can afford an upgrade and enable/disable as necessary
 function updateUpgrades(){
-	var deitySpecEnable;
 	var domain = getCurDeityDomain();
 	var hasDomain = (getCurDeityDomain() === "") ? false : true;
+	var canSelectDomain = ((civData.worship.owned) && !hasDomain);
 
 	// Update all of the upgrades
 	upgradeData.forEach( function(elem){ 
@@ -443,26 +439,23 @@ function updateUpgrades(){
 	// Deity techs
 	ui.show("#deityPane .notYet", !hasDomain);
 	ui.find("#renameDeity").disabled = (!civData.worship.owned);
-	ui.show("#deityDomains", ((civData.worship.owned) && !hasDomain));
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
 	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));
 	ui.show("#zombieWorkers", (curCiv.zombie.owned > 0));
 	ui.show("#catsUpgrades", (getCurDeityDomain() == "cats"));
 
-	deitySpecEnable = civData.worship.owned && hasDomain && (civData.piety.owned >= 500);
-	ui.find("#battleDeity").disabled = !deitySpecEnable;
-	ui.find("#fieldsDeity").disabled = !deitySpecEnable;
-	ui.find("#underworldDeity").disabled = !deitySpecEnable;
-	ui.find("#catsDeity").disabled = !deitySpecEnable;
+	ui.show("#deityDomains", canSelectDomain);
+	ui.find("#deityDomains button.purchaseFor500Piety").disabled = (!canSelectDomain || (civData.piety.owned < 500));
 
 	// Conquest / battle standard
+	console.log((!civData.standard.owned));
 	ui.show("#conquest", civData.standard.owned);
-	ui.show("#conquest .notYet", !civData.standard.owned);
+	ui.show("#conquestPane .notYet", (!civData.standard.owned));
 
 	// Trade
 	ui.show("#tradeUpgradeContainer", civData.trade.owned);
-	ui.show("#tradePane .noetYet", !civData.trade.owned);
+	ui.show("#tradePane .notYet", !civData.trade.owned);
 }
 
 
