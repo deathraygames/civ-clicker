@@ -2285,7 +2285,7 @@ function doWoodcutters() {
 		var herbsChance = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
 		var herbsEarned = rndRound(herbsChance);
 		civData.herbs.net += herbsEarned;
-		civData.herbs.owned += rndRound(herbsEarned);
+		civData.herbs.owned += herbsEarned;
 	}
 }
 
