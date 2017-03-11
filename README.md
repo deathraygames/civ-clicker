@@ -5,7 +5,7 @@ This is a fork of the open source game CivClicker, an incremental game by David 
 ## Try it out
 
 * Play the latest stable version: http://deathraygames.com/play-online/civ-clicker/ (at least somewhat stable)
-* Play the cutting edge, unstable development code directly from the GitHub repo: https://deathraygames.github.io/civ-clicker/ (could have bugs orr half-baked features)
+* Play the cutting edge, unstable development code directly from the GitHub repo: https://deathraygames.github.io/civ-clicker/ (could have bugs or half-baked features)
 * Play the original v1.0: http://dhmholley.co.uk/civclicker.html
 
 ## Community
