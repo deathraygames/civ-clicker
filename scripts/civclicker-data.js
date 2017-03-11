@@ -288,14 +288,14 @@ function getCivData () {
 		prereqs:{ construction: true },
 		require: { food: 200, wood: 500, stone: 500 },
 		effectText:"Houses support +2 workers",
-		onGain: function() { updatePopulationUI(); } //due to population limits changing
+		onGain: function() { updatePopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "slums", name:"Slums", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { food: 500, wood: 1000, stone: 1000 },
 		effectText:"Houses support +2 workers",
-		onGain: function() { updatePopulationUI(); } //due to population limits changing
+		onGain: function() { updatePopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "granaries", name:"Granaries", subType: "upgrade",
