@@ -46,6 +46,10 @@ var civSizes = [
 	{ min_pop : 500000, name: "Empire"      , id : "empire"     }
 ];
 
+var PATIENT_LIST = [
+	"healer","cleric","farmer","soldier","cavalry","labourer",
+	"woodcutter","miner","tanner","blacksmith","unemployed"
+];
 
 // Declare variables here so they can be referenced later.  
 var curCiv = {
@@ -1011,30 +1015,20 @@ function pickStarveTarget() {
 }
 
 // Culls workers when they starve.
-function starve(num) {
+function starve (num) {
 	var targetObj,i;
+	var starveCount = 0;
 	if (num === undefined) { num = 1; }
 	num = Math.min(num, population.living);
 
-	for (i=0;i<num;++i)
-	{
-		targetObj = pickStarveTarget();
-		if (!targetObj) { return i; }
-
-		if (targetObj.ill) { --targetObj.ill; }
-		else               { --targetObj.owned; }
-		calculatePopulation();
-
-		++civData.corpses.owned; //Increments corpse number
-		//Workers dying may trigger Book of the Dead
-		if (civData.book.owned) { civData.piety.owned += 10; }
+	for (i=0; i<num; ++i) {
+		starveCount += killUnit(pickStarveTarget());
 	}
-
-	return num;
+	return starveCount;
 }
 
 function doStarve() {
-	var corpsesEaten, starve;
+	var corpsesEaten, numberStarve;
 	if (civData.food.owned < 0 && civData.waste.owned) // Workers eat corpses if needed
 	{
 		corpsesEaten = Math.min(civData.corpses.owned, -civData.food.owned);
@@ -1044,16 +1038,30 @@ function doStarve() {
 
 	if (civData.food.owned < 0) { // starve if there's not enough food.
 		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
-		starve = starve(Math.ceil(population.living/1000));
-		if (starve == 1) { 
+		numberStarve = starve(Math.ceil(population.living/1000));
+		if (numberStarve == 1) { 
 			gameLog("A citizen starved to death"); 
-		} else if (starve > 1) { 
-			gameLog(prettify(starve) + " citizens starved to death"); 
+		} else if (numberStarve > 1) { 
+			gameLog(prettify(numberStarve) + " citizens starved to death"); 
 		}
 		adjustMorale(-0.01);
 		civData.food.owned = 0;
 	}
 }
+
+function killUnit (unit) {
+	var killed = 0;
+	if (!unit) { return 0; }
+
+	if (unit.ill) { unit.ill -= 1; }
+	else          { unit.owned -= 1; }
+	
+	civData.corpses.owned += 1; //Increments corpse number
+	//Workers dying may trigger Book of the Dead
+	if (civData.book.owned) { civData.piety.owned += 10; }
+	calculatePopulation();
+	return 1;
+};
 
 
 // Creates or destroys zombies
@@ -2402,7 +2410,7 @@ function doClerics() {
 }
 // Try to heal the specified number of people in the specified job
 // Makes them sick if the number is negative.
-function heal(job,num)
+function healByJob(job,num)
 {
 	if (!isValid(job) || !job) { return 0; }
 	if (num === undefined) { num = 1; } // default to 1
@@ -2417,32 +2425,35 @@ function heal(job,num)
 }
 
 //Selects random workers, transfers them to their Ill variants
-function plague(sickNum){
+function spreadPlague(sickNum){
 	var actualNum = 0;
 	var i;
 
 	calculatePopulation();
 	// Apply in 1-worker groups to spread it out.
-	for (i=0;i<sickNum;i++){ 
-		actualNum += -heal(randomHealthyWorker(),-1); 
+	for (i=0; i<sickNum; i++){ 
+		actualNum += -healByJob(randomHealthyWorker(),-1); 
 	}
 
 	return actualNum;
 }
 
 // Select a sick worker type to cure, with certain priorities
-function getNextPatient()
-{ 
+function getNextPatient () { 
 	var i;
-	//xxx Need to generalize this list.
-	var jobs=["healer","cleric","farmer","soldier","cavalry","labourer",
-		"woodcutter","miner","tanner","blacksmith","unemployed"];
-	for (i=0;i<jobs.length;++i)
-	{
-		if (civData[jobs[i]].ill > 0) { return jobs[i]; }
+	for (i=0; i < PATIENT_LIST.length; ++i) {
+		if (civData[PATIENT_LIST[i]].ill > 0) { return PATIENT_LIST[i]; }
 	}
-
 	return "";
+}
+
+function getRandomPatient (n) {
+	var i = Math.floor(Math.random() * PATIENT_LIST.length);
+	n = n || 1; // counter to stop infinite loop
+	if (civData[PATIENT_LIST[i]].ill > 0 || n > 10) { 
+		return PATIENT_LIST[i];
+	}
+	return getRandomPatient(++n);
 }
 
 function doHealers() {
@@ -2459,13 +2470,38 @@ function doHealers() {
 	while (civData.healer.cureCount >= 1 && civData.herbs.owned >= 1) {
 		job = getNextPatient();
 		if (!job) { break; }
-		heal(job); 
+		healByJob(job); 
 		--civData.healer.cureCount;
 		--civData.herbs.owned;
 		++numHealed;
 	}
 
 	return numHealed;
+}
+
+function doPlague () {
+	var jobInfected = getRandomPatient();
+	var unitInfected = civData[jobInfected];
+	var deathRoll = (100 * Math.random()) + 1;
+
+	if (unitInfected.ill <= 0 || unitInfected.owned <= 0) {
+		return false;
+	}
+
+	if (deathRoll <= 5) { // 5% chance that 1 person dies
+		killUnit(unitInfected);
+		gameLog("A sick " + unitInfected.singular + " dies.");
+		// TODO: Decrease happiness
+		calculatePopulation();
+		return true;
+	} else if (deathRoll > 99.9) { // 0.1% chance that it spreads to a new person
+		spreadPlague(1);
+		gameLog("The sickness spreads to a new citizen.");
+		return true;
+	} else {
+
+	}
+	return false;
 }
 
 function doGraveyards()
@@ -2498,14 +2534,16 @@ function doCorpses() {
 	infected = Math.floor(population.living/100 * Math.random());
 	if (infected <= 0) {  return; }
 
-	infected = plague(infected);
+	infected = spreadPlague(infected);
 	if (infected > 0) {
 		calculatePopulation();
 		gameLog(prettify(infected) + " citizens got sick"); //notify player
 	}
 
-	// Corpse decays (at least there is a bright side)
-	civData.corpses.owned -= 1;
+	// Corpse has a 50-50 chance of decaying (at least there is a bright side)
+	if (Math.random() < 0.5) {
+		civData.corpses.owned -= 1;
+	}
 }
 
 // Returns all of the combatants present for a given place and alignment that.
@@ -2567,8 +2605,10 @@ function doSlaughter(attacker)
 		if (Math.random() < attacker.killExhaustion) { --attacker.owned; }
 
 		--civData[target].owned;
-
-		if (attacker.species != "animal") { ++civData.corpses.owned; } // Animals will eat the corpse
+		// Animals will eat the corpse
+		if (attacker.species != "animal") { 
+			++civData.corpses.owned; 
+		} 
 		gameLog(civData[target].getQtyName(1) + " " + killVerb + " by " + attacker.getQtyName(attacker.owned));
 	} else { // Attackers slowly leave once everyone is dead
 		var leaving = Math.ceil(attacker.owned * Math.random() * attacker.killFatigue);
@@ -3067,14 +3107,14 @@ function gameLog(message){
 	//get the current date, extract the current time in HH.MM format
 	//xxx It would be nice to use Date.getLocaleTimeString(locale,options) here, but most browsers don't allow the options yet.
 	var d = new Date();
-	var curTime = d.getHours() + "." + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes();
+	var curTime = d.getHours() + ":" + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes();
 
 	//Check to see if the last message was the same as this one, if so just increment the (xNumber) value
 	if (ui.find("#logL").innerHTML != message) {
 		logRepeat = 0; //Reset the (xNumber) value
 
 		//Go through all the logs in order, moving them down one and successively overwriting them.
-		var i = 5; // Number of lines of log to keep.
+		var i = 7; // Number of lines of log to keep.
 		while (--i > 1) { ui.find("#log"+i).innerHTML = ui.find("#log"+(i-1)).innerHTML; }
 		//Since ids need to be unique, log1 strips the ids from the log0 elements when copying the contents.
 		ui.find("#log1").innerHTML = (
@@ -3149,7 +3189,8 @@ function gameLoop () {
 
 	//Population-related
 	doGraveyards();
-	doHealers(); 
+	doHealers();
+	doPlague(); 
 	doCorpses();
 	doThrone();
 	tickGrace();
