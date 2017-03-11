@@ -110,11 +110,11 @@ function updateRequirements(buildingObj){
 	if (displayNode) { displayNode.innerHTML = getReqText(buildingObj.require); }
 }
 
-function updatePurchaseRow(purchaseObj){
+function updatePurchaseRow (purchaseObj) {
 	if (!purchaseObj) { return; }
 
 	var elem = ui.find("#" + purchaseObj.id + "Row");
-	if (!elem) { console.warn("Missing UI for "+purchaseObj.id); return; }
+	if (!elem) { console.warn("Missing UI element for "+purchaseObj.id); return; }
 
 	// If the item's cost is variable, update its requirements.
 	if (purchaseObj.hasVariableCost()) { updateRequirements(purchaseObj); }
@@ -126,25 +126,24 @@ function updatePurchaseRow(purchaseObj){
 	// redisplayed elsewhere.
 	var hideBoughtUpgrade = ((purchaseObj.type == "upgrade") && (purchaseObj.owned == purchaseObj.limit) && !purchaseObj.salable);
 
-	// Reveal the row if  prereqs are met
-	ui.show(elem, havePrereqs && !hideBoughtUpgrade);
-
 	var maxQty = canPurchase(purchaseObj);
 	var minQty = canPurchase(purchaseObj,-Infinity);
 
-	var buyElems=elem.querySelectorAll("[data-action='purchase']");
-	var i, purchaseQty,absQty,curElem;
-	for (i = 0; i < buyElems.length; ++i)
-	{
-		curElem = buyElems[i];
-		purchaseQty = dataset(curElem,"quantity");
+	var buyElems = elem.querySelectorAll("[data-action='purchase']");
+
+	buyElems.forEach(function(elt){
+		var purchaseQty = dataset(elt, "quantity");
 		// Treat 'custom' or Infinity as +/-1.
 		//xxx Should we treat 'custom' as its appropriate value instead?
-		absQty = abs(purchaseQty);
-		if ((absQty == "custom") || (absQty == Infinity)) { purchaseQty = sgn(purchaseQty); }
+		var absQty = abs(purchaseQty);
+		if ((absQty == "custom") || (absQty == Infinity)) { 
+			purchaseQty = sgn(purchaseQty); 
+		}
+		elt.disabled = ((purchaseQty > maxQty) || (purchaseQty < minQty));
+	});
 
-		curElem.disabled = ((purchaseQty > maxQty) || (purchaseQty < minQty));
-	}
+	// Reveal the row if  prereqs are met
+	ui.show(elem, havePrereqs && !hideBoughtUpgrade);
 }
 
 
@@ -251,11 +250,10 @@ function updatePopulation (calc) {
 	// struct; most of them are now updated by the 'display' action run
 	// by updateResourceTotals().
 	displayElems = document.querySelectorAll("[data-action='display_pop']");
-	for (i=0;i<displayElems.length;++i)
-	{
-		elem = displayElems[i];
-		elem.innerHTML = prettify(Math.floor(population[dataset(elem,"target")]));
-	}
+	displayElems.forEach(function(elt){
+		var prop = dataset(elt, "target");
+		elt.innerHTML = prettify(Math.floor(population[prop]));
+	});
 
 	civData.house.update(); // TODO: Effect might change dynamically.  Need a more general way to do this.
 	civData.barn.update();
@@ -361,7 +359,7 @@ function updatePopulationBar () {
 	unitData.forEach(function(unit){
 		var p;
 		if (unit.isPopulation) {
-			p = getUnitPercent(unit.owned, population.living);
+			p = getUnitPercent(unit.owned, population.current);
 			h += (
 				'<div class="' + unit.id + '" '
 				+ ' style="width: ' + p + '%">'
@@ -371,7 +369,7 @@ function updatePopulationBar () {
 		}
 	});
 	barElt.innerHTML = (
-		'<div style="min-width: ' + getUnitPercent(population.living, population.limit) + '%">' 
+		'<div style="min-width: ' + getUnitPercent(population.current, population.limitIncludingUndead) + '%">' 
 		+ h 
 		+ '</div>'
 	);

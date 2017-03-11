@@ -194,8 +194,9 @@ function calculatePopulation () {
 	population = {
 		current:	0,
 		living:		0,
-		zombie:		0,
+		zombie:		curCiv.zombie.owned,
 		limit:		0,
+		limitIncludingUndead: 0,
 		healthy:	0,
 		totalSick:	0,
 		extra: 		0
@@ -209,27 +210,31 @@ function calculatePopulation () {
 		+ (civData.house.owned * (10 + ((civData.tenements.owned) * 2) + ((civData.slums.owned) * 2))) 
 		+ (civData.mansion.owned * 50)
 	);
+	population.limitIncludingUndead = population.limit + population.zombie;
 
 	//Update sick workers
 	unitData.forEach(function(unit) { 
 		if (unit.isPopulation) { // has to be a player, non-special, non-mechanical
-			// Calculate housed/fed population (excludes zombies)
-			population.living += unit.owned;
-			// Calculate healthy workers (excludes sick, zombies and deployed units)
+			population.current += unit.owned;
+			
 			if (unit.vulnerable) {
 				// TODO Should this use 'killable'?
 				population.healthy += unit.owned;
-			} else if (unit.ill) {
+			}
+			if (unit.ill) {
 				population.totalSick += (unit.ill||0);
+			} else {
+				population.healthy += 1; // TODO: Not sure if this is calculated right
 			}
 		} else {
 			population.extra += unit.owned;
 		}
 	});
-	population.current = population.living + curCiv.zombie.owned;
-
-	//xxx Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
-	//population.healthy -= curCiv.zombie.owned;
+	// Calculate housed/fed population (excludes zombies)
+	population.living = population.current - population.zombie;
+	// Calculate healthy workers (should exclude sick, zombies and deployed units)
+	// TODO: Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
+	population.healthy -= population.zombie;
 
 	//Zombie soldiers dying can drive population.current negative if they are 
 	// killed and zombies are the only thing left.
@@ -413,27 +418,32 @@ function payFor(costObj, qty)
 // account any applicable limits.
 // purchaseObj - The object to purchase
 // qty - Maximum number to buy/sell (use -Infinity for the max salable)
-function canPurchase(purchaseObj,qty)
-{
+function canPurchase (purchaseObj, qty) {
 	if (!purchaseObj) { return 0; }
 	if (qty === undefined) { qty = Infinity; } // Default to as many as we can.
 	if (qty === false) { qty = -1; } // Selling back a boolean item.
 
 	// Can't buy if we don't meet the prereqs.
-	if (!meetsPrereqs(purchaseObj.prereqs)) { qty = Math.min(qty, 0); }
+	if (!meetsPrereqs(purchaseObj.prereqs)) { 
+		qty = Math.min(qty, 0); 
+	}
 
 	// Can't sell more than we have (if salable at all)
 	qty = Math.max(qty, -(purchaseObj.salable ? purchaseObj.owned : 0));
-	
+
 	// If this is a relocation, can't shift more than our source pool.
-	if (purchaseObj.source) { qty = Math.min(qty, civData[purchaseObj.source].owned); }
+	if (purchaseObj.source) { 
+		qty = Math.min(qty, civData[purchaseObj.source].owned); 
+	}
 
 	// If this is a destination item, it's just a relocation of an existing
 	// item, so we ignore purchase limits.  Otherwise we check them.
-	if (purchaseObj.isDest && !purchaseObj.isDest()) { qty = Math.min(qty, purchaseObj.limit - purchaseObj.total); }
+	if (purchaseObj.isDest && !purchaseObj.isDest()) { 
+		qty = Math.min(qty, purchaseObj.limit - purchaseObj.total); 
+	}
 
 	// See if we can afford them; return fewer if we can't afford them all
-	return Math.min(qty,canAfford(purchaseObj.require));
+	return Math.min(qty, canAfford(purchaseObj.require));
 }
 
 // Generate two HTML <span> texts to display an item's cost and effect note.
@@ -1061,7 +1071,7 @@ function raiseDead(num){
 	// Find the most zombies we can raise
 	num = Math.min(num, civData.corpses.owned);
 	num = Math.max(num, -curCiv.zombie.owned);  // Cap firing by # in that job.
-	num = Math.min(num,logSearchFn(calcZombieCost,civData.piety.owned));
+	num = Math.min(num, logSearchFn(calcZombieCost,civData.piety.owned));
 
 	//Update numbers and resource levels
 	civData.piety.owned -= calcZombieCost(num);
