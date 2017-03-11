@@ -10,11 +10,15 @@ This is a fork of the open source game CivClicker, an incremental game by David 
 
 ## Community
 
-* Subreddit: https://www.reddit.com/r/CivClicker/
+* Subreddit: https://www.reddit.com/r/CivClicker/ (and also https://www.reddit.com/r/incremental_games/) 
 * Check out the FAQ: http://deathraygames.com/play-online/civ-clicker/faq.html
 
+## What's new?
 
-## Authors
+* See http://deathraygames.com/play-online/civ-clicker/updates.html for all updates since day one
+* Look through the releases on GitHub https://github.com/deathraygames/civ-clicker/releases for everything from v1.2 onward
+
+## Who's behind this?
 
 * David Holley - CivClicker v1.0 original author.
 * Scott A. Colcord - Extensive refactoring and bug fixes to all files; jsutils.js file.
