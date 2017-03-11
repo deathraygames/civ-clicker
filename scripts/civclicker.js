@@ -21,9 +21,9 @@
 var setup = {};
 var loopTimer = 0;
 
+// TODO: Update the version numbering internally
 var version = 19; // This is an ordinal used to trigger reloads.
-
-var versionData = new VersionData(1,1,59,"alpha");
+var versionData = new VersionData(1,1,59,"alpha"); // this is not accurate
 
 var saveTag = "civ";
 var saveTag2 = saveTag + "2"; // For old saves.
@@ -49,8 +49,8 @@ var civSizes = [
 
 // Declare variables here so they can be referenced later.  
 var curCiv = {
-	civName : "Woodstock",
-	rulerName : "Orteil",
+	civName: "Woodstock",
+	rulerName: "Orteil",
 
 	zombie: { owned:0 },
 	grave: { owned:0 },
@@ -71,19 +71,19 @@ var curCiv = {
 	},
 
 	raid: {
-		raiding:false, // Are we in a raid right now?
-		victory:false, // Are we in a "raid succeeded" (Plunder-enabled) state right now?
-		epop:0,  // Population of enemy we're raiding.
+		raiding: false, // Are we in a raid right now?
+		victory: false, // Are we in a "raid succeeded" (Plunder-enabled) state right now?
+		epop: 0,  // Population of enemy we're raiding.
 		plunderLoot: {}, // Loot we get if we win.
-		last:"",
-		targetMax : civSizes[0].id // Largest target allowed
+		last: "",
+		targetMax: civSizes[0].id // Largest target allowed
 	},
 
-	curWonder : {
-		name:"",
-		stage:0, // 0 = Not started, 1 = Building, 2 = Built, awaiting selection, 3 = Finished.
-		progress:0, // Percentage completed.
-		rushed:false
+	curWonder: {
+		name: "",
+		stage: 0, // 0 = Not started, 1 = Building, 2 = Built, awaiting selection, 3 = Finished.
+		progress: 0, // Percentage completed.
+		rushed: false
 	},
 	wonders:[],  // Array of {name: name, resourceId: resourceId} for all wonders.
 
