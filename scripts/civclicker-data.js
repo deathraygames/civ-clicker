@@ -125,7 +125,7 @@ function getCivData () {
 		// If population is large, temples have less effect.
 		onGain: function(num) { 
 			if (civData.aesthetics && civData.aesthetics.owned && num) { 
-				adjustMorale(num * 25 / population.current); 
+				adjustMorale(num * 25 / population.living); 
 			} 
 		}
 	}),
@@ -672,7 +672,7 @@ function getCivData () {
 		place: "party",
 		effectText:"Your raiding party" }),
 	new Unit({ 
-		id:"cavalryParty", name:"cavalry",
+		id:"cavalryParty", singular: "cavalry", plural: "cavalry",
 		source:"cavalry",
 		combatType:"cavalry", 
 		efficiency_base: 0.08,
@@ -717,44 +717,84 @@ function getCivData () {
 		effectText:"Reduce enemy casualties"}),
 	// Achievements
 		//conquest
-	new Achievement({id:"raiderAch"    , name:"Raider"         , test:function() { return curCiv.raid.victory; }}),
+	new Achievement({id:"raiderAch", name:"Raider", 
+		test:function() { return curCiv.raid.victory; }
+	}),
 		//xxx Technically this also gives credit for capturing a siege engine.
-	new Achievement({id:"engineerAch"  , name:"Engi&shy;neer"  , test:function() { return civData.siege.owned > 0; }}),
+	new Achievement({id:"engineerAch", name:"Engi&shy;neer", 
+		test:function() { return civData.siege.owned > 0; }
+	}),
 		// If we beat the largest possible opponent, grant bonus achievement.
-	new Achievement({id:"dominationAch", name:"Domi&shy;nation", test:function() { return curCiv.raid.victory && (curCiv.raid.last == civSizes[civSizes.length-1].id); }}),
+	new Achievement({id:"dominationAch", name:"Domi&shy;nation", 
+		test:function() { return curCiv.raid.victory && (curCiv.raid.last == civSizes[civSizes.length-1].id); }
+	}),
 		//Morale
-	new Achievement({id:"hatedAch"     , name:"Hated"          , test:function() { return curCiv.morale.efficiency <= 0.5; }}),
-	new Achievement({id:"lovedAch"     , name:"Loved"          , test:function() { return curCiv.morale.efficiency >= 1.5; }}),
+	new Achievement({id:"hatedAch", name:"Hated", 
+		test:function() { return curCiv.morale.efficiency <= 0.5; }
+	}),
+	new Achievement({id:"lovedAch", name:"Loved", 
+		test:function() { return curCiv.morale.efficiency >= 1.5; }
+	}),
 		//cats
-	new Achievement({id:"catAch"       , name:"Cat!"           , test:function() { return civData.cat.owned >= 1; }}),
-	new Achievement({id:"glaringAch"   , name:"Glaring"        , test:function() { return civData.cat.owned >= 10; }}),
-	new Achievement({id:"clowderAch"   , name:"Clowder"        , test:function() { return civData.cat.owned >= 100; }}),
+	new Achievement({id:"catAch", name:"Cat!", 
+		test:function() { return civData.cat.owned >= 1; }
+	}),
+	new Achievement({id:"glaringAch", name:"Glaring", 
+		test:function() { return civData.cat.owned >= 10; }
+	}),
+	new Achievement({id:"clowderAch", name:"Clowder", 
+		test:function() { return civData.cat.owned >= 100; }
+	}),
 		//other population
 		//Plagued achievement requires sick people to outnumber healthy
-	new Achievement({id:"plaguedAch"   , name:"Plagued"        , test:function() { return population.totalSick > population.healthy; }}),
-	new Achievement({id:"ghostTownAch" , name:"Ghost Town"     , test:function() { return (population.current === 0) && (population.limit >= 1000); }}),
+	new Achievement({id:"plaguedAch", name:"Plagued"        , 
+		test:function() { return population.totalSick > population.healthy; }
+	}),
+	new Achievement({id:"ghostTownAch", name:"Ghost Town"     , 
+		test:function() { return (population.living === 0 && population.limit >= 1000); }
+	}),
 		//deities
 		//xxx TODO: Should make this loop through the domains
-	new Achievement({id:"battleAch"    , name:"Battle"         , test:function() { return getCurDeityDomain() == "battle"; }}),
-	new Achievement({id:"fieldsAch"    , name:"Fields"         , test:function() { return getCurDeityDomain() == "fields"; }}),
-	new Achievement({id:"underworldAch", name:"Under&shy;world", test:function() { return getCurDeityDomain() == "underworld"; }}),
-	new Achievement({id:"catsAch"      , name:"Cats"           , test:function() { return getCurDeityDomain() == "cats"; }}),
+	new Achievement({id:"battleAch", name:"Battle", 
+		test:function() { return getCurDeityDomain() == "battle"; }
+	}),
+	new Achievement({id:"fieldsAch", name:"Fields", 
+		test:function() { return getCurDeityDomain() == "fields"; }
+	}),
+	new Achievement({id:"underworldAch", name:"Under&shy;world", 
+		test:function() { return getCurDeityDomain() == "underworld"; }
+	}),
+	new Achievement({id:"catsAch", name:"Cats", 
+		test:function() { return getCurDeityDomain() == "cats"; }
+	}),
 		//xxx It might be better if this checked for all domains in the Pantheon at once (no iconoclasming old ones away).
-	new Achievement({id:"fullHouseAch" , name:"Full House"     , test:function() { return civData.battleAch.owned && civData.fieldsAch.owned && civData.underworldAch.owned && civData.catsAch.owned; }}),
+	new Achievement({id:"fullHouseAch", name:"Full House", 
+		test:function() { return civData.battleAch.owned && civData.fieldsAch.owned && civData.underworldAch.owned && civData.catsAch.owned; }
+	}),
 		//wonders
-	new Achievement({id:"wonderAch"    , name:"Wonder"         , test:function() { return curCiv.curWonder.stage === 3; }}),
-	new Achievement({id:"sevenAch"     , name:"Seven!"         , test:function() { return curCiv.wonders.length >= 7; }}),
+	new Achievement({id:"wonderAch", name:"Wonder", 
+		test:function() { return curCiv.curWonder.stage === 3; }
+	}),
+	new Achievement({id:"sevenAch", name:"Seven!", 
+		test:function() { return curCiv.wonders.length >= 7; }
+	}),
 		//trading
-	new Achievement({id:"merchantAch"  , name:"Merch&shy;ant"  , test:function() { return civData.gold.owned > 0; }}),
-	new Achievement({id:"rushedAch"    , name:"Rushed"         , test:function() { return curCiv.curWonder.rushed; }}),
+	new Achievement({id:"merchantAch", name:"Merch&shy;ant"  , 
+		test:function() { return civData.gold.owned > 0; }
+	}),
+	new Achievement({id:"rushedAch", name:"Rushed", 
+		test:function() { return curCiv.curWonder.rushed; }
+	}),
 		//other
-	new Achievement({id:"neverclickAch", name:"Never&shy;click", test:function() { return curCiv.curWonder.stage === 3 && curCiv.resourceClicks <= 22; }})
+	new Achievement({id:"neverclickAch", name:"Never&shy;click", 
+		test:function() { return curCiv.curWonder.stage === 3 && curCiv.resourceClicks <= 22; 
+		}})
 	];
 
 	function augmentCivData() {
 		var i;
 		var testCivSizeAch = function() { 
-			return (this.id == civSizes.getCivSize(population.current).id+"Ach"); 
+			return (this.id == civSizes.getCivSize(population.living).id+"Ach"); 
 		};
 		// Add the civ size based achivements to the front of the data, so that they come first.
 		for (i=civSizes.length-1;i>0;--i) {

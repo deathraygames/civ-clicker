@@ -7,7 +7,7 @@ function updateAll () {
 	updateBuildingButtons();
 	updateJobButtons();
 	updatePartyButtons();
-	updatePopulationUI();
+	updatePopulation();
 	updateTargets();
 	updateDevotion();
 	updateWonder();
@@ -178,7 +178,7 @@ function updateResourceTotals(){
 	// is presumed to contain
 	// the global variable name to be displayed as the element's content.
 	//xxx Note that this is now also updating nearly all updatable values,
-	// including population.
+	// including population
 	displayElems = document.querySelectorAll("[data-action='display']");
 	for (i=0;i<displayElems.length;++i)
 	{
@@ -229,47 +229,10 @@ function updateResourceTotals(){
 
 	// Cheaters don't get names.
 	ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
-
-	updatePopulation(); //updatePopulation() handles the population limit, which is determined by buildings.
-	updatePopulationUI(); //xxx Maybe remove this?
-}
-
-function updatePopulation(){
-	//Update population limit by multiplying out housing numbers
-	population.limit = civData.tent.owned + (civData.hut.owned * 3) + (civData.cottage.owned * 6) + (civData.house.owned * (10 + ((civData.tenements.owned) * 2) + ((civData.slums.owned) * 2))) + (civData.mansion.owned * 50);
-
-	//Update sick workers
-	population.totalSick = 0;
-	unitData.forEach(function(elem) { if (elem.alignment == "player") { population.totalSick += (elem.ill||0); } });
-	ui.show("#totalSickRow",(population.totalSick > 0));
-
-	//Calculate healthy workers (excludes sick, zombies and deployed units)
-	//xxx Should this use 'killable'?
-	population.healthy = 0;
-	unitData.forEach(function(elem) { if ((elem.vulnerable)) { population.healthy += elem.owned; } });
-	//xxx Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
-	population.healthy -= curCiv.zombie.owned;
-
-	//Calculate housed/fed population (excludes zombies)
-	population.current = population.healthy + population.totalSick;
-	unitData.forEach(function(elem) { if ((elem.alignment == "player")&&(elem.subType == "normal")&&(elem.place == "party")) 
-	{ population.current += elem.owned; } });
-
-	//Zombie soldiers dying can drive population.current negative if they are killed and zombies are the only thing left.
-	//xxx This seems like a hack that should be given a real fix.
-	if (population.current < 0){
-		if (curCiv.zombie.owned > 0){
-			//This fixes that by removing zombies and setting to zero.
-			curCiv.zombie.owned += population.current;
-			population.current = 0;
-		} else {
-			console.log("Warning: Negative current population detected.");
-		}
-	}
 }
 
 //Update page with numbers
-function updatePopulationUI() {
+function updatePopulation (calc) {
 	var i, elem, elems, displayElems,
 		spawn1button = ui.find("#spawn1button"),
 		spawnCustomButton = ui.find("#spawnCustomButton"),
@@ -277,6 +240,8 @@ function updatePopulationUI() {
 		spawn10button = ui.find("#spawn10button"),
 		spawn100button = ui.find("#spawn100button"),
 		spawn1000button = ui.find("#spawn1000button");
+
+	if (calc) { calculatePopulation(); }
 
 	// Scan the HTML document for elements with a "data-action" element of
 	// "display_pop".  The "data-target" of such elements is presumed to contain
@@ -296,21 +261,15 @@ function updatePopulationUI() {
 	civData.barn.update();
 
 	ui.show("#graveTotal", (curCiv.grave.owned > 0));
+	ui.show("#totalSickRow",(population.totalSick > 0));
 
 	//As population increases, various things change
 	// Update our civ type name
-	var civType = civSizes.getCivSize(population.current).name;
-	if (population.current === 0 && population.limit >= 1000){
-		civType = "Ghost Town";
-	}
-	if (curCiv.zombie.owned >= 1000 && curCiv.zombie.owned >= 2 * population.current){ //easter egg
-		civType = "Necropolis";
-	}
-	ui.find("#civType").innerHTML = civType;
+	ui.find("#civType").innerHTML = getCivType();
 
 	//Unlocking interface elements as population increases to reduce unnecessary clicking
 	//xxx These should be reset in reset()
-	if (population.current + curCiv.zombie.owned >= 10) {
+	if (population.current >= 10) {
 		if (!settings.customIncr){    
 			elems = document.getElementsByClassName("unit10");
 			for(i = 0; i < elems.length; i++) {
@@ -318,7 +277,7 @@ function updatePopulationUI() {
 			}
 		}
 	}
-	if (population.current + curCiv.zombie.owned >= 100) {
+	if (population.current >= 100) {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building10");
 			for(i = 0; i < elems.length; i++) {
@@ -330,7 +289,7 @@ function updatePopulationUI() {
 			}
 		}
 	}
-	if (population.current + curCiv.zombie.owned >= 1000) {
+	if (population.current >= 1000) {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building100");
 			for(i = 0; i < elems.length; i++) {
@@ -346,7 +305,7 @@ function updatePopulationUI() {
 			}
 		}
 	}
-	if (population.current + curCiv.zombie.owned >= 10000) {
+	if (population.current >= 10000) {
 		if (!settings.customIncr){
 			elems = document.getElementsByClassName("building1000");
 			for(i = 0; i < elems.length; i++) {
@@ -356,7 +315,7 @@ function updatePopulationUI() {
 	}
 
 	//Turning on/off buttons based on free space.
-	var maxSpawn = Math.max(0,Math.min((population.limit - population.current),logSearchFn(calcWorkerCost,civData.food.owned)));
+	var maxSpawn = Math.max(0,Math.min((population.limit - population.living),logSearchFn(calcWorkerCost,civData.food.owned)));
 
 	spawn1button.disabled = (maxSpawn < 1);
 	spawnCustomButton.disabled = (maxSpawn < 1);
@@ -372,7 +331,7 @@ function updatePopulationUI() {
 	ui.find("#raiseDeadMax").disabled = (maxRaise < 1);
 	ui.find("#raiseDead100").disabled = (maxRaise < 100);
 
-	//Calculates and displays the cost of buying workers at the current population.
+	//Calculates and displays the cost of buying workers at the current population
 	ui.find("#raiseDeadCost").innerHTML = prettify(Math.round(calcZombieCost(1)));
 
 	ui.find("#workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
@@ -397,22 +356,22 @@ function updatePopulationBar () {
 	var barElt = ui.find("#populationBar");
 	var h = '';
 	function getUnitPercent (x, y) {
-		return (Math.floor(1000 * (x / y)) / 10);
+		return (Math.floor(100000 * (x / y)) / 1000);
 	}
 	unitData.forEach(function(unit){
 		var p;
-		if (unit.id === "cat") {
-			return;
+		if (unit.isPopulation) {
+			p = getUnitPercent(unit.owned, population.living);
+			h += (
+				'<div class="' + unit.id + '" '
+				+ ' style="width: ' + p + '%">'
+				+ '<span>' + (Math.round(p * 10)/10) + '% ' + unit.plural + '</span>'
+				+ '</div>'
+			);
 		}
-		p = getUnitPercent(unit.owned, population.current);
-		h += (
-			'<div class="' + unit.id + '" '
-			+ ' style="width: ' + p + '%">'
-			+ '<span>' + p + '% ' + unit.plural + '</span>'
-			+ '</div>'
-		);
 	});
-	barElt.innerHTML = ('<div style="min-width: ' + getUnitPercent(population.current, population.limit) + '%">' 
+	barElt.innerHTML = (
+		'<div style="min-width: ' + getUnitPercent(population.living, population.limit) + '%">' 
 		+ h 
 		+ '</div>'
 	);
@@ -577,7 +536,7 @@ function updateMorale(){
 	var happinessRank; // Lower is better
 	var elt = ui.find("#morale");
 	//first check there's someone to be happy or unhappy, not including zombies
-	if (population.current < 1) { 
+	if (population.living < 1) { 
 		elt.className = "";
 		return;
 	}

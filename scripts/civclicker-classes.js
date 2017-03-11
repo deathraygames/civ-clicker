@@ -175,6 +175,19 @@ Unit.prototype = new CivObj({
 	set vulnerable(value) { 
 		return this.vulnerable; 
 	}, // Only here for JSLint.
+	get isPopulation () {
+		if (this.alignment != "player") { 
+			return false; 
+		} else if (this.subType == "special" || this.species == "mechanical") { 
+			return false;
+		} else {
+			//return (this.place == "home")
+			return true;
+		}
+	},
+	set isPopulation (v) {
+		return this.isPopulation;
+	},
 	init: function(fullInit) { 
 		CivObj.prototype.init.call(this,fullInit);
 		// Right now, only vulnerable human units can get sick.

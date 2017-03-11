@@ -100,9 +100,12 @@ var curCiv = {
 // These are not saved, but we need them up here for the asset data to init properly.
 var population = {
 	current:	0,
+	living:		0,
+	zombie:		0,
 	limit:		0,
 	healthy:	0,
-	totalSick:	0
+	totalSick:	0,
+	extra: 		0
 };
 
 // Caches the total number of each wonder, so that we don't have to recount repeatedly.
@@ -185,6 +188,74 @@ function setIndexArrays (civData) {
 	});
 }
 
+
+function calculatePopulation () {
+
+	population = {
+		current:	0,
+		living:		0,
+		zombie:		0,
+		limit:		0,
+		healthy:	0,
+		totalSick:	0,
+		extra: 		0
+	};
+
+	//Update population limit by multiplying out housing numbers
+	population.limit = (
+		civData.tent.owned 
+		+ (civData.hut.owned * 3) 
+		+ (civData.cottage.owned * 6) 
+		+ (civData.house.owned * (10 + ((civData.tenements.owned) * 2) + ((civData.slums.owned) * 2))) 
+		+ (civData.mansion.owned * 50)
+	);
+
+	//Update sick workers
+	unitData.forEach(function(unit) { 
+		if (unit.isPopulation) { // has to be a player, non-special, non-mechanical
+			// Calculate housed/fed population (excludes zombies)
+			population.living += unit.owned;
+			// Calculate healthy workers (excludes sick, zombies and deployed units)
+			if (unit.vulnerable) {
+				// TODO Should this use 'killable'?
+				population.healthy += unit.owned;
+			} else if (unit.ill) {
+				population.totalSick += (unit.ill||0);
+			}
+		} else {
+			population.extra += unit.owned;
+		}
+	});
+	population.current = population.living + curCiv.zombie.owned;
+
+	//xxx Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
+	//population.healthy -= curCiv.zombie.owned;
+
+	//Zombie soldiers dying can drive population.current negative if they are 
+	// killed and zombies are the only thing left.
+	// TODO: This seems like a hack that should be given a real fix.
+	if (population.current < 0){
+		if (curCiv.zombie.owned > 0){
+			//This fixes that by removing zombies and setting to zero.
+			curCiv.zombie.owned += population.current;
+			population.current = 0;
+		} else {
+			console.warn("Warning: Negative current population detected.");
+		}
+	}	
+}
+
+
+function getCivType () {
+	var civType = civSizes.getCivSize(population.living).name;
+	if (population.living === 0 && population.limit >= 1000){
+		civType = "Ghost Town";
+	}
+	if (population.zombie >= 1000 && population.zombie >= 2 * population.living){ //easter egg
+		civType = "Necropolis";
+	}
+	return civType;
+}
 
 
 
@@ -365,24 +436,6 @@ function canPurchase(purchaseObj,qty)
 	return Math.min(qty,canAfford(purchaseObj.require));
 }
 
-
-// Interface initialization code
-
-// Much of this interface consists of tables of buttons, columns of which get
-// revealed or hidden based on toggles and population.  Currently, we do this
-// by setting the "display" property on every affected <td>.  This is very
-// inefficient, because it forces a table re-layout after every cell change.
-//
-// A better approach tried but ultimately abandoned was to use <col> elements
-// to try to manipulate the columns wholesale.  Unfortunately, <col> is
-// minimally useful, because only a few CSS properties are supported on <col>.
-// Even though one of those, "visibility", purports to have the "collapse" 
-// value for just this purpose, it doesn't work; brower support for this
-// property is very inconsistent, particularly in the handling of cell borders.
-//
-// Eventually, I hope to implement dynamic CSS rules, so that I can restyle 
-// lots of elements at once.
-
 // Generate two HTML <span> texts to display an item's cost and effect note.
 function getCostNote(civObj)
 {
@@ -554,6 +607,7 @@ function getUpgradeRowText(upgradeObj, inTable)
 	s +=    "</"+rowTagName+">";
 	return s;
 }
+
 function getPantheonUpgradeRowText(upgradeObj)
 {
 	if (!upgradeObj) { return ""; }
@@ -579,6 +633,7 @@ function getPantheonUpgradeRowText(upgradeObj)
 
 	return s;
 }
+
 // Returns the new element
 function setPantheonUpgradeRowText(upgradeObj)
 {
@@ -589,6 +644,7 @@ function setPantheonUpgradeRowText(upgradeObj)
 	elem.outerHTML = getPantheonUpgradeRowText(upgradeObj); // Replaces elem
 	return document.getElementById(upgradeObj.id+"Row"); // Return replaced element
 }
+
 // Dynamically create the upgrade purchase buttons.
 function addUpgradeRows()
 {
@@ -817,7 +873,7 @@ function doPurchase(objId,num){
 
 	updateRequirements(purchaseObj); //Increases buildings' costs
 	updateResourceTotals(); //Update page with lower resource values and higher building total
-	updatePopulationUI(); //Updates the army display
+	updatePopulation(); //Updates the army display
 	updateResourceRows(); //Update resource display
 	updateBuildingButtons(); //Update the buttons themselves
 	updateJobButtons(); //Update page with individual worker numbers, since limits might have changed.
@@ -867,10 +923,14 @@ function getCustomNumber(civObj){
 //Calculates and returns the cost of adding a certain number of workers at the present population
 //xxx Make this work for negative numbers
 function calcWorkerCost(num, curPop){
-	if (curPop === undefined) { curPop = population.current; }
+	if (curPop === undefined) { 
+		curPop = population.living;
+	}
 	return (20*num) + calcArithSum(0.01, curPop, curPop + num);
 }
-function calcZombieCost(num){ return calcWorkerCost(num, curCiv.zombie.owned)/5; }
+function calcZombieCost(num){ 
+	return calcWorkerCost(num, population.zombie)/5; 
+}
 
 
 
@@ -892,7 +952,7 @@ function spawn(num){
 	num = Math.min(num,logSearchFn(calcWorkerCost,civData.food.owned));
 
 	// Apply population limit, and only allow whole workers.
-	num = Math.min(num, (population.limit - population.current));
+	num = Math.min(num, (population.limit - population.living));
 
 	// Update numbers and resource levels
 	civData.food.owned -= calcWorkerCost(num);
@@ -904,13 +964,13 @@ function spawn(num){
 	} else { 
 		bums.owned += num; 
 	}
-	updatePopulation(); //Run through the population->job update cycle
+	calculatePopulation(); //Run through the population->job update cycle
 
 	//This is intentionally independent of the number of workers spawned
 	if (Math.random() * 100 < 1 + (civData.lure.owned)) { spawnCat(); }
 
 	updateResourceTotals(); //update with new resource number
-	updatePopulationUI();
+	updatePopulation();
 	
 	return num;
 }
@@ -944,7 +1004,7 @@ function pickStarveTarget() {
 function starve(num) {
 	var targetObj,i;
 	if (num === undefined) { num = 1; }
-	num = Math.min(num,population.current);
+	num = Math.min(num, population.living);
 
 	for (i=0;i<num;++i)
 	{
@@ -953,7 +1013,7 @@ function starve(num) {
 
 		if (targetObj.ill) { --targetObj.ill; }
 		else               { --targetObj.owned; }
-		updatePopulation();
+		calculatePopulation();
 
 		++civData.corpses.owned; //Increments corpse number
 		//Workers dying may trigger Book of the Dead
@@ -964,7 +1024,7 @@ function starve(num) {
 }
 
 function doStarve() {
-	var corpsesEaten, num_starve;
+	var corpsesEaten, starve;
 	if (civData.food.owned < 0 && civData.waste.owned) // Workers eat corpses if needed
 	{
 		corpsesEaten = Math.min(civData.corpses.owned, -civData.food.owned);
@@ -974,9 +1034,12 @@ function doStarve() {
 
 	if (civData.food.owned < 0) { // starve if there's not enough food.
 		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
-		num_starve = starve(Math.ceil(population.current/1000));
-		if (num_starve == 1) { gameLog("A worker starved to death"); }
-		if (num_starve > 1) { gameLog(prettify(num_starve) + " workers starved to death"); }
+		starve = starve(Math.ceil(population.living/1000));
+		if (starve == 1) { 
+			gameLog("A citizen starved to death"); 
+		} else if (starve > 1) { 
+			gameLog(prettify(starve) + " citizens starved to death"); 
+		}
 		adjustMorale(-0.01);
 		civData.food.owned = 0;
 	}
@@ -1012,8 +1075,8 @@ function raiseDead(num){
 	else if (num == -1) { gameLog("A zombie crumples to the ground, inanimate."); }
 	else if (num  < -1) { gameLog("The zombies fall, mere corpses once again."); }
 
-	updatePopulation(); //Run through population->jobs cycle to update page with zombie and corpse totals
-	updatePopulationUI();
+	calculatePopulation(); //Run through population->jobs cycle to update page with zombie and corpse totals
+	updatePopulation();
 	updateResourceTotals(); //Update any piety spent
 
 	return num;
@@ -1045,7 +1108,7 @@ function selectDeity(domain,force){
 function digGraves(num){
 	//Creates new unfilled graves.
 	curCiv.grave.owned += 100 * num;
-	updatePopulationUI(); //Update page with grave numbers
+	updatePopulation(); //Update page with grave numbers
 }
 
 //Selects a random healthy worker based on their proportions in the current job distribution.
@@ -1075,7 +1138,7 @@ function wickerman(){
 	//Pay the price
 	if (!payFor(civData.wickerman.require)) { return; }
 	--civData[job].owned;
-	updatePopulation(); //Removes killed worker
+	calculatePopulation(); //Removes killed worker
 
 	//Select a random lootable resource
 	var rewardObj = lootable[Math.floor(Math.random() * lootable.length)];
@@ -1099,7 +1162,7 @@ function wickerman(){
 
 	gameLog("Burned a " + civData[job].getQtyName(1) + ". " + getRewardMessage(rewardObj));
 	updateResourceTotals(); //Adds new resources
-	updatePopulationUI();
+	updatePopulation();
 }
 
 function walk(increment){
@@ -1127,13 +1190,8 @@ function tickWalk() {
 		target = randomHealthyWorker(); //xxx Need to modify this to do them all at once.
 		if (!target){ break; } 
 		--civData[target].owned;
-		// We don't want to do UpdatePopulation() in a loop, so we just do the
-		// relevent adjustments directly.
-		--population.current;
-		--population.healthy;
 	}
-	updatePopulation();
-	updatePopulationUI();
+	updatePopulation(true);
 }
 
 // Give a temporary bonus based on the number of cats owned.
@@ -1191,7 +1249,7 @@ function spawnMob(mobObj, num){
 	var num_sge = 0, msg = "";
  
 	if (num === undefined) { // By default, base numbers on current population
-		var max_mob = ((population.current + curCiv.zombie.owned) / 50);
+		var max_mob = (population.current / 50);
 		num = Math.ceil(max_mob*Math.random());
 	}
 
@@ -1321,9 +1379,9 @@ function grace(delta){
 //xxx Eventually, we should have events like deaths affect morale (scaled by %age of total pop)
 function adjustMorale(delta) {
 	//Changes and updates morale given a delta value
-	if (population.current + curCiv.zombie.owned > 0) { //dividing by zero is bad for hive
+	if (population.current > 0) { //dividing by zero is bad for hive
 		//calculates zombie proportion (zombies do not become happy or sad)
-		var fraction = population.current / (population.current + curCiv.zombie.owned);
+		var fraction = population.living / population.current;
 		var max = 1 + (0.5 * fraction);
 		var min = 1 - (0.5 * fraction);
 		//alters morale
@@ -2259,8 +2317,8 @@ function tickAutosave() {
 function doFarmers() {
 	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
 	var millMod = 1;
-	if (population.current > 0 || curCiv.zombie.owned > 0) { 
-		millMod = population.current / (population.current + curCiv.zombie.owned); 
+	if (population.current > 0) { 
+		millMod = population.living / population.current; 
 	}
 	civData.food.net = (
 		civData.farmer.owned 
@@ -2270,7 +2328,7 @@ function doFarmers() {
 		* (1 + civData.walk.rate/120) 
 		* (1 + civData.mill.owned * millMod / 200) //Farmers farm food
 	);
-	civData.food.net -= population.current; //The living population eats food.
+	civData.food.net -= population.living; //The living population eats food.
 	civData.food.owned += civData.food.net;
 	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
 		var skinsChance = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
@@ -2341,9 +2399,9 @@ function heal(job,num)
 	num = Math.min(num,civData[job].ill);
 	num = Math.max(num,-civData[job].owned);
 	civData[job].ill -= num;
-	population.totalSick -= num;
 	civData[job].owned += num;
-	population.healthy += num;
+
+	calculatePopulation();
 
 	return num;
 }
@@ -2353,9 +2411,11 @@ function plague(sickNum){
 	var actualNum = 0;
 	var i;
 
-	updatePopulation();
+	calculatePopulation();
 	// Apply in 1-worker groups to spread it out.
-	for (i=0;i<sickNum;i++){ actualNum += -heal(randomHealthyWorker(),-1); }
+	for (i=0;i<sickNum;i++){ 
+		actualNum += -heal(randomHealthyWorker(),-1); 
+	}
 
 	return actualNum;
 }
@@ -2409,27 +2469,33 @@ function doGraveyards()
 				curCiv.grave.owned -= 1;
 			}
 		}
-		updatePopulationUI();
+		updatePopulation();
 	}
 }
 
 function doCorpses() {
+	var sickChance;
+	var infected;
+	// Nothing happens if there are no corpses
 	if (civData.corpses.owned <= 0) { return; }
 
 	// Corpses lying around will occasionally make people sick.
 	// 1-in-50 chance (1-in-100 with feast)
-	var sickChance = 50 * Math.random() * (1 + civData.feast.owned);
+	sickChance = 50 * Math.random() * (1 + civData.feast.owned);
 	if (sickChance >= 1) { return; }
 
 	// Infect up to 1% of the population.
-	var num = Math.floor(population.current/100 * Math.random());
-	if (num <= 0) {  return; }
+	infected = Math.floor(population.living/100 * Math.random());
+	if (infected <= 0) {  return; }
 
-	num = plague(num);
-	if (num > 0) {
-		updatePopulation();
-		gameLog(prettify(num) + " workers got sick"); //notify player
+	infected = plague(infected);
+	if (infected > 0) {
+		calculatePopulation();
+		gameLog(prettify(infected) + " citizens got sick"); //notify player
 	}
+
+	// Corpse decays (at least there is a bright side)
+	civData.corpses.owned -= 1;
 }
 
 // Returns all of the combatants present for a given place and alignment that.
@@ -2478,7 +2544,7 @@ function doFight(attacker,defender)
 	if (civData.book.owned) { civData.piety.owned += (attackerCas + defenderCas) * 10; }
 
 	//Updates population figures (including total population)
-	updatePopulation();
+	calculatePopulation();
 }
 
 
@@ -2498,7 +2564,7 @@ function doSlaughter(attacker)
 		var leaving = Math.ceil(attacker.owned * Math.random() * attacker.killFatigue);
 		attacker.owned -= leaving;
 	}
-	updatePopulation();
+	calculatePopulation();
 }
 
 function doLoot(attacker)
@@ -2542,7 +2608,7 @@ function doSack(attacker)
 	if (--attacker.owned < 0) { attacker.owned = 0; } // Attackers leave after sacking something.
 	updateRequirements(target);
 	updateResourceTotals();
-	updatePopulation(); // Limits might change
+	calculatePopulation(); // Limits might change
 }
 
 function doHavoc(attacker)
@@ -2663,7 +2729,7 @@ function doLabourers() {
 		civData.unemployed.ill += civData.labourer.ill;
 		civData.labourer.owned = 0;
 		civData.labourer.ill = 0;
-		updatePopulation();
+		calculatePopulation();
 		
 		//then set wonder.stage so things will be updated appropriately
 		++curCiv.curWonder.stage;
@@ -2716,17 +2782,19 @@ function doMobs() {
 	//Checks when mobs will attack
 	//xxx Perhaps this should go after the mobs attack, so we give 1 turn's warning?
 	var mobType, choose;
-	if (population.current + curCiv.zombie.owned > 0) { ++curCiv.attackCounter; } // No attacks if deserted.
-	if (population.current + curCiv.zombie.owned > 0 && curCiv.attackCounter > (60 * 5)){ //Minimum 5 minutes
+	if (population.current > 0) { // No attacks if deserted.
+		++curCiv.attackCounter; 
+	} 
+	if (population.current > 0 && curCiv.attackCounter > (60 * 5)){ //Minimum 5 minutes
 		if (600*Math.random() < 1) {
 			curCiv.attackCounter = 0;
 			//Choose which kind of mob will attack
 			mobType = "wolf"; // Default to wolves
-			if (population.current + curCiv.zombie.owned >= 10000) {
+			if (population.current >= 10000) {
 				choose = Math.random();
 				if      (choose > 0.5) { mobType = "barbarian"; } 
 				else if (choose > 0.2) { mobType = "bandit"; }
-			} else if (population.current + curCiv.zombie.owned >= 1000) {
+			} else if (population.current >= 1000) {
 				if (Math.random() > 0.5) { mobType = "bandit"; }
 			}
 			spawnMob(civData[mobType]);
@@ -2748,10 +2816,10 @@ function tickTraders() {
 	var delayMult = 60 * (3 - ((civData.currency.owned)+(civData.commerce.owned)));
 	var check;
 	//traders occasionally show up
-	if (population.current + curCiv.zombie.owned > 0) { 
+	if (population.current > 0) { 
 		++curCiv.trader.counter; 
 	}
-	if (population.current + curCiv.zombie.owned > 0 && curCiv.trader.counter > delayMult){
+	if (population.current > 0 && curCiv.trader.counter > delayMult){
 		check = Math.random() * delayMult;
 		if (check < (1 + (0.2 * (civData.comfort.owned)))){
 			curCiv.trader.counter = 0;
@@ -2843,7 +2911,7 @@ function onToggleAutosave(control){ return setAutosave(control.checked); }
 function setCustomQuantities(value){
 	var i;
 	var elems;
-	var curPop = population.current + curCiv.zombie.owned;
+	var curPop = population.current;
 
 	if (value !== undefined) { settings.customIncr = value; }
 	ui.find("#toggleCustomQuantities").checked = settings.customIncr;
@@ -3040,6 +3108,8 @@ function gameLoop () {
 	
 	tickAutosave();
 
+	calculatePopulation();
+
 	// The "net" values for special resources are just running totals of the
 	// adjustments made each tick; as such they need to be zero'd out at the
 	// start of each new tick.
@@ -3111,9 +3181,8 @@ function ruinFun(){
 	civData.piety.owned += 1000000;
 	civData.gold.owned += 10000;
 	renameRuler("Cheater");
-	updatePopulation();
-	updateUpgrades();
-	updateResourceTotals();
+	calculatePopulation();
+	updateAll();
 };
 
 
