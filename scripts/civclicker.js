@@ -235,10 +235,10 @@ function calculatePopulation () {
 		}
 	});
 	// Calculate housed/fed population (excludes zombies)
-	population.living = population.current - population.zombie;
+	population.living = Math.max(0, population.current - population.zombie);
 	// Calculate healthy workers (should exclude sick, zombies and deployed units)
 	// TODO: Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
-	population.healthy -= population.zombie;
+	population.healthy = Math.max(0, population.healthy - population.zombie);
 
 	//Zombie soldiers dying can drive population.current negative if they are 
 	// killed and zombies are the only thing left.
@@ -1397,6 +1397,10 @@ function grace(delta){
 //xxx Eventually, we should have events like deaths affect morale (scaled by %age of total pop)
 function adjustMorale(delta) {
 	//Changes and updates morale given a delta value
+	if (delta > 1000) {
+		//console.warn("Cannot adjust morale by so much", delta);
+		return;
+	}
 	if (population.current > 0) { //dividing by zero is bad for hive
 		//calculates zombie proportion (zombies do not become happy or sad)
 		var fraction = population.living / population.current;
@@ -2600,16 +2604,19 @@ function doSlaughter(attacker)
 {
 	var killVerb = (attacker.species == "animal") ? "eaten" : "killed";
 	var target = randomHealthyWorker(); //Choose random worker
+	var targetUnit = civData[target];
 	if (target) { 
-		// An attacker may disappear after killing
-		if (Math.random() < attacker.killExhaustion) { --attacker.owned; }
+		if (targetUnit.owned >= 1) {
+			// An attacker may disappear after killing
+			if (Math.random() < attacker.killExhaustion) { --attacker.owned; }
 
-		--civData[target].owned;
-		// Animals will eat the corpse
-		if (attacker.species != "animal") { 
-			++civData.corpses.owned; 
-		} 
-		gameLog(civData[target].getQtyName(1) + " " + killVerb + " by " + attacker.getQtyName(attacker.owned));
+			targetUnit.owned -= 1;
+			// Animals will eat the corpse
+			if (attacker.species != "animal") { 
+				civData.corpses.owned += 1; 
+			} 
+			gameLog(targetUnit.getQtyName(1) + " " + killVerb + " by " + attacker.getQtyName(attacker.owned));
+		}
 	} else { // Attackers slowly leave once everyone is dead
 		var leaving = Math.ceil(attacker.owned * Math.random() * attacker.killFatigue);
 		attacker.owned -= leaving;
