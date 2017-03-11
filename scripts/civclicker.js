@@ -2183,7 +2183,7 @@ function deleteSave(){
 function renameCiv(newName){
 	//Prompts player, uses result as new civName
 	while (!newName) {
-		newName = prompt("Please name your civilisation",(newName || curCiv.civName || "Woodstock"));
+		newName = prompt("Please name your civilization",(newName || curCiv.civName || "Woodstock"));
 		if ((newName === null)&&(curCiv.civName)) { return; } // Cancelled
 	}
 
