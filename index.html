@@ -204,27 +204,31 @@
 			<!-- populated by javascript -->
 		</div>
 		<div id="populationCreate">
-			<div>
-				Recruit new citizens as
-				<select type="dropdown" id="newSpawnJobSelection">
-					<option value="unemployed">Idle Citizens</option>
-					<option value="farmer">Farmers</option>
-					<option value="woodcutter">Woodcutters</option>
-					<option value="miner">Miners</option>
-				</select>
-				<span class="cost">for <span id="workerCost">...</span> food</span><span class="note">.</span>
-				<button class="unit1" id="spawn1button" onmousedown="spawn(1)">+1</button>
-				<button class="unit10" id="spawn10button" onmousedown="spawn(10)">+10</button>
-				<button class="unit100" id="spawn100button" onmousedown="spawn(100)">+100</button>
-				<button class="unit1000" id="spawn1000button" onmousedown="spawn(1000)">+1k</button>
-				<button class="unitInfinity" id="spawnMaxbutton" onmousedown="spawn(Infinity)">+<span id="workerNumMax">Max</span></button>
+			<div class="row">
+        <div class="col-sm-3">Recruit new citizens as</div>
+        <div class="col-sm-3">
+          <select class="form-control" type="dropdown" id="newSpawnJobSelection">
+            <option value="unemployed">Idle Citizens</option>
+            <option value="farmer">Farmers</option>
+            <option value="woodcutter">Woodcutters</option>
+            <option value="miner">Miners</option>
+          </select>
+        </div>
+        <div class="col-sm-6">
+          <span class="cost">for <span id="workerCost">...</span> food</span><span class="note">.</span>
+          <button class="btn btn-default btn-xs unit1" id="spawn1button" onmousedown="spawn(1)">+1</button>
+          <button class="btn btn-default btn-xs unit10" id="spawn10button" onmousedown="spawn(10)">+10</button>
+          <button class="btn btn-default btn-xs unit100" id="spawn100button" onmousedown="spawn(100)">+100</button>
+          <button class="btn btn-default btn-xs unit1000" id="spawn1000button" onmousedown="spawn(1000)">+1k</button>
+          <button class="btn btn-default btn-xs unitInfinity" id="spawnMaxbutton" onmousedown="spawn(Infinity)">+<span id="workerNumMax">Max</span></button>
+        </div>
 			</div>
 			<div id="customSpawnQuantity">
-				<button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit Citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
+				<button id="spawnCustomButton" onmousedown="spawn('custom')">Recruit citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
 			</div>
 		</div>
 		<p id="customJobQuantity">
-			Custom Quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
+			Custom quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
 		</p>
 		<table id="jobs" class="table">
 			<!-- populated by javascript -->
