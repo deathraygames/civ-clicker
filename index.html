@@ -217,13 +217,13 @@
 		<p id="customJobQuantity">
 			Custom Quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
 		</p>
-		<table id="jobs">
+		<table id="jobs" class="table">
 			<!-- populated by javascript -->
 		</table>
 	</div>
 	<div id="eventsContainer" class="civSection">
 		<h3>Events</h3>
-		<table id="logTable">
+		<table class="table" id="logTable">
 			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
 			<tr id="log1"><td colspan="3"></td></tr>
 			<tr id="log2"><td colspan="3"></td></tr>
@@ -241,7 +241,7 @@
 
 <div id="rightColumn" class="col-sm-6">
 	<div id="specialResourcesContainer" class="civSection">
-		<table class="resources">
+		<table class="table" class="resources">
 			<tbody>
 				<tr>
 					<td>
@@ -356,7 +356,7 @@
         <p id="customBuildQuantity">
           Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
         </p>
-        <table id="buildings">
+        <table class="table" id="buildings">
           <!-- populated by javascript -->
         </table>
         <div id="graveTotal">
@@ -378,9 +378,9 @@
           <div id="wonderCompleted">
             <div class="wonderTitle"><span id="wonderNameC">Wonder</span> Completed! Choose Bonus:</div>
           </div>
-          <table id="pastWonders"><tr><td></td></tr></table>
+          <table class="table" id="pastWonders"><tr><td></td></tr></table>
         </div>
-        <table id="upgrades"></table>
+        <table class="table" id="upgrades"></table>
       </div>
 
       <div id="deityPane" class="tab-pane">
@@ -390,7 +390,7 @@
         </div>
         <div id="deityContainer">
           <h3>Current Deity</h3>
-          <table id="activeDeity">
+          <table class="table" id="activeDeity">
             <!-- populated by javascript -->
           </table>
         </div>
@@ -431,7 +431,7 @@
         </div>
         <div id="battleUpgrades">
           <h3>The Strength of Battle</h3>
-          <table>
+          <table class="table">
             <tr id="battleAltarRow"><td></td></tr>
             <tr id="riddleRow"><td></td></tr>
             <tr id="smiteRow"><td></td></tr>
@@ -442,7 +442,7 @@
         </div>
         <div id="fieldsUpgrades">
           <h3>The Bounty of the Fields</h3>
-          <table>
+          <table class="table">
             <tr id="fieldsAltarRow"><td></td></tr>
             <tr id="blessingRow"><td></td></tr>
             <tr id="wickermanRow"><td></td></tr>
@@ -453,7 +453,7 @@
         </div>
         <div id="underworldUpgrades">
           <h3>The Dread Power of the Underworld</h3>
-          <table>
+          <table class="table">
             <tr id="underworldAltarRow"><td></td></tr>
             <tr id="bookRow"><td></td></tr>
             <tr id="raiseDeadRow"><td></td></tr>
@@ -464,7 +464,7 @@
         </div>
         <div id="catsUpgrades">
           <h3>The Grace of Cats</h3>
-          <table>
+          <table class="table">
             <tr id="catAltarRow"><td></td></tr>
             <tr id="lureRow"><td></td></tr>
             <tr id="pestControlRow"><td></td></tr>
@@ -475,7 +475,7 @@
         </div>
         <div id="pantheonContainer">
           <h3>Pantheon</h3>
-          <table id="oldDeities"><tr><td></td></tr></table>
+          <table class="table" id="oldDeities"><tr><td></td></tr></table>
         </div>
         <div id="iconoclasmGroup">
           <button id="iconoclasm" onmousedown="iconoclasmList()">Iconoclasm</button>
@@ -502,7 +502,7 @@
           <p id="customPartyQuantity">
             Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
           </p>
-          <table id="party">
+          <table class="table" id="party">
             <!-- populated by javascript -->
           </table>
           <div id="raidNews">
