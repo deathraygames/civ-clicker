@@ -329,255 +329,242 @@
 		</table>
 	</div>
 
-
 	<div id="panesSelectors" class="civSection">
-		<div id="selectors" class="panesTabs">
-			<div id="buildingsSelect" class="paneSelector selected" data-target="buildingsPane" onclick="paneSelect(this)">
-				Buildings
-				<div class="alert">!</div>
-			</div>
-			<div id="upgradesSelect" class="paneSelector" data-target="upgradesPane" onclick="paneSelect(this)">
-				Upgrades
-				<div class="alert">!</div>
-			</div>
-			<div id="deitySelect" class="paneSelector" data-target="deityPane" onclick="paneSelect(this)">
-				Deity
-				<div class="alert">!</div>
-			</div>
-			<div id="conquestSelect" class="paneSelector" data-target="conquestPane" onclick="paneSelect(this)">
-				Conquest
-				<div class="alert">!</div>
-			</div>
-			<div id="tradeSelect" class="paneSelector" data-target="tradePane" onclick="paneSelect(this)">
-				Trade
-				<div class="alert">!</div>
-			</div>
-			<div id="achievementsSelect" class="paneSelector" data-target="achievementsPane" onclick="paneSelect(this)">
-				Achievements
-				<div class="alert">!</div>
-			</div>
-		</div>
-		
-		<div id="buildingsPane" class="selectPane selected">
-			<div class="landCols cols">
-				<div class="col">
-					Total Buildings: <span id="totalBuildings">...</span><br />
-				</div>
-				<div class="col">
-					Total Land: <span id="totalLand">...</span><br />
-				</div>
-			</div>
-			<div id="landBar" class="bar" title="Land usage">
-				<!-- populated by javascript -->
-			</div>
-			<p id="customBuildQuantity">
-				Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
-			</p>
-			<table id="buildings">
-				<!-- populated by javascript -->
-			</table>
-			<div id="graveTotal">
-				Unfilled Graves: <span data-action="display" data-target="grave">...</span>
-			</div>
-		</div>
-		
-		<div id="upgradesPane" class="selectPane">
-			<div id="wondersContainer">
-				<h3>Wonders</h3>
-				<span id="startWonderLine"><button id="startWonder" onmousedown="startWonder()">Start Building Wonder</button></span>
-				<div id="wonderInProgress">
-					<span class="wonderTitle">Progress on <span id="wonderNameP">Wonder</span> - <span id="progressNumber">0</span>%</span> - <button id="renameWonder" onmousedown="renameWonder()">Rename</button>
-					<div id="progressContainer"><div id="progressBar"></div></div>
-					<div id="lowResources">Limited<span id="limited"> by low resources</span></div>
-					<div id="speedWonderGroup"><br /><button id="speedWonder" onmousedown="speedWonder()">Speed Wonder</button>
-					<span id="speedWonderCost" class="cost">100 gold</span><span class="note">: Increase wonder progress</span></div>
-				</div>
-				<div id="wonderCompleted">
-					<div class="wonderTitle"><span id="wonderNameC">Wonder</span> Completed! Choose Bonus:</div>
-				</div>
-				<table id="pastWonders"><tr><td></td></tr></table>
-			</div>
-			<table id="upgrades"></table>
-		</div>
-		
-		<div id="deityPane" class="selectPane">
-			<div class="notYet">
-				Your civilization does not yet worship a deity. 
-				<span class="tip">You need to increase piety by assigning clerics at a temple.</span>
-			</div>
-			<div id="deityContainer">
-				<h3>Current Deity</h3>
-				<table id="activeDeity">
-					<!-- populated by javascript -->
-				</table>
-			</div>
-			<span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
-			<div id="worshipRow">
-				<!-- populated by updatePurchaseRow -->
-			</div>
-			<div id="deityDomains">
-				<p>
-					You may select only one domain for your deity:
-				</p>
-				<ul>
-					<li id="battleRow" class="purchaseRow" data-target="battle"> 
-						<span class="upgradetrue" data-quantity="true">
-							<button id="battleDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('battle')">Battle</button>
-						</span>
-						<span id="battleCost" class="cost">500 piety</span>
-					</li>
-					<li id="fieldsRow" class="purchaseRow" data-target="fields">
-						<span class="upgradetrue" data-quantity="true">
-							<button id="fieldsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('fields')">Fields</button>
-						</span>
-						<span id="fieldsCost" class="cost">500 piety</span>
-					</li>		
-					<li id="underworldRow" class="purchaseRow" data-target="underworld">
-						<span class="upgradetrue" data-quantity="true">
-							<button id="underworldDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('underworld')">Underworld</button>
-						</span>
-						<span id="underworldCost" class="cost">500 piety</span>
-					</li>
-					<li id="catsRow" class="purchaseRow" data-target="cats">
-						<span class="upgradetrue" data-quantity="true">
-							<button id="catsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('cats')">Cats</button>
-						</span>
-						<span id="catsCost" class="cost">500 piety</span>
-					</li>
-				</ul>
-			</div>
-			<div id="battleUpgrades">
-				<h3>The Strength of Battle</h3>
-				<table>
-					<tr id="battleAltarRow"><td></td></tr>
-					<tr id="riddleRow"><td></td></tr>
-					<tr id="smiteRow"><td></td></tr>
-					<tr id="throneRow"><td></td></tr>
-					<tr id="gloryRow"><td></td></tr>
-					<tr id="lamentRow"><td></td></tr>
-				</table>
-			</div>
-			<div id="fieldsUpgrades">
-				<h3>The Bounty of the Fields</h3>
-				<table>
-					<tr id="fieldsAltarRow"><td></td></tr>
-					<tr id="blessingRow"><td></td></tr>
-					<tr id="wickermanRow"><td></td></tr>
-					<tr id="wasteRow"><td></td></tr>
-					<tr id="walkRow"><td></td></tr>
-					<tr id="stayRow"><td></td></tr>
-				</table>
-			</div>
-			<div id="underworldUpgrades">
-				<h3>The Dread Power of the Underworld</h3>
-				<table>
-					<tr id="underworldAltarRow"><td></td></tr>
-					<tr id="bookRow"><td></td></tr>
-					<tr id="raiseDeadRow"><td></td></tr>
-					<tr id="feastRow"><td></td></tr>
-					<tr id="summonShadeRow"><td></td></tr>
-					<tr id="secretsRow"><td></td></tr>
-				</table>
-			</div>
-			<div id="catsUpgrades">
-				<h3>The Grace of Cats</h3>
-				<table>
-					<tr id="catAltarRow"><td></td></tr>
-					<tr id="lureRow"><td></td></tr>
-					<tr id="pestControlRow"><td></td></tr>
-					<tr id="companionRow"><td></td></tr>
-					<tr id="graceRow"><td></td></tr>
-					<tr id="comfortRow"><td></td></tr>
-				</table>
-			</div>
-			<div id="pantheonContainer">
-				<h3>Pantheon</h3>
-				<table id="oldDeities"><tr><td></td></tr></table>
-			</div>
-			<div id="iconoclasmGroup">
-				<button id="iconoclasm" onmousedown="iconoclasmList()">Iconoclasm</button>
-				<span id="iconoclasmCost" class="cost">1,000 piety</span>
-				<span id="iconoclasmNote" class="note">: Remove an old deity to gain gold</span><br />
-				<div id="iconoclasmList"></div>
-			</div>
-			<div id="pantheonUpgrades">
-				<h3>Pantheon Upgrades</h3>
-				<div id="purchasedPantheon"></div>
-			</div>
-		</div>
-		<div id="conquestPane" class="selectPane">
-			<div class="notYet">
-				You cannot command an army yet because you don't own a battle standard.
-				<span class="tip">Try building a barracks first.</span>
-			</div>
-			<span id="standardRow">
-				<!--  -->
-			</span>
-			<div id="conquest">
-				<h3>Army</h3>
-				<p id="customPartyQuantity">
-					Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
-				</p>
-				<table id="party">
-					<!-- populated by javascript -->
-				</table>
-				<div id="raidNews">
-					<!-- -->
-				</div>
-				<div id="raidGroup">
-					<h3>To War!</h3>
-					<p id="gloryGroup">
-						Glory: <span id="gloryTimer">0</span> seconds remain
-					</p>
-				</div>
-				<div id="victoryGroup">
-					<h3>Victory!</h3>
-					<button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
-				</div>
-			</div>
-			<div class="stats">
-				Total Enemies Slain: <span data-action="display" data-target="enemySlain">...</span>
-			</div>
-		</div>
-		<div id="tradePane" class="selectPane">
-			<div class="notYet">
-				You do not yet own a trading post. <span class="tip">Try trading with a trader when they (randomly) appear.</span>
-			</div>
-			<div id="tradeContainer">
-				Trader offers 1 gold for <span id="tradeRequested">...</span> <span id="tradeType">...</span>
-				for the next <span id="traderTimer">...</span>.
-				<br />
-				<button id="tradeButton" onmousedown="trade()">Trade</button>
-			</div>
-			<div id="noTrader">
-				No trader visiting
-			</div>
-			<span id="tradeRow">
-				<!-- populated by javascript -->
-			</span>
-			<div id="tradeUpgradeContainer">
-				<span id="currencyRow"></span>
-				<span id="commerceRow"></span>
-				<h4>Buy Resources (1 gold)</h4>
-				<button class="tradeResource" onmousedown="buy('food')">Buy 5000 Food</button><br />
-				<button class="tradeResource" onmousedown="buy('wood')">Buy 5000 Wood</button><br />
-				<button class="tradeResource" onmousedown="buy('stone')">Buy 5000 Stone</button><br />
-				<button class="tradeResource" onmousedown="buy('skins')">Buy 500 Skins</button><br />
-				<button class="tradeResource" onmousedown="buy('herbs')">Buy 500 Herbs</button><br />
-				<button class="tradeResource" onmousedown="buy('ore')">Buy 500 Ore</button><br />
-				<button class="tradeResource" onmousedown="buy('leather')">Buy 250 Leather</button><br />
-				<button class="tradeResource" onmousedown="buy('metal')">Buy 250 Metal</button><br />
-			</div>
-		</div>
-		<div id="achievementsPane" class="selectPane">
-			<div id="achievements">
-				<!-- populated by javascript -->
-			</div>
-			<div class="stats">
-				Resource clicks: <span id="clicks">0</span>
-			</div>
-		</div>
-	</div>
+
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#buildingsPane" aria-controls="buildingsPane" role="tab" data-toggle="tab">Buildings</a></li>
+      <li role="presentation"><a href="#upgradesPane" aria-controls="upgradesPane" role="tab" data-toggle="tab">Upgrades</a></li>
+      <li role="presentation"><a href="#deityPane" aria-controls="deityPane" role="tab" data-toggle="tab">Deities</a></li>
+      <li role="presentation"><a href="#conquestPane" aria-controls="conquestPane" role="tab" data-toggle="tab">Conquest</a></li>
+      <li role="presentation"><a href="#tradePane" aria-controls="tradePane" role="tab" data-toggle="tab">Trade</a></li>
+      <li role="presentation"><a href="#achievementsPane" aria-controls="achievementsPane" role="tab" data-toggle="tab">Achievements</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="buildingsPane" class="tab-pane active">
+        <div class="landCols cols">
+          <div class="col">
+            Total Buildings: <span id="totalBuildings">...</span><br />
+          </div>
+          <div class="col">
+            Total Land: <span id="totalLand">...</span><br />
+          </div>
+        </div>
+        <div id="landBar" class="bar" title="Land usage">
+          <!-- populated by javascript -->
+        </div>
+        <p id="customBuildQuantity">
+          Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
+        </p>
+        <table id="buildings">
+          <!-- populated by javascript -->
+        </table>
+        <div id="graveTotal">
+          Unfilled Graves: <span data-action="display" data-target="grave">...</span>
+        </div>
+      </div>
+      
+      <div id="upgradesPane" class="tab-pane">
+        <div id="wondersContainer">
+          <h3>Wonders</h3>
+          <span id="startWonderLine"><button id="startWonder" onmousedown="startWonder()">Start Building Wonder</button></span>
+          <div id="wonderInProgress">
+            <span class="wonderTitle">Progress on <span id="wonderNameP">Wonder</span> - <span id="progressNumber">0</span>%</span> - <button id="renameWonder" onmousedown="renameWonder()">Rename</button>
+            <div id="progressContainer"><div id="progressBar"></div></div>
+            <div id="lowResources">Limited<span id="limited"> by low resources</span></div>
+            <div id="speedWonderGroup"><br /><button id="speedWonder" onmousedown="speedWonder()">Speed Wonder</button>
+            <span id="speedWonderCost" class="cost">100 gold</span><span class="note">: Increase wonder progress</span></div>
+          </div>
+          <div id="wonderCompleted">
+            <div class="wonderTitle"><span id="wonderNameC">Wonder</span> Completed! Choose Bonus:</div>
+          </div>
+          <table id="pastWonders"><tr><td></td></tr></table>
+        </div>
+        <table id="upgrades"></table>
+      </div>
+
+      <div id="deityPane" class="tab-pane">
+        <div class="notYet">
+          Your civilization does not yet worship a deity. 
+          <span class="tip">You need to increase piety by assigning clerics at a temple.</span>
+        </div>
+        <div id="deityContainer">
+          <h3>Current Deity</h3>
+          <table id="activeDeity">
+            <!-- populated by javascript -->
+          </table>
+        </div>
+        <span id="walkGroup"><br />Walk: <span id="walkStat">...</span> workers per second<br /></span>
+        <div id="worshipRow">
+          <!-- populated by updatePurchaseRow -->
+        </div>
+        <div id="deityDomains">
+          <p>
+            You may select only one domain for your deity:
+          </p>
+          <ul>
+            <li id="battleRow" class="purchaseRow" data-target="battle"> 
+              <span class="upgradetrue" data-quantity="true">
+                <button id="battleDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('battle')">Battle</button>
+              </span>
+              <span id="battleCost" class="cost">500 piety</span>
+            </li>
+            <li id="fieldsRow" class="purchaseRow" data-target="fields">
+              <span class="upgradetrue" data-quantity="true">
+                <button id="fieldsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('fields')">Fields</button>
+              </span>
+              <span id="fieldsCost" class="cost">500 piety</span>
+            </li>		
+            <li id="underworldRow" class="purchaseRow" data-target="underworld">
+              <span class="upgradetrue" data-quantity="true">
+                <button id="underworldDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('underworld')">Underworld</button>
+              </span>
+              <span id="underworldCost" class="cost">500 piety</span>
+            </li>
+            <li id="catsRow" class="purchaseRow" data-target="cats">
+              <span class="upgradetrue" data-quantity="true">
+                <button id="catsDeity" class="xtrue purchaseFor500Piety" onmousedown="selectDeity('cats')">Cats</button>
+              </span>
+              <span id="catsCost" class="cost">500 piety</span>
+            </li>
+          </ul>
+        </div>
+        <div id="battleUpgrades">
+          <h3>The Strength of Battle</h3>
+          <table>
+            <tr id="battleAltarRow"><td></td></tr>
+            <tr id="riddleRow"><td></td></tr>
+            <tr id="smiteRow"><td></td></tr>
+            <tr id="throneRow"><td></td></tr>
+            <tr id="gloryRow"><td></td></tr>
+            <tr id="lamentRow"><td></td></tr>
+          </table>
+        </div>
+        <div id="fieldsUpgrades">
+          <h3>The Bounty of the Fields</h3>
+          <table>
+            <tr id="fieldsAltarRow"><td></td></tr>
+            <tr id="blessingRow"><td></td></tr>
+            <tr id="wickermanRow"><td></td></tr>
+            <tr id="wasteRow"><td></td></tr>
+            <tr id="walkRow"><td></td></tr>
+            <tr id="stayRow"><td></td></tr>
+          </table>
+        </div>
+        <div id="underworldUpgrades">
+          <h3>The Dread Power of the Underworld</h3>
+          <table>
+            <tr id="underworldAltarRow"><td></td></tr>
+            <tr id="bookRow"><td></td></tr>
+            <tr id="raiseDeadRow"><td></td></tr>
+            <tr id="feastRow"><td></td></tr>
+            <tr id="summonShadeRow"><td></td></tr>
+            <tr id="secretsRow"><td></td></tr>
+          </table>
+        </div>
+        <div id="catsUpgrades">
+          <h3>The Grace of Cats</h3>
+          <table>
+            <tr id="catAltarRow"><td></td></tr>
+            <tr id="lureRow"><td></td></tr>
+            <tr id="pestControlRow"><td></td></tr>
+            <tr id="companionRow"><td></td></tr>
+            <tr id="graceRow"><td></td></tr>
+            <tr id="comfortRow"><td></td></tr>
+          </table>
+        </div>
+        <div id="pantheonContainer">
+          <h3>Pantheon</h3>
+          <table id="oldDeities"><tr><td></td></tr></table>
+        </div>
+        <div id="iconoclasmGroup">
+          <button id="iconoclasm" onmousedown="iconoclasmList()">Iconoclasm</button>
+          <span id="iconoclasmCost" class="cost">1,000 piety</span>
+          <span id="iconoclasmNote" class="note">: Remove an old deity to gain gold</span><br />
+          <div id="iconoclasmList"></div>
+        </div>
+        <div id="pantheonUpgrades">
+          <h3>Pantheon Upgrades</h3>
+          <div id="purchasedPantheon"></div>
+        </div>
+      </div>
+
+      <div id="conquestPane" class="tab-pane">
+        <div class="notYet">
+          You cannot command an army yet because you don't own a battle standard.
+          <span class="tip">Try building a barracks first.</span>
+        </div>
+        <span id="standardRow">
+          <!--  -->
+        </span>
+        <div id="conquest">
+          <h3>Army</h3>
+          <p id="customPartyQuantity">
+            Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
+          </p>
+          <table id="party">
+            <!-- populated by javascript -->
+          </table>
+          <div id="raidNews">
+            <!-- -->
+          </div>
+          <div id="raidGroup">
+            <h3>To War!</h3>
+            <p id="gloryGroup">
+              Glory: <span id="gloryTimer">0</span> seconds remain
+            </p>
+          </div>
+          <div id="victoryGroup">
+            <h3>Victory!</h3>
+            <button id="plunder" onmousedown="plunder()">Plunder Resources</button><br />
+          </div>
+        </div>
+        <div class="stats">
+          Total Enemies Slain: <span data-action="display" data-target="enemySlain">...</span>
+        </div>
+      </div>
+
+      <div id="tradePane" class="tab-pane">
+        <div class="notYet">
+          You do not yet own a trading post. <span class="tip">Try trading with a trader when they (randomly) appear.</span>
+        </div>
+        <div id="tradeContainer">
+          Trader offers 1 gold for <span id="tradeRequested">...</span> <span id="tradeType">...</span>
+          for the next <span id="traderTimer">...</span>.
+          <br />
+          <button id="tradeButton" onmousedown="trade()">Trade</button>
+        </div>
+        <div id="noTrader">
+          No trader visiting
+        </div>
+        <span id="tradeRow">
+          <!-- populated by javascript -->
+        </span>
+        <div id="tradeUpgradeContainer">
+          <span id="currencyRow"></span>
+          <span id="commerceRow"></span>
+          <h4>Buy Resources (1 gold)</h4>
+          <button class="tradeResource" onmousedown="buy('food')">Buy 5000 Food</button><br />
+          <button class="tradeResource" onmousedown="buy('wood')">Buy 5000 Wood</button><br />
+          <button class="tradeResource" onmousedown="buy('stone')">Buy 5000 Stone</button><br />
+          <button class="tradeResource" onmousedown="buy('skins')">Buy 500 Skins</button><br />
+          <button class="tradeResource" onmousedown="buy('herbs')">Buy 500 Herbs</button><br />
+          <button class="tradeResource" onmousedown="buy('ore')">Buy 500 Ore</button><br />
+          <button class="tradeResource" onmousedown="buy('leather')">Buy 250 Leather</button><br />
+          <button class="tradeResource" onmousedown="buy('metal')">Buy 250 Metal</button><br />
+        </div>
+      </div>
+
+        <div id="achievementsPane" class="tab-pane">
+          <div id="achievements">
+            <!-- populated by javascript -->
+          </div>
+          <div class="stats">
+            Resource clicks: <span id="clicks">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     </div>
     </div>
