@@ -858,13 +858,18 @@ function onIncrement(control) {
 	return increment(targetId);
 }
 
-// Buys or sells a unit, building, or upgrade.
-// Pass a positive number to buy, a negative number to sell.
-// If it can't add/remove as many as requested, does as many as it can.
-// Pass Infinity/-Infinity as the num to get the max possible.
-// Pass "custom" or "-custom" to use the custom increment.
-// Returns the actual number bought or sold (negative if fired).
-function doPurchase(objId,num){
+/**
+ * Buys or sells a unit, building, or upgrade.
+ * Pass a positive number to buy, a negative number to sell.
+ * If it can't add/remove as many as requested, does as many as it can.
+ * Pass Infinity/-Infinity as the num to get the max possible.
+ * Pass "custom" or "-custom" to use the custom increment.
+ * Returns the actual number bought or sold (negative if fired).
+ * @param {string} objId
+ * @param {integer} num
+ * @return {integer}
+ */
+function doPurchase(objId, num) {
 	var purchaseObj = civData[objId];
 	if (!purchaseObj) { console.log("Unknown purchase: "+objId); return 0; }
 	if (num === undefined) { num = 1; }
@@ -921,6 +926,10 @@ function doPurchase(objId,num){
 	return num;
 }
 
+/**
+ * @param control
+ * @return {integer}
+ */
 function onPurchase(control) { 
 	// We need a valid target and a quantity to complete this action.
 	var targetId = dataset(control,"target");
