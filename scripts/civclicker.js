@@ -493,7 +493,7 @@ function getResourceRowText(purchaseObj)
     {
       objId: objId,
       objName: objName,
-      purchaseObj: purchaseObj,
+      verb: purchaseObj.verb.charAt(0).toUpperCase() + purchaseObj.verb.slice(1)
     }
 	);
 	return s;

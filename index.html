@@ -139,57 +139,66 @@
 
 
 <div id="main" class="row">
+
 <div id="leftColumn" class="col-sm-6">
-	<div id="basicResourcesContainer" class="civSection">
-		<table id="basicResources" class="resources table">
-			<!-- populated by javascript -->
-		</table>
+	<div id="basicResourcesContainer" class="panel panel-default">
+    <div class="panel-heading">Primary resources</div>
+    <div class="panel-content">
+      <table id="basicResources" class="resources table">
+        <!-- populated by javascript -->
+      </table>
+    </div>
 	</div>
+
 	<div id="populationContainer" class="civSection">
-		<div id="populationNumbers">
-			<table class="resources table">
-				<tbody>
-					<tr>
-						<td>
-							<img src="images/backup.png" class="icon icon-lg" alt="Population"/>
-							<label>Population:</label>
-						</td>
-						<td class="number"><span data-action="display_pop" data-target="living">...</span></td>
-						<td class="number maxNumber">
-							/ max: <span data-action="display_pop" data-target="limit">...</span>
-						</td>
-						<td class="note">
-							Build more housing to grow your civilization
-						</td>
-					</tr>
-					<tr id="zombieWorkers">
-						<td>
-							<img src="images/shambling-zombie.png" class="icon icon-lg" alt="Zombies"/>
-							<label>Zombies:</label>
-						</td>
-						<td class="number"><span data-action="display" data-target="zombie">...</span></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>
-							<img src="images/smitten.png" class="icon icon-lg" alt="Happiness"/>
-							<label>Happiness:</label>
-						</td>
-						<td colspan="3" id="morale">
-							<ol class="happinessRanks">
-								<li>Blissful</li>
-								<li>Happy</li>
-								<li>Content</li>
-								<li>Unhappy</li>
-								<li>Angry</li>
-							</ol>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<div id="populationNumbers" class="panel panel-default">
+      <div class="panel-heading">Status</div>
+      <div class="panel-content">
+        <table class="resources table">
+          <tbody>
+            <tr>
+              <td>
+                <img src="images/backup.png" class="icon icon-lg" alt="Population"/>
+                <label>Population:</label>
+              </td>
+              <td class="number"><span data-action="display_pop" data-target="living">...</span></td>
+              <td class="number maxNumber">
+                / max: <span data-action="display_pop" data-target="limit">...</span>
+              </td>
+              <td class="note">
+                Build more housing to grow your civilization
+              </td>
+            </tr>
+            <tr id="zombieWorkers">
+              <td>
+                <img src="images/shambling-zombie.png" class="icon icon-lg" alt="Zombies"/>
+                <label>Zombies:</label>
+              </td>
+              <td class="number"><span data-action="display" data-target="zombie">...</span></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <img src="images/smitten.png" class="icon icon-lg" alt="Happiness"/>
+                <label>Happiness:</label>
+              </td>
+              <td colspan="3" id="morale">
+                <ol class="happinessRanks">
+                  <li>Blissful</li>
+                  <li>Happy</li>
+                  <li>Content</li>
+                  <li>Unhappy</li>
+                  <li>Angry</li>
+                </ol>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 		</div>
 	</div>
+
 	<div id="jobsContainer" class="civSection">
 		<div id="populationBar" class="bar" title="Population">
 			<!-- populated by javascript -->
@@ -240,93 +249,96 @@
 </div>
 
 <div id="rightColumn" class="col-sm-6">
-	<div id="specialResourcesContainer" class="civSection">
-		<table class="table" class="resources">
-			<tbody>
-				<tr>
-					<td>
-						<img src="images/skins.png" class="icon icon-lg" alt="Skins"/>
-						<label>Skins:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="skins">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="skins">0</span><span class="perSecond">/s</span>
-					</td>
-					<td>
-						<img src="images/leather.png" class="icon icon-lg" alt="Leather"/>
-						<label>Leather:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="leather">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="leather">0</span><span class="perSecond">/s</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<img src="images/herbs.png" class="icon icon-lg" alt="Herbs"/>
-						<label>Herbs:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="herbs">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="herbs">0</span><span class="perSecond">/s</span>
-					</td>
-					<td>
-						<img src="images/piety.png" class="icon icon-lg" alt="Piety"/>
-						<label>Piety:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="piety">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="piety">0</span><span class="perSecond">/s</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<img src="images/ore.png" class="icon icon-lg" alt="Ore"/>
-						<label>Ore:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="ore">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="ore">0</span><span class="perSecond">/s</span>
-					</td>
-					<td>
-						<img src="images/metal.png" class="icon icon-lg" alt="Metal"/>
-						<label>Metal:</label>
-					</td>
-					<td>
-						<span class="number" data-action="display" data-target="metal">0</span>
-					</td>
-					<td>
-						<span class="number net" data-action="displayNet" data-target="metal">0</span><span class="perSecond">/s</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<img src="images/gold.png" class="icon icon-lg" alt="Gold" />
-						<label>Gold:</label>
-					</td>
-					<td colspan="2">
-						<span class="number" data-action="display" data-target="gold">0</span>
-					</td>
-					<td>
-						<img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
-						<label>Corpses:</label>
-					</td>
-					<td colspan="2">
-						<span class="number" data-action="display" data-target="corpses">0</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+	<div id="specialResourcesContainer" class="panel panel-default">
+    <div class="panel-heading">Secondary resources</div>
+    <div class="panel-content">
+      <table class="table" class="resources">
+        <tbody>
+          <tr>
+            <td>
+              <img src="images/skins.png" class="icon icon-lg" alt="Skins"/>
+              <label>Skins:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="skins">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="skins">0</span><span class="perSecond">/s</span>
+            </td>
+            <td>
+              <img src="images/leather.png" class="icon icon-lg" alt="Leather"/>
+              <label>Leather:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="leather">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="leather">0</span><span class="perSecond">/s</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="images/herbs.png" class="icon icon-lg" alt="Herbs"/>
+              <label>Herbs:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="herbs">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="herbs">0</span><span class="perSecond">/s</span>
+            </td>
+            <td>
+              <img src="images/piety.png" class="icon icon-lg" alt="Piety"/>
+              <label>Piety:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="piety">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="piety">0</span><span class="perSecond">/s</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="images/ore.png" class="icon icon-lg" alt="Ore"/>
+              <label>Ore:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="ore">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="ore">0</span><span class="perSecond">/s</span>
+            </td>
+            <td>
+              <img src="images/metal.png" class="icon icon-lg" alt="Metal"/>
+              <label>Metal:</label>
+            </td>
+            <td>
+              <span class="number" data-action="display" data-target="metal">0</span>
+            </td>
+            <td>
+              <span class="number net" data-action="displayNet" data-target="metal">0</span><span class="perSecond">/s</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="images/gold.png" class="icon icon-lg" alt="Gold" />
+              <label>Gold:</label>
+            </td>
+            <td colspan="2">
+              <span class="number" data-action="display" data-target="gold">0</span>
+            </td>
+            <td>
+              <img src="images/carrion.png" class="icon icon-lg" alt="Corpses">
+              <label>Corpses:</label>
+            </td>
+            <td colspan="2">
+              <span class="number" data-action="display" data-target="corpses">0</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 	</div>
 
 	<div id="panesSelectors" class="civSection">
@@ -583,12 +595,16 @@
     <script id="resource-row-template" type="text/template">
       <tr id="{{objId}}Row" class="purchaseRow" data-target="{{objId}}">
         <td>
-          <button class="btn btn-default" data-action="increment">
-            <img src="images/{{objId}}.png" class="icon icon-lg" alt="{{objName}}"/>
-            {{purchaseObj.verb}}
-          </button>
-          <label>{{objName}}:</label>
+          <img src="images/{{objId}}.png" class="icon icon-lg" alt="{{objName}}"/>
         </td>
+        <td>
+          <button class="btn btn-default btn-block" data-action="increment">
+            {{verb}}
+          </button>
+        </td>
+        <td>
+          <label>{{objName}}:</label>
+          </td>
         <td class="number mainNumber"><span data-action="display">.</span></td>
         <td class="number maxNumber">/ max: <span id="max{{objId}}">...</span></td>
         <td class="number net"><span data-action="displayNet">..</span>/s</td>
