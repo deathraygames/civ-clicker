@@ -499,18 +499,37 @@ function getResourceRowText(purchaseObj)
 	return s;
 }
 
-
+/**
+ * @param purchaseObj
+ * @param {int} qty
+ * @param inTable
+ * @return {string}
+ */
 function getPurchaseCellText(purchaseObj, qty, inTable) {
-	if (inTable === undefined) { inTable = true; }
+
+	if (inTable === undefined) {
+    inTable = true;
+  }
+
 	// Internal utility functions.
-	function sgnchr(x) { return (x > 0) ? "+" : (x < 0) ? "&minus;" : ""; }
+	function sgnchr(x) {
+    return (x > 0) ? "+" : (x < 0) ? "-" : "";
+  }
+
 	//xxx Hack: Special formatting for booleans, Infinity and 1k.
-	function infchr(x) { return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x; }
+	function infchr(x) {
+    return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x;
+  }
+
 	function fmtbool(x) {
 		var neg = (sgn(x) < 0);
 		return (neg ? "(" : "") + purchaseObj.getQtyName(0) + (neg ? ")" : "");
 	}
-	function fmtqty(x) { return (typeof x == "boolean") ? fmtbool(x) : sgnchr(sgn(x))+infchr(abs(x)); }
+
+	function fmtqty(x) {
+    return (typeof x == "boolean") ? fmtbool(x) : sgnchr(sgn(x))+infchr(abs(x));
+  }
+
 	function allowPurchase() {
 		if (!qty) { return false; } // No-op
 
@@ -533,12 +552,17 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 	var tagName = inTable ? "td" : "span";
 	var className = (abs(qty) == "custom") ? "buy" : purchaseObj.type;  // 'custom' buttons all use the same class.
 
-	var s = "<"+tagName+" class='"+className+abs(qty)+"' data-quantity='"+qty+"' >";
-	if (allowPurchase()) 
-	{ 
-		s +="<button class='btn btn-default btn-sm x"+abs(qty)+"' data-action='purchase'"+" disabled='disabled'>"+fmtqty(qty)+"</button>"; 
-	}
-	s += "</"+tagName+">";
+  var s = Mustache.to_html(
+    $('#purchase-cell-template').html(),
+    {
+      qty:           qty,
+      absqty:        abs(qty),
+      fmtqty:        fmtqty(qty),
+      tagName:       tagName,
+      className:     className,
+      allowPurchase: allowPurchase(),
+    }
+  );
 	return s;
 }
 

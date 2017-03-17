@@ -619,5 +619,14 @@
         <td class="number net"><span data-action="displayNet">..</span>/s</td>
       </tr>
     </script>
+
+    <!-- Template for purchase cell text -->
+    <script id="purchase-cell-template" type="text/template">
+      <{{tagName}} class='{{className}}{{absqty}}' data-quantity='{{qty}}'>
+        {{#allowPurchase}}
+          <button class='btn btn-default btn-sm x{{absqty}}' data-action='purchase' disabled='disabled'>{{fmtqty}}</button>
+        {{/allowPurchase}}
+      </{{tagName}}>
+    </script>
   </body>
 </html>
