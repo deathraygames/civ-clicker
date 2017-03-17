@@ -492,7 +492,7 @@ function getResourceRowText(purchaseObj)
     $('#resource-row-template').html(),
     {
       objId: objId,
-      objName: objName,
+      objName: objName.charAt(0).toUpperCase() + objName.slice(1),
       verb: purchaseObj.verb.charAt(0).toUpperCase() + purchaseObj.verb.slice(1)
     }
 	);
