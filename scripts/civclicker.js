@@ -536,7 +536,7 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 	var s = "<"+tagName+" class='"+className+abs(qty)+"' data-quantity='"+qty+"' >";
 	if (allowPurchase()) 
 	{ 
-		s +="<button class='x"+abs(qty)+"' data-action='purchase'"+" disabled='disabled'>"+fmtqty(qty)+"</button>"; 
+		s +="<button class='btn btn-default btn-sm x"+abs(qty)+"' data-action='purchase'"+" disabled='disabled'>"+fmtqty(qty)+"</button>"; 
 	}
 	s += "</"+tagName+">";
 	return s;
