@@ -21,7 +21,13 @@
 <head>
 	<title>CivClicker</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<link rel="stylesheet" type="text/css" href="styles/civclicker.css" />
+	<!--<link rel="stylesheet" type="text/css" href="styles/civclicker.css" />-->
+
+  <script type="application/javascript" src="scripts/jquery-3.2.0.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css" />
+	<!--<link rel="stylesheet" type="text/css" href="styles/bootstrap-theme.min.css" />-->
+	<script type="application/javascript" src="scripts/bootstrap.min.js"></script>
+
 	<meta name="description" content="CivClicker: Build a Civilisation In Your Browser" />
 
 	<!-- JS utilities -->
@@ -55,38 +61,63 @@
 </div>
 
 <section id="settings" class="drawer">
-	<div class="columns">
-		<div class="column left">
+	<div class="row">
+		<div class="col-sm-6">
 			<h2>Naming</h2>
-			<button onmousedown="renameCiv()" title="Rename your civilisation">Rename Civilisation</button><br />
-			<button id="renameRuler" onmousedown="renameRuler()" title="Rename yourself">Rename Yourself</button><br />
-			<button id="renameDeity" onmousedown="renameDeity()" title="Rename your deity" disabled="disabled">Rename Current Deity</button>
-			<br />
+      <form>
+        <div class="form-group">
+          <button class="btn btn-default" onmousedown="renameCiv()" title="Rename your civilisation">Rename civilisation</button><br />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default" id="renameRuler" onmousedown="renameRuler()" title="Rename yourself">Rename yourself</button><br />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default" id="renameDeity" onmousedown="renameDeity()" title="Rename your deity" disabled="disabled">Rename current deity</button>
+        </div>
+      </form>
+
 			<h2>Display</h2>
-			<span id="textSize"><button id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text Size
-			<button id="largerText" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
-			<br />
-			<label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use Custom Quantities</label><br />
-			<label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number Delimiters</label><br />
-			<label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text Shadows</label><br />
-			<label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show Notes</label><br />
-			<label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe Mode</label><br />
-			<label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use Icons</label><br />
+
+      <form>
+        <span id="textSize"><button class="btn btn-xs btn-default" id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text Size
+        <button id="largerText" class="btn btn-xs btn-default" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
+        <br />
+        <label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use Custom Quantities</label><br />
+        <label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number Delimiters</label><br />
+        <label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text Shadows</label><br />
+        <label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show Notes</label><br />
+        <label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe Mode</label><br />
+        <label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use Icons</label><br />
+      </form>
 		</div>
 
-		<div class="column right">
-			<h2>Save &amp; Load Controls</h2>
-			<button onmousedown="save('manual')" title="Save your current stats">Manual Save</button><br />
-			<label><input id="toggleAutosave" type="checkbox" onclick="onToggleAutosave(this)" title="Autosave"/>Autosave</label><br />
-			<button onmousedown="reset()" title="Reset your game">Reset Game</button><span class="note"><span id="resetNote"><br/>Resetting allows you to </span><span id="resetDeity">gain another deity</span><span id="resetBoth"><br/> and </span><span id="resetWonder">build another Wonder</span></span><br />
-			<br />
-			<button onmousedown="deleteSave()" title="Delete your saved stats">Delete Save File</button><br />
-			<br />
-			<label>Save game data:</label>
-			<textarea id="impexpField"></textarea>
-			<button id="expButton" onclick="save('export')">Export</button>
-			<button id="expSelect" onclick="document.getElementById('impexpField').select();">Select All</button>
-			<button id="impButton" onclick="load('import')">Import</button>
+		<div class="col-sm-6">
+			<h2>Save &amp; load controls</h2>
+      <form>
+
+        <div class="form-group">
+          <button class="btn btn-default" onmousedown="save('manual')" data-toggle="tooltip" title="Save your current stats">Manual save</button>
+          <button class="btn btn-default" onmousedown="reset()" data-toggle="tooltip" title="Resetting allows you to gain another deity and build another Wonder">Reset game</button>
+          <button class="btn btn-default" onmousedown="deleteSave()" data-toggle="tooltip" title="Delete your saved stats">Delete save file</button>
+        </div>
+
+        <div class="checkbox">
+          <label>
+            <input id="toggleAutosave" type="checkbox" onclick="onToggleAutosave(this)" title="Autosave"/>Autosave
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Save game data:</label>
+          <textarea class="form-control" id="impexpField"></textarea>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-default" id="expButton" onclick="save('export')">Export</button>
+          <button class="btn btn-default" id="expSelect" onclick="document.getElementById('impexpField').select();">Select all</button>
+          <button class="btn btn-default" id="impButton" onclick="load('import')">Import</button>
+        </div>
+      </form>
 		</div>
 	</div>
 </section>

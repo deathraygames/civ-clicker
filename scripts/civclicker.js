@@ -3331,6 +3331,11 @@ setup.loop = function () {
 
 setup.all();
 
+$(function () {
+  // Enable Bootstrap tooltips
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
 
 /*
  * If you're reading this, thanks for playing!
