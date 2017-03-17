@@ -53,14 +53,14 @@
 		<span class="title">CivClicker</span>
 		<span class="version">v1.3.3</span>
 		<a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
-		<a href="updates.html" target="_blank">Game Updates Log</a>
+		<a href="updates.html" target="_blank">Game updates log</a>
 		<a href="https://www.reddit.com/r/CivClicker/" target="_blank">Reddit</a>
-		<a href="#" class="openSettings">Settings</a>
-		<span id="versionAlert"> - <span id="newVersionText" onclick="location.reload()">New Version Available</span></span>
+		<a href="#" class="openSettings" data-toggle-selector='#settings'>Settings</a>
+		<span id="versionAlert"> - <span id="newVersionText" onclick="location.reload()">New version available</span></span>
 	</div>
 </div>
 
-<section id="settings" class="drawer">
+<section id="settings" class="collapse">
 	<div class="row">
 		<div class="col-sm-6">
 			<h2>Naming</h2>
@@ -79,15 +79,28 @@
 			<h2>Display</h2>
 
       <form>
-        <span id="textSize"><button class="btn btn-xs btn-default" id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text Size
-        <button id="largerText" class="btn btn-xs btn-default" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
-        <br />
-        <label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use Custom Quantities</label><br />
-        <label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number Delimiters</label><br />
-        <label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text Shadows</label><br />
-        <label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show Notes</label><br />
-        <label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe Mode</label><br />
-        <label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use Icons</label><br />
+        <div class="form-group">
+          <span id="textSize"><button class="btn btn-xs btn-default" id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text size
+          <button id="largerText" class="btn btn-xs btn-default" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use custom quantities</label>
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number delimiters</label>
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text shadows</label>
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show notes</label>
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe mode</label>
+        </div>
+        <div class="checkbox">
+          <label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use icons</label>
+        </div>
       </form>
 		</div>
 

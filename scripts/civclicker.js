@@ -3261,6 +3261,7 @@ setup.all = function () {
 };
 
 setup.events = function () {
+  /*
 	var openSettingsElt = ui.find(".openSettings");
 
 	openSettingsElt.addEventListener("click", function () {
@@ -3274,6 +3275,7 @@ setup.events = function () {
 			openSettingsElt.className = "openSettings";
 		}
 	});
+  */
 };
 
 setup.data = function () {
@@ -3334,6 +3336,10 @@ setup.all();
 $(function () {
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip()
+
+  $('[data-toggle-selector]').on('click',function () {
+    $($(this).data('toggle-selector')).toggle(300);
+  })
 })
 
 
