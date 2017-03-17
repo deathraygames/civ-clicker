@@ -1,0 +1,9 @@
+.icon-lg {
+	height: 40px;
+	width: 40px;
+}
+.icon-sm {
+	height:16px;
+	width:16px;
+	margin: 2px 0 -2px 0;
+}

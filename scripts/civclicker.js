@@ -482,21 +482,19 @@ function abs(x) { return (typeof x == "number") ? Math.abs(x) : (typeof x == "st
 function getResourceRowText(purchaseObj)
 {
 	// Make sure to update this if the number of columns changes.
-	if (!purchaseObj) { return "<tr class='purchaseRow'><td colspan='6'/>&nbsp;</tr>"; }
+	if (!purchaseObj) { 
+    return "<tr class='purchaseRow'><td colspan='6'/>&nbsp;</tr>";
+  }
 
 	var objId = purchaseObj.id;
 	var objName = purchaseObj.getQtyName(0);
-	var s = (
-		'<tr id="'+ objId + 'Row" class="purchaseRow" data-target="'+ objId + '">'
-		+ '<td>'
-		+ '<img src="images/'+objId+'.png" class="icon icon-lg" alt="'+objName+'"/>'
-		+ '<button data-action="increment">' + purchaseObj.verb + '</button>'
-		+ '<label>' + objName + ':</label>'
-		+ '</td>'
-		+ '<td class="number mainNumber"><span data-action="display">.</span></td>'
-		+ '<td class="number maxNumber">/ max: <span id="max'+objId+'">...</span></td>'
-		+ '<td class="number net"><span data-action="displayNet">..</span>/s</td>'
-		+ '</tr>'
+	var s = Mustache.to_html(
+    $('#resource-row-template').html(),
+    {
+      objId: objId,
+      objName: objName,
+      purchaseObj: purchaseObj,
+    }
 	);
 	return s;
 }

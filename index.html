@@ -21,14 +21,16 @@
 <head>
 	<title>CivClicker</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<!--<link rel="stylesheet" type="text/css" href="styles/civclicker.css" />-->
+	<meta name="description" content="CivClicker: Build a Civilisation In Your Browser" />
 
   <script type="application/javascript" src="scripts/jquery-3.2.0.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css" />
 	<!--<link rel="stylesheet" type="text/css" href="styles/bootstrap-theme.min.css" />-->
 	<script type="application/javascript" src="scripts/bootstrap.min.js"></script>
 
-	<meta name="description" content="CivClicker: Build a Civilisation In Your Browser" />
+	<script type="application/javascript" src="scripts/mustache.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="styles/civclicker2.css" />
 
 	<!-- JS utilities -->
 	<script type="application/javascript" src="scripts/lz-string.js"></script>
@@ -136,8 +138,8 @@
 </section>
 
 
-<div id="main" class="columns">
-<div id="leftColumn" class="column left">
+<div id="main" class="row">
+<div id="leftColumn" class="col-sm-6">
 	<div id="basicResourcesContainer" class="civSection">
 		<table id="basicResources" class="resources">
 			<!-- populated by javascript -->
@@ -237,7 +239,7 @@
 	</div>
 </div>
 
-<div id="rightColumn" class="column right">
+<div id="rightColumn" class="col-sm-6">
 	<div id="specialResourcesContainer" class="civSection">
 		<table class="resources">
 			<tbody>
@@ -577,9 +579,9 @@
 		</div>
 	</div>
 
-</div>
-</div>
-<footer>
+    </div>
+    </div>
+    <footer>
 	<!--
 	<span class="title">CivClicker v1.2</span>
 	<a href="http://dhmstark.co.uk/games/civclicker/">Original 1.0 Game</a>
@@ -588,10 +590,20 @@
 	<a href="https://github.com/deathraygames/civ-clicker/">Source</a>
 	<a href="https://www.reddit.com/r/CivClicker/">Reddit</a>
 	-->
-</footer>
-<div class="scripts">
-	<!-- Google Analytics. REMOVE this for your own forks. -->
-	<script src="../../js/ga.js"></script>
-</div>
-</body>
+    </footer>
+
+    <!-- Template for primary resource row -->
+    <script id="resource-row-template" type="text/template">
+      <tr id="{{objId}}Row" class="purchaseRow" data-target="{{objId}}">
+        <td>
+          <img src="images/{{objId}}.png" class="icon icon-lg" alt="{{objName}}"/>
+          <button class="btn btn-default" data-action="increment">{{purchaseObj.verb}}</button>
+          <label>{{objName}}:</label>
+        </td>
+        <td class="number mainNumber"><span data-action="display">.</span></td>
+        <td class="number maxNumber">/ max: <span id="max{{objId}}">...</span></td>
+        <td class="number net"><span data-action="displayNet">..</span>/s</td>
+      </tr>
+    </script>
+  </body>
 </html>
