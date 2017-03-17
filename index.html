@@ -596,8 +596,10 @@
     <script id="resource-row-template" type="text/template">
       <tr id="{{objId}}Row" class="purchaseRow" data-target="{{objId}}">
         <td>
-          <img src="images/{{objId}}.png" class="icon icon-lg" alt="{{objName}}"/>
-          <button class="btn btn-default" data-action="increment">{{purchaseObj.verb}}</button>
+          <button class="btn btn-default" data-action="increment">
+            <img src="images/{{objId}}.png" class="icon icon-lg" alt="{{objName}}"/>
+            {{purchaseObj.verb}}
+          </button>
           <label>{{objName}}:</label>
         </td>
         <td class="number mainNumber"><span data-action="display">.</span></td>
