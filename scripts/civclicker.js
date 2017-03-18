@@ -500,7 +500,8 @@ function getResourceRowText(purchaseObj)
 }
 
 /**
- * @param purchaseObj
+ * @param purchaseObj Example value: {id: "cottage", prereqs: Object, require: Object,
+ *                    effectText: "+6 max pop.", singular: "cottage", plural: "cottages" }
  * @param {int} qty
  * @param inTable
  * @return {string}
@@ -561,6 +562,7 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
       tagName:       tagName,
       className:     className,
       allowPurchase: allowPurchase(),
+      id:            purchaseObj.id
     }
   );
 	return s;
@@ -865,17 +867,30 @@ function onIncrement(control) {
  * Pass Infinity/-Infinity as the num to get the max possible.
  * Pass "custom" or "-custom" to use the custom increment.
  * Returns the actual number bought or sold (negative if fired).
- * @param {string} objId
+ * @param {string} objId E.g. tent
  * @param {integer} num
  * @return {integer}
  */
 function doPurchase(objId, num) {
 	var purchaseObj = civData[objId];
-	if (!purchaseObj) { console.log("Unknown purchase: "+objId); return 0; }
-	if (num === undefined) { num = 1; }
-	if (abs(num) ==  "custom") { num =  sgn(num) * getCustomNumber(purchaseObj); }
 
-	num = canPurchase(purchaseObj,num);  // How many can we actually get?
+  // Abort if there's no corresponding object.
+	if (!purchaseObj) {
+    console.log("Unknown purchase: "+objId);
+    return 0;
+  }
+
+  // Default to amount 1.
+	if (num === undefined) {
+    num = 1;
+  }
+
+	if (abs(num) ==  "custom") {
+    num =  sgn(num) * getCustomNumber(purchaseObj);
+  }
+
+  // How many can we actually get?
+	num = canPurchase(purchaseObj,num);
 
 	// Pay for them
 	num = payFor(purchaseObj.require,num);
@@ -884,46 +899,96 @@ function doPurchase(objId, num) {
 		return 0;
 	}
 
-	//Then increment the total number of that building
-	// Do the actual purchase; coerce to the proper type if needed
-	purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
-	if (purchaseObj.source) { civData[purchaseObj.source].owned -= num; }
+  function apply() {
+    // Then increment the total number of that building
+    // Do the actual purchase; coerce to the proper type if needed
+    purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
+    if (purchaseObj.source) {
+      civData[purchaseObj.source].owned -= num;
+    }
 
-	// Post-purchase triggers
-	if (isValid(purchaseObj.onGain)) { purchaseObj.onGain(num); } // Take effect
+    // Post-purchase triggers
+    if (isValid(purchaseObj.onGain)) {
+      purchaseObj.onGain(num);
+    } // Take effect
 
-	//Increase devotion if the purchase provides it.
-	if (isValid(purchaseObj.devotion)) { 
-		civData.devotion.owned += purchaseObj.devotion * num; 
-		// If we've exceeded this deity's prior max, raise it too.
-		if (curCiv.deities[0].maxDev < civData.devotion.owned) {
-			curCiv.deities[0].maxDev = civData.devotion.owned;
-			makeDeitiesTables();
-		}
-	}
+    // Increase devotion if the purchase provides it.
+    if (isValid(purchaseObj.devotion)) { 
+      civData.devotion.owned += purchaseObj.devotion * num; 
+      // If we've exceeded this deity's prior max, raise it too.
+      if (curCiv.deities[0].maxDev < civData.devotion.owned) {
+        curCiv.deities[0].maxDev = civData.devotion.owned;
+        makeDeitiesTables();
+      }
+    }
 
-	// If building, then you use up free land
-	if (purchaseObj.type == "building") {
-		civData.freeLand.owned -= num;
-		// check for overcrowding
-		if (civData.freeLand.owned < 0) {
-			gameLog("You are suffering from overcrowding.");  // I18N
-			adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
-		}
-	}
+    // If building, then you use up free land
+    if (purchaseObj.type == "building") {
+      civData.freeLand.owned -= num;
+      // Check for overcrowding
+      if (civData.freeLand.owned < 0) {
+        gameLog("You are suffering from overcrowding.");  // I18N
+        adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
+      }
+    }
 
-	updateRequirements(purchaseObj); //Increases buildings' costs
-	updateResourceTotals(); //Update page with lower resource values and higher building total
-	updatePopulation(); //Updates the army display
-	updateResourceRows(); //Update resource display
-	updateBuildingButtons(); //Update the buttons themselves
-	updateJobButtons(); //Update page with individual worker numbers, since limits might have changed.
-	updatePartyButtons(); 
-	updateUpgrades(); //Update which upgrades are available to the player
-	updateDevotion(); //might be necessary if building was an altar
-	updateTargets(); // might enable/disable raiding
+    updateRequirements(purchaseObj); //Increases buildings' costs
+    updateResourceTotals(); //Update page with lower resource values and higher building total
+    updatePopulation(); //Updates the army display
+    updateResourceRows(); //Update resource display
+    updateBuildingButtons(); //Update the buttons themselves
+    updateJobButtons(); //Update page with individual worker numbers, since limits might have changed.
+    updatePartyButtons(); 
+    updateUpgrades(); //Update which upgrades are available to the player
+    updateDevotion(); //might be necessary if building was an altar
+    updateTargets(); // might enable/disable raiding
 
-	return num;
+    return num;
+  }
+
+  var row = $('#' + objId + 'Row');
+  $(row).attr('colspan', 10);
+  var rowHtml = $(row).html();
+  $(row).html(
+    Mustache.to_html(
+      $('#progress-bar-template').html(),
+      {}
+    )
+  );
+
+  /*
+  $(row).find('.progress-bar').animate(
+    {
+      width: '100%'
+    },
+    1000,
+    function() {
+      setTimeout(function() {
+        $(row).html(rowHtml);
+      }, 1000);
+    }
+  );
+  */
+
+  console.log('purchaseObj', purchaseObj);
+  var progress = 0;
+  function progressBar() {
+    if (progress <= 100) {
+      $(row).find('.progress-bar').css('width', progress + '%');
+      $(row).find('.progress-bar').html(progress + '%');
+      progress += 10;
+      setTimeout(progressBar, 100);
+    } else {
+      setTimeout(function() {
+        $(row).html(rowHtml);
+      }, 500);
+    }
+  }
+  progressBar();
+
+  console.log('objId', objId);
+  setTimeout(apply, 1000)
+  return num;
 }
 
 /**

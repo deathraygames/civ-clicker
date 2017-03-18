@@ -600,6 +600,8 @@
 	-->
     </footer>
 
+    <!-- Mustache templates below -->
+
     <!-- Template for primary resource row -->
     <script id="resource-row-template" type="text/template">
       <tr id="{{objId}}Row" class="purchaseRow" data-target="{{objId}}">
@@ -622,11 +624,22 @@
 
     <!-- Template for purchase cell text -->
     <script id="purchase-cell-template" type="text/template">
-      <{{tagName}} class='{{className}}{{absqty}}' data-quantity='{{qty}}'>
+      <{{tagName}} id="" class="{{className}}{{absqty}}" data-quantity="{{qty}}">
         {{#allowPurchase}}
-          <button class='btn btn-default btn-sm x{{absqty}}' data-action='purchase' disabled='disabled'>{{fmtqty}}</button>
+          <button class="btn btn-default btn-sm x{{absqty}}" data-action="purchase" disabled="disabled">{{fmtqty}}</button>
         {{/allowPurchase}}
       </{{tagName}}>
+    </script>
+
+    <!-- Template for progress bar -->
+    <script id="progress-bar-template" type="text/template">
+      <td colspan=99>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            60%
+          </div>
+        </div>
+      </td>
     </script>
   </body>
 </html>
