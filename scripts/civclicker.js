@@ -947,6 +947,10 @@ function doPurchase(objId, num) {
   }
 
   if (purchaseObj.useProgressBar) {
+    console.log(purchaseObj);
+    var progressTime = purchaseObj.calculateProgressTime();
+
+    console.log('progressTime', progressTime);
     var row = $('#' + objId + 'Row');
     $(row).attr('colspan', 10);
     var rowHtml = $(row).html();
@@ -961,10 +965,11 @@ function doPurchase(objId, num) {
 
     var progress = 0;
     function progressBar() {
-      if (progress <= 100) {
-        $(row).find('.progress-bar').css('width', progress + '%');
-        $(row).find('.progress-bar').html(progress + '%');
-        progress += 10;
+      if (progress <= progressTime) {
+        var progressPercentage = Math.round((progress / progressTime) * 100);
+        $(row).find('.progress-bar').css('width', progressPercentage + '%');
+        $(row).find('.progress-bar').html(progressPercentage + '%');
+        progress += 100;
         setTimeout(progressBar, 100);
       } else {
         setTimeout(function() {

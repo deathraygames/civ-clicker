@@ -31,6 +31,7 @@ VersionData.prototype.toString = function() {
 };
 
 /**
+ * @constructor
  * @param {object} props Properties
  * @param {boolean} asProto
  * @todo Create a mechanism to automate the creation of a class hierarchy,
@@ -49,8 +50,21 @@ function CivObj(props, asProto)
 	return this;
 }
 
-// Common Properties: id, name, owned, prereqs, require, effectText,
-//xxx TODO: Add save/load methods.
+/**
+ * Common Properties: id, name, owned, prereqs, require, effectText,
+ * @todo Add save/load methods.
+ * @property {object} constructor     - ??
+ * @property {string} subType         - ??
+ * @property {object} prereqs         -
+ * @property {object} require         - Price
+ * @property {boolean} vulnerable     - If object can be destroyed?
+ * @property {string} effectText      - ??
+ * @property {boolean} prestige       - ??
+ * @property {number} initOwned       - ??
+ * @property {function} init          - ??
+ * @property {boolean} useProgressBar - If true, progress bar will be shown at purchase
+ * @property {function} calculateProgressTime
+ */
 CivObj.prototype = {
 	constructor: CivObj,
 	subType: "normal",
@@ -100,10 +114,54 @@ CivObj.prototype = {
 		if (typeof qty == "number" && this.plural) { return this.plural; }
 		return this.name || this.singular || "(UNNAMED)";
 	},
-  useProgressBar: false
+  useProgressBar: false,
+
+  /**
+   * Calculate the time it takes to build object.
+   * @return {number}
+   */
+  calculateProgressTime: function() {
+    if (!this.useProgressBar) {
+      return 0;
+    }
+
+    if (this.require == {}) {
+      return 0;
+    }
+
+    // Assume at least one living person.
+    var livingPopulation =
+      population.living > 0 ?  population.living : 1;
+
+    var sum = 0;
+
+    for (type in this.require) {
+      var resource = civData[type];
+      console.log('resource', resource);
+      var resourceAmount = this.require[type];
+      console.log('resourceAmount', resourceAmount);
+      sum += resourceAmount * resource.progressFactor;
+      console.log('sum', sum);
+    }
+
+    sum = sum / livingPopulation;
+
+    console.log('sum', sum);
+
+    sum = sum * 500;
+
+    console.log('sum', sum);
+    
+    return sum;
+  }
 };
 
-function Resource(props) // props is an object containing the desired properties.
+/**
+ * Resource class
+ * @constructor
+ * @param {object} props - Properties
+ */
+function Resource(props)
 {
   // Prevent accidental namespace pollution
 	if (!(this instanceof Resource)) {
@@ -114,6 +172,10 @@ function Resource(props) // props is an object containing the desired properties
 	// Occasional Properties: increment, specialChance, net
 	return this;
 }
+
+/**
+ * @property {number} progressFactor - With how much each resource element should be multiplied when calculating progress time
+ */
 Resource.prototype = new CivObj({
 	constructor: Resource,
 	type: "resource",
@@ -129,10 +191,15 @@ Resource.prototype = new CivObj({
 	increment: 0,
 	specialChance: 0,
 	specialMaterial: "",
-	activity: "gathering" //I18N
+	activity: "gathering", //I18N
+  progressFactor: 1
 },true);
 
-function Building(props) // props is an object containing the desired properties.
+/**
+ * @constructor
+ * @param {object} props - Properties
+ */
+function Building(props)
 {
 	if (!(this instanceof Building)) { return new Building(props); } // Prevent accidental namespace pollution
 	CivObj.call(this,props);
@@ -141,6 +208,7 @@ function Building(props) // props is an object containing the desired properties
 	// plural should get moved during I18N.
 	return this;
 }
+
 // Common Properties: type="building",customQtyId
 Building.prototype = new CivObj({
 	constructor: Building,

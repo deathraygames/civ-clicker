@@ -20,7 +20,8 @@ function getCivData () {
 		subType:"basic",
 		specialMaterial: "herbs", verb: "cut", activity: "woodcutting", //I18N
 		get limit() { return 200 + (civData.woodstock.owned  * 200); },
-		set limit(value) { return this.limit; } // Only here for JSLint.
+		set limit(value) { return this.limit; }, // Only here for JSLint.
+    progressFactor: 10
 	}),
 	new Resource({ 
 		id:"stone", name:"stone", increment:1, specialChance:0.1,
@@ -29,7 +30,7 @@ function getCivData () {
 		get limit() { return 200 + (civData.stonestock.owned  * 200); },
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
-	new Resource({ id:"skins", singular:"skin", plural:"skins"}),
+	new Resource({ id:"skins", singular:"skin", plural:"skins", progressFactor: 10}),
 	new Resource({ id:"herbs", singular:"herb", plural:"herbs" }),
 	new Resource({ id:"ore", name:"ore" }),
 	new Resource({ id:"leather", name:"leather" }),
