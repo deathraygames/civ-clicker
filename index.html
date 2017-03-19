@@ -633,10 +633,13 @@
 
     <!-- Template for progress bar -->
     <script id="progress-bar-template" type="text/template">
+      <td></td>  <!-- -1 -->
+      <td>
+        {{buildingName}}
+      </td>
       <td colspan=99>
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            60%
           </div>
         </div>
       </td>

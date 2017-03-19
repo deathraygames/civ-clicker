@@ -867,7 +867,7 @@ function onIncrement(control) {
  * Pass Infinity/-Infinity as the num to get the max possible.
  * Pass "custom" or "-custom" to use the custom increment.
  * Returns the actual number bought or sold (negative if fired).
- * @param {string} objId E.g. tent
+ * @param {string} objId E.g. 'tent'
  * @param {integer} num
  * @return {integer}
  */
@@ -946,49 +946,39 @@ function doPurchase(objId, num) {
     return num;
   }
 
-  var row = $('#' + objId + 'Row');
-  $(row).attr('colspan', 10);
-  var rowHtml = $(row).html();
-  $(row).html(
-    Mustache.to_html(
-      $('#progress-bar-template').html(),
-      {}
-    )
-  );
+  if (purchaseObj.type == "building") {
+    var row = $('#' + objId + 'Row');
+    $(row).attr('colspan', 10);
+    var rowHtml = $(row).html();
+    $(row).html(
+      Mustache.to_html(
+        $('#progress-bar-template').html(),
+        {
+          buildingName: purchaseObj.id
+        }
+      )
+    );
 
-  /*
-  $(row).find('.progress-bar').animate(
-    {
-      width: '100%'
-    },
-    1000,
-    function() {
-      setTimeout(function() {
-        $(row).html(rowHtml);
-      }, 1000);
+    var progress = 0;
+    function progressBar() {
+      if (progress <= 100) {
+        $(row).find('.progress-bar').css('width', progress + '%');
+        $(row).find('.progress-bar').html(progress + '%');
+        progress += 10;
+        setTimeout(progressBar, 100);
+      } else {
+        setTimeout(function() {
+          $(row).html(rowHtml);
+        }, 500);
+      }
     }
-  );
-  */
-
-  console.log('purchaseObj', purchaseObj);
-  var progress = 0;
-  function progressBar() {
-    if (progress <= 100) {
-      $(row).find('.progress-bar').css('width', progress + '%');
-      $(row).find('.progress-bar').html(progress + '%');
-      progress += 10;
-      setTimeout(progressBar, 100);
-    } else {
-      setTimeout(function() {
-        $(row).html(rowHtml);
-      }, 500);
-    }
+    progressBar();
+    setTimeout(apply, 1000)
+    return num;
+  } else {
+    apply();
   }
-  progressBar();
 
-  console.log('objId', objId);
-  setTimeout(apply, 1000)
-  return num;
 }
 
 /**
