@@ -30,8 +30,12 @@ VersionData.prototype.toString = function() {
     + String(this.minor) + "." + String(this.sub) + String(this.mod);
 };
 
-// TODO: Create a mechanism to automate the creation of a class hierarchy,
-// specifying base class, shared props, instance props.
+/**
+ * @param {object} props Properties
+ * @param {boolean} asProto
+ * @todo Create a mechanism to automate the creation of a class hierarchy,
+ *       specifying base class, shared props, instance props.
+ */
 function CivObj(props, asProto)
 {
 	if (!(this instanceof CivObj)) { return new CivObj(props); } // Prevent accidental namespace pollution
@@ -100,7 +104,10 @@ CivObj.prototype = {
 
 function Resource(props) // props is an object containing the desired properties.
 {
-	if (!(this instanceof Resource)) { return new Resource(props); } // Prevent accidental namespace pollution
+  // Prevent accidental namespace pollution
+	if (!(this instanceof Resource)) {
+    return new Resource(props);
+  }
 	CivObj.call(this,props);
 	copyProps(this,props,null,true);
 	// Occasional Properties: increment, specialChance, net
