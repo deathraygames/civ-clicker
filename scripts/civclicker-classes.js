@@ -137,21 +137,21 @@ CivObj.prototype = {
 
     for (type in this.require) {
       var resource = civData[type];
-      console.log('resource', resource);
+      Logger.debug('resource', resource);
       var resourceAmount = this.require[type];
-      console.log('resourceAmount', resourceAmount);
+      Logger.debug('resourceAmount', resourceAmount);
       sum += resourceAmount * resource.progressFactor;
-      console.log('sum', sum);
+      Logger.debug('sum', sum);
     }
 
     // More population -> less building time
     sum = sum / livingPopulation;
 
-    console.log('sum', sum);
+    Logger.debug('sum', sum);
 
     sum = sum * 500;
 
-    console.log('sum', sum);
+    Logger.debug('sum', sum);
     
     return sum;
   }

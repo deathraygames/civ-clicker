@@ -947,10 +947,10 @@ function doPurchase(objId, num) {
   }
 
   if (purchaseObj.useProgressBar) {
-    console.log(purchaseObj);
+    Logger.debug(purchaseObj);
     var progressTime = purchaseObj.calculateProgressTime();
 
-    console.log('progressTime', progressTime);
+    Logger.debug('progressTime', progressTime);
     var row = $('#' + objId + 'Row');
     $(row).attr('colspan', 10);
     var rowHtml = $(row).html();
@@ -979,11 +979,11 @@ function doPurchase(objId, num) {
     }
     progressBar();
     setTimeout(apply, 1000)
-    return num;
   } else {
     apply();
   }
 
+  return num;
 }
 
 /**
@@ -3428,9 +3428,14 @@ $(function () {
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip()
 
+  // Enable toggle selector
   $('[data-toggle-selector]').on('click',function () {
     $($(this).data('toggle-selector')).toggle(300);
   })
+
+  // Logger
+  Logger.useDefaults();
+  Logger.setLevel(Logger.WARN);
 })
 
 
