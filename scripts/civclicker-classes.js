@@ -144,6 +144,7 @@ CivObj.prototype = {
       console.log('sum', sum);
     }
 
+    // More population -> less building time
     sum = sum / livingPopulation;
 
     console.log('sum', sum);
