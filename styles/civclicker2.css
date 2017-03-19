@@ -71,3 +71,7 @@ ol.happinessRanks li {
 .bar div:hover > span {
   display: block;
 }
+
+.table tbody tr td {
+  padding: 4px;  /* Half of Bootstrap */
+}
