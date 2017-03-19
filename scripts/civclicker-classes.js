@@ -99,7 +99,8 @@ CivObj.prototype = {
 		if (qty === 1 && this.singular) { return this.singular; }
 		if (typeof qty == "number" && this.plural) { return this.plural; }
 		return this.name || this.singular || "(UNNAMED)";
-	}
+	},
+  useProgressBar: false
 };
 
 function Resource(props) // props is an object containing the desired properties.
@@ -148,7 +149,8 @@ Building.prototype = new CivObj({
 	place: "home",
 	get vulnerable() { return this.subType != "altar"; }, // Altars can't be sacked.
 	set vulnerable(value) { return this.vulnerable; }, // Only here for JSLint.
-	customQtyId: "buildingCustomQty"
+	customQtyId: "buildingCustomQty",
+  useProgressBar: true
 },true);
 
 function Upgrade(props) // props is an object containing the desired properties.

@@ -946,7 +946,7 @@ function doPurchase(objId, num) {
     return num;
   }
 
-  if (purchaseObj.type == "building") {
+  if (purchaseObj.useProgressBar) {
     var row = $('#' + objId + 'Row');
     $(row).attr('colspan', 10);
     var rowHtml = $(row).html();
