@@ -497,8 +497,13 @@ function addRaidRows()
 {
 	var s = '';
 	civSizes.forEach(function(elem) { 
-		s += "<button class='raid' data-action='raid' data-target='"+elem.id+"' disabled='disabled'>"+
-		"Raid "+elem.name+"</button>"; //xxxL10N
+    s += Mustache.to_html(
+      $('#raid-button-template').html(),
+      {
+        name: elem.name,
+        id:   elem.id
+      }
+    );
 	});
 
 	var group = ui.find("#raidGroup");
