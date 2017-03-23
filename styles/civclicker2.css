@@ -75,3 +75,7 @@ ol.happinessRanks li {
 .table tbody tr td {
   padding: 4px;  /* Half of Bootstrap */
 }
+
+.raid-buttons .row {
+  margin-bottom: 4px;
+}

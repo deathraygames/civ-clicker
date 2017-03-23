@@ -649,15 +649,17 @@
 
     <!-- Raid button template -->
     <script id="raid-button-template" type="text/template">
-      {{#elems}}
-        <div class='row raid-buttons'>
-          <div class='col-sm-6'>
-            <button class='raid btn btn-default btn-block' data-action='raid' data-target='{{id}}' disabled='disabled'>
-              Raid {{name}}
-            </button>
+      <div class='raid-buttons'>
+        {{#elems}}
+          <div class='row'>
+            <div class='col-sm-6'>
+              <button class='raid btn btn-default btn-block' data-action='raid' data-target='{{id}}' disabled='disabled'>
+                Raid {{name}}
+              </button>
+            </div>
           </div>
-        </div>
-      {{/elems}}
+        {{/elems}}
+      </div>
     </script>
   </body>
 </html>
