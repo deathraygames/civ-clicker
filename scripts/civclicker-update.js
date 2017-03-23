@@ -495,16 +495,13 @@ function updateAchievements(){
 // Dynamically add the raid buttons for the various civ sizes.
 function addRaidRows()
 {
-	var s = '';
-	civSizes.forEach(function(elem) { 
-    s += Mustache.to_html(
-      $('#raid-button-template').html(),
-      {
-        name: elem.name,
-        id:   elem.id
-      }
-    );
-	});
+  var data = {
+    elems: civSizes
+  };
+  var s = Mustache.to_html(
+    $('#raid-button-template').html(),
+    data
+  );
 
 	var group = ui.find("#raidGroup");
 	group.innerHTML += s;

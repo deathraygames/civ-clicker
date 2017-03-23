@@ -649,9 +649,16 @@
 
     <!-- Raid button template -->
     <script id="raid-button-template" type="text/template">
-      <button class='raid btn btn-default' data-action='raid' data-target='{{id}}' disabled='disabled'>
-        Raid {{name}}
-      </button>
+      <div class='row'>
+        {{#elems}}
+          <div class='col-sm-6'>
+            <button class='raid btn btn-default btn-block' data-action='raid' data-target='{{id}}' disabled='disabled'>
+              Raid {{name}}
+            </button>
+          </div>
+          <div class='col-sm-6'></div>
+        {{/elems}}
+      </div>
     </script>
   </body>
 </html>
