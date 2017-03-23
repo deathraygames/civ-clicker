@@ -973,12 +973,12 @@ function doPurchase(objId, num) {
         setTimeout(progressBar, 100);
       } else {
         setTimeout(function() {
+          apply();
           $(row).html(rowHtml);
         }, 500);
       }
     }
     progressBar();
-    setTimeout(apply, 1000)
   } else {
     apply();
   }
