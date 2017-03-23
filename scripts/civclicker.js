@@ -39,7 +39,7 @@ var civSizes = [
 	{ min_pop :   2000, name: "Large Town"  , id : "largeTown"  },
 	{ min_pop :   5000, name: "Small City"  , id : "smallCity"  },
 	{ min_pop :  10000, name: "Large City"  , id : "largeCity"  },
-	{ min_pop :  20000, name:"Metro&shy;polis",id : "metropolis" },
+	{ min_pop :  20000, name: "Metropolis"  , id : "metropolis" },
 	{ min_pop :  50000, name: "Small Nation", id : "smallNation"},
 	{ min_pop : 100000, name: "Nation"      , id : "nation"     },
 	{ min_pop : 200000, name: "Large Nation", id : "largeNation"},
