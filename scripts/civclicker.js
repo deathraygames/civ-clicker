@@ -946,9 +946,11 @@ function doPurchase(objId, num) {
     return num;
   }
 
-  if (purchaseObj.useProgressBar) {
+  var progressTime = purchaseObj.calculateProgressTime(num);
+
+  // No need to show progress bar if time is too small
+  if (purchaseObj.useProgressBar && progressTime > 200) {
     Logger.debug(purchaseObj);
-    var progressTime = purchaseObj.calculateProgressTime();
 
     Logger.debug('progressTime', progressTime);
     var row = $('#' + objId + 'Row');
@@ -3435,7 +3437,7 @@ $(function () {
 
   // Logger
   Logger.useDefaults();
-  Logger.setLevel(Logger.WARN);
+  Logger.setLevel(Logger.ALL);
 })
 
 

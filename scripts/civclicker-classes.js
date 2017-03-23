@@ -118,9 +118,11 @@ CivObj.prototype = {
 
   /**
    * Calculate the time it takes to build object.
+   * @param {number} quantity - Number of buildings
    * @return {number}
    */
-  calculateProgressTime: function() {
+  calculateProgressTime: function(quantity) {
+
     if (!this.useProgressBar) {
       return 0;
     }
@@ -130,8 +132,9 @@ CivObj.prototype = {
     }
 
     // Assume at least one living person.
+    // But can't be 1, since log(1) = 0
     var livingPopulation =
-      population.living > 0 ?  population.living : 1;
+      population.living > 1 ?  population.living : 1.1;
 
     var sum = 0;
 
@@ -143,6 +146,8 @@ CivObj.prototype = {
       sum += resourceAmount * resource.progressFactor;
       Logger.debug('sum', sum);
     }
+
+    sum = sum * quantity;
 
     // More population -> less building time
     sum = sum / livingPopulation;
