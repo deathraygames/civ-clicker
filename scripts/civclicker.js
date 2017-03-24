@@ -657,7 +657,7 @@ function getPantheonUpgradeRowText(upgradeObj)
 	s +=     ((isValid(upgradeObj.prereqs) && isValid(upgradeObj.prereqs.devotion)) 
 			? (upgradeObj.prereqs.devotion +"d&nbsp;") : "") +"</td>";
 	//xxx The 'fooRow' id is added to make altars work, but should be redesigned.
-	s += "<td class='"+upgradeObj.type+"true'><button id='"+upgradeObj.id+"' class='xtrue'";
+	s += "<td class='"+upgradeObj.type+"true'><button id='"+upgradeObj.id+"' class='xtrue btn btn-default'";
 	s += " data-action='purchase' data-quantity='true' data-target="+upgradeObj.id;
 	s += " disabled='disabled' onmousedown=\"";
 	// The event handler can take three forms, depending on whether this is
@@ -1326,11 +1326,11 @@ function iconoclasmList(){
 		ui.find("#iconoclasm").disabled = true;
 		var append = "<br />";
 		for (i=1;i<curCiv.deities.length;++i){
-			append += '<button onclick="iconoclasm(' + i + ')">';
+			append += '<button class="btn btn-default" onclick="iconoclasm(' + i + ')">';
 			append += curCiv.deities[i].name;
 			append += '</button><br />';
 		}
-		append += '<br /><button onclick=\'iconoclasm("cancel")\'>Cancel</button>';
+		append += '<br /><button class="btn btn-default" onclick=\'iconoclasm("cancel")\'>Cancel</button>';
 		ui.find("#iconoclasmList").innerHTML = append;
 	}
 }

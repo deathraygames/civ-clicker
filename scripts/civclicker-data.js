@@ -482,13 +482,13 @@ function getCivData () {
 		get rate() { return this.data.rate; }, // Sacrifice rate
 		set rate(value) { this.data.rate = value; },
 		effectText:"boost food production by sacrificing 1 worker/sec.",
-		extraText: "<br /><button id='ceaseWalk' onmousedown='walk(false)' disabled='disabled'>Cease Walking</button>" }),
+		extraText: "<br /><button class='btn btn-default' id='ceaseWalk' onmousedown='walk(false)' disabled='disabled'>Cease Walking</button>" }),
 	new Upgrade({ id:"raiseDead", name:"Raise Dead", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 20 },
 		require: { corpses: 1, piety: 4 }, //xxx Nonlinear cost
 		effectText:"Piety to raise the next zombie",
-		extraText:"<button onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'"
-				  +">+100</button><button onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>" }),
+		extraText:"<button class='btn btn-default' onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'"
+				  +">+100</button><button class='btn btn-default' onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>" }),
 	new Upgrade({ id:"summonShade", name:"Summon Shades", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 40 },
 		require: { piety: 1000 },  //xxx Also need slainEnemies
