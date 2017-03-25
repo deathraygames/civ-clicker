@@ -79,3 +79,34 @@ ol.happinessRanks li {
 .raid-buttons .row {
   margin-bottom: 4px;
 }
+
+#achievements {
+
+}
+#achievements:after /* clearfix */ { content: ""; display: table; clear: both; }
+.achievement{
+	display: block;
+	float: left;
+	width: 60px;
+	height: 60px;
+	background-color: #737373;
+	background-image: url('../images/achLocked.jpg');
+	background-position: center center;
+	background-repeat: no-repeat;
+	margin: 0.5em;
+	font-family: 'Suez One', serif;
+}
+
+.unlockedAch{
+	box-sizing: border-box;
+	border: 5px ridge #FBDA20;
+	width: 70px;
+	height: 70px;
+	padding: 0.2em;
+	margin: -5px 0 0 -5px;
+	font-size: 0.9em;
+	box-shadow: 0 0.25em 0.3em rgba(0,0,0,0.25), inset 0 0 0.5em rgba(0,0,0,0.25);
+	font-weight: normal;
+	background-color: #FBDA20;
+	display: none; /* Initially */
+}
