@@ -110,3 +110,7 @@ ol.happinessRanks li {
 	background-color: #FBDA20;
 	display: none; /* Initially */
 }
+
+.progress {
+  margin-bottom: 0;
+}

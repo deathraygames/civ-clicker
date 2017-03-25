@@ -590,7 +590,7 @@ function getPurchaseRowText (purchaseObj) {
 	[1, 10, 100, "custom", ((purchaseObj.salable) ? Infinity : 1000)]
 	.forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
-	s += "<td>" + getCostNote(purchaseObj) + "</td>";
+	s += "<td class='cost'>" + getCostNote(purchaseObj) + "</td>";
 	s += "</tr>";
 
 	return s;
@@ -986,7 +986,7 @@ function doPurchase(objId, num) {
         setTimeout(function() {
           apply();
           $(cell).html(cellHtml);
-        }, 500);
+        }, 250);
       }
     }
     progressBar();
