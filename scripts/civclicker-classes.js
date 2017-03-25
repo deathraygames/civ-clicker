@@ -215,7 +215,16 @@ function Building(props)
 	return this;
 }
 
-// Common Properties: type="building",customQtyId
+/**
+ * Common Properties: type="building",customQtyId
+ * @property {string} type      Always "building"
+ * @property {string} alignment Always "player"
+ * @property {string} place     Always "home"
+ * @property {function} vulnerable Returns boolean if this building can be sacked
+ * @property {customQtyId} string "buildingCustomQty" ?
+ * @property {boolean} useProgressBar If true, will display progress during building
+ * @property {number} progressTimeLeft Milliseconds of left building time. 0 means not building.
+ */
 Building.prototype = new CivObj({
 	constructor: Building,
 	type: "building",
@@ -224,7 +233,8 @@ Building.prototype = new CivObj({
 	get vulnerable() { return this.subType != "altar"; }, // Altars can't be sacked.
 	set vulnerable(value) { return this.vulnerable; }, // Only here for JSLint.
 	customQtyId: "buildingCustomQty",
-  useProgressBar: true
+  useProgressBar: true,
+  progressTimeLeft: 0
 },true);
 
 function Upgrade(props) // props is an object containing the desired properties.

@@ -880,6 +880,12 @@ function doPurchase(objId, num) {
     return 0;
   }
 
+  // Don't allow purchase if progress is under way
+  if (purchaseObj.progressTimeLeft > 0) {
+    Logger.debug('progressTimeLeft > 0');
+    return 0;
+  }
+
   // Default to amount 1.
 	if (num === undefined) {
     num = 1;
@@ -946,17 +952,19 @@ function doPurchase(objId, num) {
     return num;
   }
 
+
   var progressTime = purchaseObj.calculateProgressTime(num);
 
   // No need to show progress bar if time is too small
   if (purchaseObj.useProgressBar && progressTime > 200) {
+    purchaseObj.progressTimeLeft = progressTime;
+
     Logger.debug(purchaseObj);
 
     Logger.debug('progressTime', progressTime);
-    var row = $('#' + objId + 'Row');
-    $(row).attr('colspan', 10);
-    var rowHtml = $(row).html();
-    $(row).html(
+    var cell = $('#' + objId + 'Row .number');
+    var cellHtml = $(cell).html();
+    $(cell).html(
       Mustache.to_html(
         $('#progress-bar-template').html(),
         {
@@ -969,14 +977,15 @@ function doPurchase(objId, num) {
     function progressBar() {
       if (progress <= progressTime) {
         var progressPercentage = Math.round((progress / progressTime) * 100);
-        $(row).find('.progress-bar').css('width', progressPercentage + '%');
-        $(row).find('.progress-bar').html(progressPercentage + '%');
+        $(cell).find('.progress-bar').css('width', progressPercentage + '%');
+        $(cell).find('.progress-bar').html(progressPercentage + '%');
         progress += 100;
+        purchaseObj.progressTimeLeft -= 100;
         setTimeout(progressBar, 100);
       } else {
         setTimeout(function() {
           apply();
-          $(row).html(rowHtml);
+          $(cell).html(cellHtml);
         }, 500);
       }
     }
