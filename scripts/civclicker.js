@@ -3350,7 +3350,7 @@ function ruinFun(){
 //========== SETUP (Functions meant to be run once on the DOM)
 
 setup.all = function () {
-	ui.find("#main").style.display = "none";
+  $('#main').css('display', 'none');
 	setup.data();
 	setup.civSizes();
 	document.addEventListener("DOMContentLoaded", function(e){
@@ -3358,7 +3358,7 @@ setup.all = function () {
 		setup.game();
 		setup.loop();
 		// Show the game
-		ui.find("#main").style.display = "block";
+    $('#main').css('display', 'block');
 	});
 };
 
