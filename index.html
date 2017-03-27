@@ -51,19 +51,49 @@
 </head>
 <body class="hasBackground">
 
+  <nav class="navbar navbar-default" id="stripInner">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          CivClicker
+          <span class="version">1.4.0</span>
+        </a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li href="#">
+            <a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
+          </li>
+          <li href="#">
+            <a href="updates.html" target="_blank">Game updates log</a>
+          </li>
+          <li href="#">
+            <a href="https://www.reddit.com/r/CivClicker/" target="_blank">Reddit</a>
+          </li>
+          <li href="#">
+            <a href="#" class="openSettings" data-toggle-selector='#settings'>Settings</a>
+          </li>
+          <!--
+          <li href="#">
+            <span id="versionAlert"> - <span id="newVersionText" onclick="location.reload()">New version available</span></span>
+          </li>
+          -->
+        </ul>
+      </div>
+    </div>
+	</nav>
+
 <div id="strip">
 	<div id="header">
-		<h1>The <span id="civType">Thorp</span> of <span id="civName">Woodstock</span></h1>
-		<div id="ruler">Ruled by the <span id="appellation">mighty</span> <span id="rulerName">Orteil</span></div>
-	</div>
-	<div id="stripInner">
-		<span class="title">CivClicker</span>
-		<span class="version">v1.3.3</span>
-		<a href="faq.html" target="_blank">FAQ &amp; Instructions</a>
-		<a href="updates.html" target="_blank">Game updates log</a>
-		<a href="https://www.reddit.com/r/CivClicker/" target="_blank">Reddit</a>
-		<a href="#" class="openSettings" data-toggle-selector='#settings'>Settings</a>
-		<span id="versionAlert"> - <span id="newVersionText" onclick="location.reload()">New version available</span></span>
+		<h1>The <span id="civType">Thorp</span> of <span id="civName">Woodstock</span>
+      <small id="ruler">Ruled by the <span id="appellation">mighty</span> <span id="rulerName">Orteil</span></small>
+    </h1>
 	</div>
 </div>
 
