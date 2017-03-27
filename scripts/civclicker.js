@@ -458,8 +458,8 @@ function getCostNote(civObj)
 	var effectText = (isValid(civObj.effectText)) ? civObj.effectText : "";
 	var separator = (reqText && effectText) ? ": " : "";
 
-	return "<span id='"+civObj.id+"Cost' class='cost'>" + reqText + "</span>"
-		 + "<span id='"+civObj.id+"Note' class='note'>" + separator + civObj.effectText + "</span>";
+	return "<span id='"+civObj.id+"Cost' class='text-muted cost'>" + reqText + "</span>"
+		 + "<span id='"+civObj.id+"Note' class='text-muted note'>" + separator + civObj.effectText + "</span>";
 }
 
 // Number format utility functions.
