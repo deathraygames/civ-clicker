@@ -3447,6 +3447,8 @@ $(function () {
   // Logger
   Logger.useDefaults();
   Logger.setLevel(Logger.ALL);
+
+  $('#bs-theme-selector').bootstrapThemeSwitcher();
 })
 
 
