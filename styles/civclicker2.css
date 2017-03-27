@@ -142,3 +142,23 @@ ol.happinessRanks li {
 html {
   font-size: 14px;
 }
+
+#panesSelectors .alert {
+	display: none;
+	position: absolute;
+	font-size: 1.2em;
+	top: -0.5em;
+	right: -0.25em;
+	width: 1.2em;
+	height: 1.2em;
+	line-height: 1.5em;
+	text-align: center;
+	background: #ffff99;
+	border: solid 2px white;
+	border-radius: 1.5em;
+	font-family: 'Suez One', serif;
+	color: #333;
+	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.2);
+	z-index: 2;
+}
+
