@@ -2377,7 +2377,7 @@ function renameDeity(newName){
 	makeDeitiesTables();
 }
 
-function reset(){
+function resetCivClicker() {
 	console.log("Reset");
 	//Resets the game, keeping some values but resetting most back to their initial values.
 	var msg = "Really reset? You will keep past deities and wonders (and cats)"; //Check player really wanted to do that.
