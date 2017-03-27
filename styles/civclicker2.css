@@ -72,6 +72,30 @@ ol.happinessRanks li {
   display: block;
 }
 
+.totalSick { 	background-color: #fcc; }
+.unemployed { 	background-color: #bbb; }
+.farmer { 		background-color: #CF9221; }
+.woodcutter { 	background-color: #016901; }
+.miner { 		background-color: #887878; }
+.tanner { 		background-color: #591B11; }
+.blacksmith { 	background-color: #525252; }
+.healer { 		background-color: #003B00; }
+.cleric { 		background-color: #CF6666; }
+.labourer { 	background-color: #9f9; }
+.soldier { 		background-color: #f99; }
+.cavalry { 		background-color: #ff9; }
+.cat { 			background-color: #ff2; }
+.shade { 		background-color: #333; }
+.wolf { 		background-color: #999; }
+.bandit { 		background-color: #666; }
+.barbarian { 	background-color: #f63; }
+.esiege { 		background-color: #99f; }
+.soldierParty { background-color: #9ff; }
+.cavalryParty { background-color: #f9f; }
+.siege { 		background-color: #cc3; }
+.esoldier { 	background-color: #c44; }
+.efort { 		background-color: #cc4; }
+
 .table tbody tr td {
   padding: 4px;  /* Half of Bootstrap */
 }
