@@ -671,7 +671,7 @@
     <script id="purchase-cell-template" type="text/template">
       <{{tagName}} id="" class="{{className}}{{absqty}}" data-quantity="{{qty}}">
         {{#allowPurchase}}
-          <button class="btn btn-default btn-sm x{{absqty}}" data-action="purchase" disabled="disabled">{{fmtqty}}</button>
+          <button class="btn btn-default btn-sm x{{absqty}}" data-action="purchase" disabled="disabled">{{{fmtqty}}}</button>
         {{/allowPurchase}}
       </{{tagName}}>
     </script>
