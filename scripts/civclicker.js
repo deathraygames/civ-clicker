@@ -3458,6 +3458,14 @@ $(function () {
       $('#civ-modal').modal();
     });
   });
+
+  $('#updates-modal').on('click', function() {
+    $.get('templates/updates.html', function(template) {
+      $('#civ-modal .modal-title').html('Game updates');
+      $('#civ-modal .modal-body').html(template);
+      $('#civ-modal').modal();
+    });
+  });
 })
 
 
