@@ -3458,6 +3458,8 @@ $(function () {
 
       $('#bs-theme-selector').bootstrapThemeSwitcher();
 
+      setDefaultSettings();
+
       $('#civ-modal').modal();
     });
   });
