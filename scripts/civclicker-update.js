@@ -227,7 +227,7 @@ function updateResourceTotals(){
 		(civData[curCiv.trader.materialId].owned < curCiv.trader.requested);
 
 	// Cheaters don't get names.
-	ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+	//ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
 }
 
 //Update page with numbers
@@ -400,7 +400,7 @@ function updateUpgrades(){
 
 	// Deity techs
 	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
-	ui.find("#renameDeity").disabled = (!civData.worship.owned);
+	//ui.find("#renameDeity").disabled = (!civData.worship.owned);
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
 	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));

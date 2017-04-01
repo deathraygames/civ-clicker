@@ -77,7 +77,7 @@
             <a href="https://www.reddit.com/r/CivClicker/" target="_blank">Reddit</a>
           </li>
           <li>
-            <a href="#" class="openSettings" data-toggle-selector='#settings'>Settings</a>
+            <a href="#" id="settings-modal">Settings</a>
           </li>
           <!--
           <li href="#">
@@ -96,93 +96,6 @@
     </h1>
 	</div>
 </div>
-
-<section id="settings" class="collapse">
-	<div class="row">
-		<div class="col-sm-6">
-			<h2>Naming</h2>
-      <form>
-        <div class="form-group">
-          <button class="btn btn-default" onmousedown="renameCiv()" title="Rename your civilisation">Rename civilisation</button><br />
-        </div>
-        <div class="form-group">
-          <button class="btn btn-default" id="renameRuler" onmousedown="renameRuler()" title="Rename yourself">Rename yourself</button><br />
-        </div>
-        <div class="form-group">
-          <button class="btn btn-default" id="renameDeity" onmousedown="renameDeity()" title="Rename your deity" disabled="disabled">Rename current deity</button>
-        </div>
-      </form>
-
-			<h2>Display</h2>
-
-      <form>
-        <div class="form-group">
-          <span id="textSize"><button class="btn btn-xs btn-default" id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text size
-          <button id="largerText" class="btn btn-xs btn-default" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use custom quantities</label>
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number delimiters</label>
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text shadows</label>
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show notes</label>
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe mode</label>
-        </div>
-        <div class="checkbox">
-          <label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use icons</label>
-        </div>
-      </form>
-
-		</div>
-
-		<div class="col-sm-6">
-			<h2>Save &amp; load controls</h2>
-      <form>
-
-        <div class="form-group">
-          <button class="btn btn-default" onmousedown="save('manual');" data-toggle="tooltip" title="Save your current stats">Manual save</button>
-          <button class="btn btn-default" onmousedown="resetCivClicker();" data-toggle="tooltip" title="Resetting allows you to gain another deity and build another Wonder">Reset game</button>
-          <button class="btn btn-default" onmousedown="deleteSave();" data-toggle="tooltip" title="Delete your saved stats">Delete save file</button>
-        </div>
-
-        <div class="checkbox">
-          <label>
-            <input id="toggleAutosave" type="checkbox" onclick="onToggleAutosave(this)" title="Autosave"/>Autosave
-          </label>
-        </div>
-
-        <div class="form-group">
-          <label>Save game data:</label>
-          <textarea class="form-control" id="impexpField"></textarea>
-        </div>
-
-        <div class="form-group">
-          <button class="btn btn-default" id="expButton" onclick="save('export')">Export</button>
-          <button class="btn btn-default" id="expSelect" onclick="document.getElementById('impexpField').select();">Select all</button>
-          <button class="btn btn-default" id="impButton" onclick="load('import')">Import</button>
-        </div>
-      </form>
-
-      <h2>Theme selector</h2>
-
-      <form>
-        <div class="form-group">
-          <div class="col-sm-6">
-            <select class='form-control' id="bs-theme-selector"></select>
-          </div>
-        </div>
-      </form>
-		</div>
-	</div>
-</section>
-
 
 <div id="main" class="row">
 

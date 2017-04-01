@@ -1,0 +1,102 @@
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#settings-naming" aria-controls="settings-naming" role="tab" data-toggle="tab">Naming</a></li>
+  <li role="presentation"><a href="#settings-display" aria-controls="settings-display" role="tab" data-toggle="tab">Display</a></li>
+  <li role="presentation"><a href="#settings-saveload" aria-controls="settings-saveload" role="tab" data-toggle="tab">Save/load</a></li>
+</ul>
+
+<div class="tab-content">
+
+  <div id="settings-naming" class="tab-pane active">
+    <form>
+      <div class="form-group">
+        <button class="btn btn-default" onmousedown="renameCiv()" title="Rename your civilisation">Rename civilisation</button><br />
+      </div>
+      <div class="form-group">
+        <button class="btn btn-default" id="renameRuler" onmousedown="renameRuler()" title="Rename yourself">Rename yourself</button><br />
+      </div>
+      <div class="form-group">
+        <button class="btn btn-default" id="renameDeity" onmousedown="renameDeity()" title="Rename your deity" disabled="disabled">Rename current deity</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="settings-display" class="tab-pane">
+    <form>
+      <div class="form-group">
+        <span id="textSize"><button class="btn btn-xs btn-default" id="smallerText" onmousedown="textSize(-1)" title="Smaller Text">&minus;</button>Text size
+          <button id="largerText" class="btn btn-xs btn-default" onmousedown="textSize(1)" title="Larger Text">+</button></span><br />
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use custom quantities</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number delimiters</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text shadows</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show notes</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe mode</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="toggleIcons" type="checkbox" onclick="onToggleIcons(this)" title="Toggle Icons"/>Use icons</label>
+      </div>
+    </form>
+    <form>
+      <div class="form-group">
+        <div class="col-sm-6">
+          <select class='form-control' id="bs-theme-selector"></select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="settings-saveload" class="tab-pane">
+      <form>
+        <div class="form-group">
+          <button class="btn btn-default" onmousedown="save('manual');" data-toggle="tooltip" title="Save your current stats">Manual save</button>
+          <button class="btn btn-default" onmousedown="resetCivClicker();" data-toggle="tooltip" title="Resetting allows you to gain another deity and build another Wonder">Reset game</button>
+          <button class="btn btn-default" onmousedown="deleteSave();" data-toggle="tooltip" title="Delete your saved stats">Delete save file</button>
+        </div>
+
+        <div class="checkbox">
+          <label>
+            <input id="toggleAutosave" type="checkbox" onclick="onToggleAutosave(this)" title="Autosave"/>Autosave
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Save game data:</label>
+          <textarea class="form-control" id="impexpField"></textarea>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-default" id="expButton" onclick="save('export')">Export</button>
+          <button class="btn btn-default" id="expSelect" onclick="document.getElementById('impexpField').select();">Select all</button>
+          <button class="btn btn-default" id="impButton" onclick="load('import')">Import</button>
+        </div>
+      </form>
+  </div>
+
+</div>
+
+<!--
+<section id="settings" class="collapse">
+	<div class="row">
+		<div class="col-sm-6">
+			<h2>Naming</h2>
+			<h2>Display</h2>
+
+		</div>
+
+		<div class="col-sm-6">
+			<h2>Save &amp; load controls</h2>
+      <h2>Theme selector</h2>
+
+		</div>
+	</div>
+</section>
+-->

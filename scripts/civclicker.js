@@ -3063,7 +3063,7 @@ function prettify(input){
 
 function setAutosave(value){ 
 	if (value !== undefined) { settings.autosave = value; } 
-	ui.find("#toggleAutosave").checked = settings.autosave;
+	$("#toggleAutosave").attr('checked', settings.autosave);
 }
 function onToggleAutosave(control){ return setAutosave(control.checked); }
 
@@ -3073,7 +3073,7 @@ function setCustomQuantities(value){
 	var curPop = population.current;
 
 	if (value !== undefined) { settings.customIncr = value; }
-	ui.find("#toggleCustomQuantities").checked = settings.customIncr;
+	$("#toggleCustomQuantities").attr('checked', settings.customIncr);
 
 	ui.show("#customJobQuantity",settings.customIncr);
 	ui.show("#customPartyQuantity",settings.customIncr);
@@ -3133,7 +3133,7 @@ function onToggleCustomQuantities(control){
 // Toggles the display of the .notes class
 function setNotes(value){
 	if (value !== undefined) { settings.notes = value; }
-	ui.find("#toggleNotes").checked = settings.notes;
+	$("#toggleNotes").attr('checked',  settings.notes);
 
 	var i;
 	var elems = document.getElementsByClassName("note");
@@ -3149,7 +3149,7 @@ function onToggleNotes(control){
 // value is the desired change in 0.1em units.
 function textSize(value){
 	if (value !== undefined) { settings.fontSize += 0.1 * value; }
-	ui.find("#smallerText").disabled = (settings.fontSize <= 0.5); 
+	$("#smallerText").attr('disabled',  settings.fontSize <= 0.5);
 
 	//xxx Should this be applied to the document instead of the body?
 	ui.body.style.fontSize = settings.fontSize + "em";
@@ -3157,7 +3157,7 @@ function textSize(value){
 
 function setShadow(value){
 	if (value !== undefined) { settings.textShadow = value; }
-	ui.find("#toggleShadow").checked = settings.textShadow;
+	$("#toggleShadow").attr('checked', settings.textShadow);
 	var shadowStyle = "3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff"
 					+ ", 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff";
 	ui.body.style.textShadow = settings.textShadow ? shadowStyle : "none";
@@ -3170,7 +3170,7 @@ function onToggleShadow(control){
 // as that's probably the simplest way to do this.
 function setIcons(value){ 
 	if (value !== undefined) { settings.useIcons = value; } 
-	ui.find("#toggleIcons").checked = settings.useIcons;
+	$("#toggleIcons").attr('checked', settings.useIcons);
 
 	var i;
 	var elems = document.getElementsByClassName("icon");
@@ -3185,7 +3185,7 @@ function onToggleIcons(control){
 
 function setDelimiters(value){
 	if (value !== undefined) { settings.delimiters = value; }
-	ui.find("#toggleDelimiters").checked = settings.delimiters;
+	$("#toggleDelimiters").attr('checked', settings.delimiters);
 	updateResourceTotals();
 }
 function onToggleDelimiters(control){ 
@@ -3194,7 +3194,7 @@ function onToggleDelimiters(control){
 
 function setWorksafe(value){
 	if (value !== undefined) { settings.worksafe = value; }
-	ui.find("#toggleWorksafe").checked = settings.worksafe;
+	$("#toggleWorksafe").attr('checked', settings.worksafe);
 
 	//xxx Should this be applied to the document instead of the body?
 	if (settings.worksafe){
@@ -3354,30 +3354,11 @@ setup.all = function () {
 	setup.data();
 	setup.civSizes();
 	document.addEventListener("DOMContentLoaded", function(e){
-		setup.events();
 		setup.game();
 		setup.loop();
 		// Show the game
     $('#main').css('display', 'block');
 	});
-};
-
-setup.events = function () {
-  /*
-	var openSettingsElt = ui.find(".openSettings");
-
-	openSettingsElt.addEventListener("click", function () {
-		var settingsShown = ui.toggle("#settings");
-		var header = ui.find("#header");
-		if (settingsShown) {
-			header.className = "condensed";
-			openSettingsElt.className = "selected openSettings";
-		} else {
-			header.className = "";
-			openSettingsElt.className = "openSettings";
-		}
-	});
-  */
 };
 
 setup.data = function () {
@@ -3439,16 +3420,9 @@ $(function () {
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip()
 
-  // Enable toggle selector
-  $('[data-toggle-selector]').on('click',function () {
-    $($(this).data('toggle-selector')).toggle(300);
-  })
-
   // Logger
   Logger.useDefaults();
   Logger.setLevel(Logger.ALL);
-
-  $('#bs-theme-selector').bootstrapThemeSwitcher();
 
   $('#faq-modal').on('click', function() {
     console.log('here');
@@ -3463,6 +3437,27 @@ $(function () {
     $.get('templates/updates.html', function(template) {
       $('#civ-modal .modal-title').html('Game updates');
       $('#civ-modal .modal-body').html(template);
+      $('#civ-modal').modal();
+    });
+  });
+
+  $('#settings-modal').on('click', function() {
+    $.get('templates/settings.html', function(template) {
+      $('#civ-modal .modal-title').html('Settings');
+      $('#civ-modal .modal-body').html(template);
+
+      ui.find("#renameDeity").disabled = (!civData.worship.owned);
+      ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+
+      $('[data-toggle="tooltip"]').tooltip()
+
+      // Enable toggle selector
+      $('[data-toggle-selector]').on('click',function () {
+        $($(this).data('toggle-selector')).toggle(300);
+      })
+
+      $('#bs-theme-selector').bootstrapThemeSwitcher();
+
       $('#civ-modal').modal();
     });
   });
