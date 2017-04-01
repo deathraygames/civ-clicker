@@ -3449,6 +3449,15 @@ $(function () {
   Logger.setLevel(Logger.ALL);
 
   $('#bs-theme-selector').bootstrapThemeSwitcher();
+
+  $('#faq-modal').on('click', function() {
+    console.log('here');
+    $.get('templates/faq.html', function(template) {
+      $('#civ-modal .modal-title').html('FAQ and instructions');
+      $('#civ-modal .modal-body').html(template);
+      $('#civ-modal').modal();
+    });
+  });
 })
 
 
