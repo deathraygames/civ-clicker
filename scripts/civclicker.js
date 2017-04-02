@@ -553,8 +553,12 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 	var tagName = inTable ? "td" : "span";
 	var className = (abs(qty) == "custom") ? "buy" : purchaseObj.type;  // 'custom' buttons all use the same class.
 
+  var templateName = purchaseObj.type == 'upgrade' ?
+    '#purchase-upgrade-template' :
+    '#purchase-cell-template';
+
   var s = Mustache.to_html(
-    $('#purchase-cell-template').html(),
+    $(templateName).html(),
     {
       qty:           qty,
       absqty:        abs(qty),
@@ -623,12 +627,18 @@ function addUITable(civObjs, groupElemName)
 }
 
 
-// We have a separate row generation function for upgrades, because their
-// layout is differs greatly from buildings/units:
-//  - Upgrades are boolean, so they don't need multi-purchase buttons.
-//  - Upgrades don't need quantity labels, and put the name in the button.
-//  - Upgrades are sometimes generated in a table with <tr>, but sometimes
-//    outside of one with <span>.
+/**
+ * We have a separate row generation function for upgrades, because their
+ * layout is differs greatly from buildings/units:
+ * - Upgrades are boolean, so they don't need multi-purchase buttons.
+ * - Upgrades don't need quantity labels, and put the name in the button.
+ * - Upgrades are sometimes generated in a table with <tr>, but sometimes
+ * outside of one with <span>.
+ *
+ * @param {object} upgradeObj
+ * @param {boolean|undefined} inTable
+ * @return {string}
+ */
 function getUpgradeRowText(upgradeObj, inTable)
 {
 	if (inTable === undefined) { inTable = true; }

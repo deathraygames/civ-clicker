@@ -619,6 +619,15 @@
       </{{tagName}}>
     </script>
 
+    <!-- Template for purchase upgrade -->
+    <script id="purchase-upgrade-template" type="text/template">
+      <{{tagName}} id="" class="{{className}}{{absqty}}" data-quantity="{{qty}}">
+        {{#allowPurchase}}
+          <button class="btn btn-default btn-block x{{absqty}}" data-action="purchase" disabled="disabled">{{{fmtqty}}}</button>
+        {{/allowPurchase}}
+      </{{tagName}}>
+    </script>
+
     <!-- Template for progress bar -->
     <script id="progress-bar-template" type="text/template">
       <td>
@@ -644,6 +653,7 @@
       </div>
     </script>
 
+    <!-- Modal for settings etc -->
     <div id="civ-modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
