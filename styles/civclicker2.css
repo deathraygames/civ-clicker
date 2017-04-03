@@ -162,3 +162,9 @@ html {
 	z-index: 2;
 }
 
+.civ-pane-alert {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 100%;
+}

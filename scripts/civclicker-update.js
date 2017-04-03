@@ -82,13 +82,17 @@ function updateAfterReset () {
 
 	ui.find("#conquest").style.display = "none";
 
-	ui.find(".alert").style.display = "none";
+	$("#civ-pane-alert").hide();
 	ui.find("#tradeContainer").style.display = "none";
 	ui.find("#tradeUpgradeContainer").style.display = "none";
 	ui.find("#iconoclasmList").innerHTML = "";
 	ui.find("#iconoclasm").disabled = false;
 }
 
+/**
+ * Show trader divs/alert etc if trader is here.
+ * @return {boolean}
+ */
 function updateTrader () {
 	var isHere = isTraderHere();
 	if (isHere) {
@@ -100,7 +104,7 @@ function updateTrader () {
 	}
 	ui.show("#tradeContainer", isHere);
 	ui.show("#noTrader", !isHere);
-	ui.show("#tradeSelect .alert", isHere);
+	$("#trade-pane-alert").toggle(isHere);
 	return isHere;
 }
 
@@ -570,7 +574,7 @@ function updateWonder () {
 	var lowItem = getWonderLowItem();
 	
 	ui.show("#lowResources", isLimited);
-	ui.show("#upgradesSelect .alert", isLimited);
+	$("#upgrade-pane-alert").toggle(isLimited);
 
 	if (lowItem) { 
 		ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
