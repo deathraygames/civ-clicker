@@ -140,7 +140,7 @@ ol.happinessRanks li {
 }
 
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 #panesSelectors .alert {
@@ -167,4 +167,10 @@ html {
   top: 0;
   right: 0;
   font-size: 100%;
+}
+
+.number {
+  text-align: right;
+  padding-right: 0.3em;
+  font-size: 1.2em;
 }
