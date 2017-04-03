@@ -988,15 +988,21 @@ function doPurchase(objId, num) {
       if (progress <= progressTime) {
         var progressPercentage = Math.round((progress / progressTime) * 100);
         $(cell).find('.progress-bar').css('width', progressPercentage + '%');
-        $(cell).find('.progress-bar').html(progressPercentage + '%');
+        //$(cell).find('.progress-bar').html(progressPercentage + '%');
         progress += 100;
         purchaseObj.progressTimeLeft -= 100;
+        if (purchaseObj.progressTimeLeft <= 0) {
+          purchaseObj.progressTimeLeft = 1;  // Lock until done
+        }
         setTimeout(progressBar, 100);
       } else {
+        $(cell).find('.progress-bar').css('width', '100%');
+        purchaseObj.progressTimeLeft = 1;  // Lock until done
         setTimeout(function() {
           apply();
           $(cell).html(cellHtml);
-        }, 250);
+          purchaseObj.progressTimeLeft = 0;  // Unlock
+        }, 500);
       }
     }
     progressBar();
