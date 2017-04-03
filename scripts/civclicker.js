@@ -585,7 +585,7 @@ function getPurchaseRowText (purchaseObj) {
 	.forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
 	var enemyFlag = (purchaseObj.alignment == "enemy") ? " enemy" : "";
-	s += "<td class='itemname"+enemyFlag+"'>"+purchaseObj.getQtyName(0)+": </td>";
+	s += "<td class='text-capitalize itemname"+enemyFlag+"'>"+purchaseObj.getQtyName(0)+": </td>";
 
 	var action = (isValid(population[objId])) ? "display_pop" : "display"; //xxx Hack
 	s += "<td class='number'><span data-action='"+action+"'>0</span></td>";
