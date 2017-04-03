@@ -597,7 +597,7 @@ function updateWonder () {
 	ui.show("#speedWonderGroup",(curCiv.curWonder.stage === 1));
 	ui.find("#speedWonder").disabled = (curCiv.curWonder.stage !== 1 || !canAfford({ gold: 100 }));
 	if (curCiv.curWonder.stage === 1){
-		ui.find("#progressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
+		ui.find("#wonderProgressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
 		ui.find("#progressNumber").innerHTML = curCiv.curWonder.progress.toFixed(2);
 	}
 

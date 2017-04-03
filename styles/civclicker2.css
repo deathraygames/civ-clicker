@@ -137,6 +137,7 @@ ol.happinessRanks li {
 
 .progress {
   margin-bottom: 0;
+  background-color: #ddd;
 }
 
 html {
@@ -174,3 +175,14 @@ html {
   padding-right: 0.3em;
   font-size: 1.2em;
 }
+
+#wonderProgressContainer {
+	border: 1px solid rgba(0,0,0,0.2);
+}
+
+#wonderProgressBar {
+	height: 1em;
+	background-color: #3f6;
+	width: 0%;
+}
+
