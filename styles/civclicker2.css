@@ -193,3 +193,7 @@ html {
 .btn-default[disabled] {
   opacity: 0.3;
 }
+
+.tab-pane {
+  padding: 10px;
+}

@@ -187,33 +187,45 @@
         </table>
 			</div>
       <hr/>
-			<div id="customSpawnQuantity">
-				<button class="btn btn-default" id="spawnCustomButton" onmousedown="spawn('custom')">Recruit citizens</button><input id="spawnCustomQty" type="number" min="1" step="1" value="1" />
+
+			<div id="customSpawnQuantity" class="form form-horizontal">
+          <div class="col-xs-3">
+            <button class="btn btn-default" id="spawnCustomButton" onmousedown="spawn('custom')">
+              Recruit citizens
+            </button>
+          </div>
+          <div class="col-xs-3">
+            <input class="form-control" id="spawnCustomQty" type="number" min="1" step="1" value="1" />
+          </div>
 			</div>
+
 		</div>
-		<p id="customJobQuantity">
-			Custom quantity <input id="homeCustomQty" type="number" min="1" step="1" value="1" />
-		</p>
-		<table id="jobs" class="table">
-			<!-- populated by javascript -->
-		</table>
-	</div>
-	<div id="eventsContainer" class="civSection">
-		<h3>Events</h3>
-		<table class="table" id="logTable">
-			<tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
-			<tr id="log1"><td colspan="3"></td></tr>
-			<tr id="log2"><td colspan="3"></td></tr>
-			<tr id="log3"><td colspan="3"></td></tr>
-			<tr id="log4"><td colspan="3"></td></tr>
-			<tr id="log5"><td colspan="3"></td></tr>
-			<tr id="log6"><td colspan="3"></td></tr>
-			<!-- 
-			<tr id="log7"><td colspan="3"></td></tr>
-			<tr id="log8"><td colspan="3"></td></tr>
-			<tr id="log9"><td colspan="3"></td></tr> -->
-		</table>
-	</div>
+    <div id="customJobQuantity" class="form form-horizontal">
+      <label class="control-label col-xs-3">Custom quantity:</label>
+      <div class="col-xs-3">
+        <input class="form-control" id="homeCustomQty" type="number" min="1" step="1" value="1" />
+      </div>
+    </div>
+    <table id="jobs" class="table">
+      <!-- populated by javascript -->
+    </table>
+  </div>
+  <div id="eventsContainer" class="civSection">
+    <h3>Events</h3>
+    <table class="table" id="logTable">
+      <tr id="log0"><td id="logT"></td><td id="logL"></td><td id="logR"></td></tr>
+      <tr id="log1"><td colspan="3"></td></tr>
+      <tr id="log2"><td colspan="3"></td></tr>
+      <tr id="log3"><td colspan="3"></td></tr>
+      <tr id="log4"><td colspan="3"></td></tr>
+      <tr id="log5"><td colspan="3"></td></tr>
+      <tr id="log6"><td colspan="3"></td></tr>
+      <!-- 
+        <tr id="log7"><td colspan="3"></td></tr>
+        <tr id="log8"><td colspan="3"></td></tr>
+        <tr id="log9"><td colspan="3"></td></tr> -->
+    </table>
+  </div>
 </div>
 
 <div id="rightColumn" class="col-sm-6">
@@ -343,9 +355,12 @@
         <div id="landBar" class="bar" title="Land usage">
           <!-- populated by javascript -->
         </div>
-        <p id="customBuildQuantity">
-          Custom Quantity <input id="buildingCustomQty" type="number" min="1" step="1" value="1" />
-        </p>
+        <div id="customBuildQuantity" class="form form-horizontal">
+          <label class="control-label col-xs-3">Custom quantity:</label>
+          <div class="col-xs-3">
+            <input class="form-control" id="buildingCustomQty" type="number" min="1" step="1" value="1" />
+          </div>
+        </div>
         <table class="table" id="buildings">
           <!-- populated by javascript -->
         </table>
@@ -493,9 +508,14 @@
         </span>
         <div id="conquest">
           <h3>Army</h3>
-          <p id="customPartyQuantity">
-            Custom Quantity <input id="partyCustomQty" type="number" min="1" step="1" value="1" />
-          </p>
+
+          <div id="customPartyQuantity" class="form form-horizontal">
+            <label class="control-label col-xs-3">Custom quantity:</label>
+            <div class="col-xs-3">
+              <input class="form-control" id="partyCustomQty" type="number" min="1" step="1" value="1" />
+            </div>
+          </div>
+
           <table class="table" id="party">
             <!-- populated by javascript -->
           </table>
