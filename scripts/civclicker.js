@@ -18,6 +18,12 @@
 	If it is not there, see <http://www.gnu.org/licenses/>.
 **/
 
+/**
+ * CivCLicker global namespace.
+ * @namespace
+ */
+var CivClicker = CivClicker || {};
+
 var setup = {};
 var loopTimer = 0;
 
@@ -3367,14 +3373,15 @@ function ruinFun(){
 
 setup.all = function () {
   $('#main').css('display', 'none');
-	setup.data();
-	setup.civSizes();
-	document.addEventListener("DOMContentLoaded", function(e){
-		setup.game();
-		setup.loop();
-		// Show the game
+  setup.data();
+  setup.navigation();
+  setup.civSizes();
+  document.addEventListener("DOMContentLoaded", function(e){
+    setup.game();
+    setup.loop();
+    // Show the game
     $('#main').css('display', 'block');
-	});
+  });
 };
 
 setup.data = function () {
@@ -3430,18 +3437,13 @@ setup.loop = function () {
 	loopTimer = window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
 };
 
-setup.all();
+/**
+ * Setup onclick events for navigation buttons.
+ */
+setup.navigation = function() {
 
-$(function () {
-  // Enable Bootstrap tooltips
-  $('[data-toggle="tooltip"]').tooltip()
-
-  // Logger
-  Logger.useDefaults();
-  Logger.setLevel(Logger.ALL);
-
+  // FAQ
   $('#faq-modal').on('click', function() {
-    console.log('here');
     $.get('templates/faq.html', function(template) {
       $('#civ-modal .modal-title').html('FAQ and instructions');
       $('#civ-modal .modal-body').html(template);
@@ -3449,6 +3451,7 @@ $(function () {
     });
   });
 
+  // Game updates
   $('#updates-modal').on('click', function() {
     $.get('templates/updates.html', function(template) {
       $('#civ-modal .modal-title').html('Game updates');
@@ -3457,28 +3460,63 @@ $(function () {
     });
   });
 
+  // Game settings
   $('#settings-modal').on('click', function() {
-    $.get('templates/settings.html', function(template) {
-      $('#civ-modal .modal-title').html('Settings');
-      $('#civ-modal .modal-body').html(template);
 
-      ui.find("#renameDeity").disabled = (!civData.worship.owned);
-      ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+    // Ajax still loading?
+    if (CivClicker.templates['settings.html'] == null) {
+      return;
+    }
 
-      $('[data-toggle="tooltip"]').tooltip()
+    $('#civ-modal .modal-title').html('Settings');
+    $('#civ-modal .modal-body').html(CivClicker.templates['settings.html']);
 
-      // Enable toggle selector
-      $('[data-toggle-selector]').on('click',function () {
-        $($(this).data('toggle-selector')).toggle(300);
-      })
+    ui.find("#renameDeity").disabled = (!civData.worship.owned);
+    ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
 
-      $('#bs-theme-selector').bootstrapThemeSwitcher();
+    $('[data-toggle="tooltip"]').tooltip()
 
-      setDefaultSettings();
+    // Enable toggle selector
+    $('[data-toggle-selector]').on('click',function () {
+      $($(this).data('toggle-selector')).toggle(300);
+    })
 
-      $('#civ-modal').modal();
+    $('#bs-theme-selector').bootstrapThemeSwitcher();
+
+    setDefaultSettings();
+
+    $('#civ-modal').modal();
+  });
+};
+
+/**
+ * Get templates from server using Ajax, and store
+ * them in CivClicker.templates object.
+ */
+setup.templates = function() {
+  CivClicker.templates = {};
+  var templateNames = [
+    'settings.html'
+  ];
+  templateNames.forEach(function(templateName) {
+    $.get('templates/' + templateName, function(template) {
+      CivClicker.templates[templateName] = template;
     });
   });
+}
+
+setup.all();
+
+$(function () {
+  // Enable Bootstrap tooltips
+  $('[data-toggle="tooltip"]').tooltip()
+
+  // Logger
+  // TODO: Use multiple logger for different categories.
+  Logger.useDefaults();
+  Logger.setLevel(Logger.ALL);
+
+  setup.templates();
 })
 
 
