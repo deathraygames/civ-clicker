@@ -186,3 +186,10 @@ html {
 	width: 0%;
 }
 
+.btn-default {
+  border-color: #888;
+}
+
+.btn-default[disabled] {
+  opacity: 0.3;
+}
