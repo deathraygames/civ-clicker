@@ -82,13 +82,17 @@ function updateAfterReset () {
 
 	ui.find("#conquest").style.display = "none";
 
-	ui.find(".alert").style.display = "none";
+	$("#civ-pane-alert").hide();
 	ui.find("#tradeContainer").style.display = "none";
 	ui.find("#tradeUpgradeContainer").style.display = "none";
 	ui.find("#iconoclasmList").innerHTML = "";
 	ui.find("#iconoclasm").disabled = false;
 }
 
+/**
+ * Show trader divs/alert etc if trader is here.
+ * @return {boolean}
+ */
 function updateTrader () {
 	var isHere = isTraderHere();
 	if (isHere) {
@@ -100,7 +104,7 @@ function updateTrader () {
 	}
 	ui.show("#tradeContainer", isHere);
 	ui.show("#noTrader", !isHere);
-	ui.show("#tradeSelect .alert", isHere);
+	$("#trade-pane-alert").toggle(isHere);
 	return isHere;
 }
 
@@ -227,7 +231,7 @@ function updateResourceTotals(){
 		(civData[curCiv.trader.materialId].owned < curCiv.trader.requested);
 
 	// Cheaters don't get names.
-	ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+	//ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
 }
 
 //Update page with numbers
@@ -400,7 +404,7 @@ function updateUpgrades(){
 
 	// Deity techs
 	ui.show("#deityPane .notYet", (!hasDomain && !canSelectDomain));
-	ui.find("#renameDeity").disabled = (!civData.worship.owned);
+	//ui.find("#renameDeity").disabled = (!civData.worship.owned);
 	ui.show("#battleUpgrades", (getCurDeityDomain() == "battle"));
 	ui.show("#fieldsUpgrades", (getCurDeityDomain() == "fields"));
 	ui.show("#underworldUpgrades", (getCurDeityDomain() == "underworld"));
@@ -495,11 +499,13 @@ function updateAchievements(){
 // Dynamically add the raid buttons for the various civ sizes.
 function addRaidRows()
 {
-	var s = '';
-	civSizes.forEach(function(elem) { 
-		s += "<button class='raid' data-action='raid' data-target='"+elem.id+"' disabled='disabled'>"+
-		"Raid "+elem.name+"</button>"; //xxxL10N
-	});
+  var data = {
+    elems: civSizes
+  };
+  var s = Mustache.to_html(
+    $('#raid-button-template').html(),
+    data
+  );
 
 	var group = ui.find("#raidGroup");
 	group.innerHTML += s;
@@ -568,7 +574,7 @@ function updateWonder () {
 	var lowItem = getWonderLowItem();
 	
 	ui.show("#lowResources", isLimited);
-	ui.show("#upgradesSelect .alert", isLimited);
+	$("#upgrade-pane-alert").toggle(isLimited);
 
 	if (lowItem) { 
 		ui.find("#limited").innerHTML = " by low " + lowItem.getQtyName(); 
@@ -591,7 +597,7 @@ function updateWonder () {
 	ui.show("#speedWonderGroup",(curCiv.curWonder.stage === 1));
 	ui.find("#speedWonder").disabled = (curCiv.curWonder.stage !== 1 || !canAfford({ gold: 100 }));
 	if (curCiv.curWonder.stage === 1){
-		ui.find("#progressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
+		ui.find("#wonderProgressBar").style.width = curCiv.curWonder.progress.toFixed(2) + "%";
 		ui.find("#progressNumber").innerHTML = curCiv.curWonder.progress.toFixed(2);
 	}
 

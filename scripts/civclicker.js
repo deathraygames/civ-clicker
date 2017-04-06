@@ -18,6 +18,12 @@
 	If it is not there, see <http://www.gnu.org/licenses/>.
 **/
 
+/**
+ * CivCLicker global namespace.
+ * @namespace
+ */
+var CivClicker = CivClicker || {};
+
 var setup = {};
 var loopTimer = 0;
 
@@ -39,7 +45,7 @@ var civSizes = [
 	{ min_pop :   2000, name: "Large Town"  , id : "largeTown"  },
 	{ min_pop :   5000, name: "Small City"  , id : "smallCity"  },
 	{ min_pop :  10000, name: "Large City"  , id : "largeCity"  },
-	{ min_pop :  20000, name:"Metro&shy;polis",id : "metropolis" },
+	{ min_pop :  20000, name: "Metropolis"  , id : "metropolis" },
 	{ min_pop :  50000, name: "Small Nation", id : "smallNation"},
 	{ min_pop : 100000, name: "Nation"      , id : "nation"     },
 	{ min_pop : 200000, name: "Large Nation", id : "largeNation"},
@@ -458,8 +464,8 @@ function getCostNote(civObj)
 	var effectText = (isValid(civObj.effectText)) ? civObj.effectText : "";
 	var separator = (reqText && effectText) ? ": " : "";
 
-	return "<span id='"+civObj.id+"Cost' class='cost'>" + reqText + "</span>"
-		 + "<span id='"+civObj.id+"Note' class='note'>" + separator + civObj.effectText + "</span>";
+	return "<span id='"+civObj.id+"Cost' class='text-muted cost'>" + reqText + "</span>"
+		 + "<span id='"+civObj.id+"Note' class='text-muted note'>" + separator + civObj.effectText + "</span>";
 }
 
 // Number format utility functions.
@@ -482,37 +488,55 @@ function abs(x) { return (typeof x == "number") ? Math.abs(x) : (typeof x == "st
 function getResourceRowText(purchaseObj)
 {
 	// Make sure to update this if the number of columns changes.
-	if (!purchaseObj) { return "<tr class='purchaseRow'><td colspan='6'/>&nbsp;</tr>"; }
+	if (!purchaseObj) { 
+    return "<tr class='purchaseRow'><td colspan='6'/>&nbsp;</tr>";
+  }
 
 	var objId = purchaseObj.id;
 	var objName = purchaseObj.getQtyName(0);
-	var s = (
-		'<tr id="'+ objId + 'Row" class="purchaseRow" data-target="'+ objId + '">'
-		+ '<td>'
-		+ '<img src="images/'+objId+'.png" class="icon icon-lg" alt="'+objName+'"/>'
-		+ '<button data-action="increment">' + purchaseObj.verb + '</button>'
-		+ '<label>' + objName + ':</label>'
-		+ '</td>'
-		+ '<td class="number mainNumber"><span data-action="display">.</span></td>'
-		+ '<td class="number maxNumber">/ max: <span id="max'+objId+'">...</span></td>'
-		+ '<td class="number net"><span data-action="displayNet">..</span>/s</td>'
-		+ '</tr>'
+	var s = Mustache.to_html(
+    $('#resource-row-template').html(),
+    {
+      objId: objId,
+      objName: objName.charAt(0).toUpperCase() + objName.slice(1),
+      verb: purchaseObj.verb.charAt(0).toUpperCase() + purchaseObj.verb.slice(1)
+    }
 	);
 	return s;
 }
 
-
+/**
+ * @param purchaseObj Example value: {id: "cottage", prereqs: Object, require: Object,
+ *                    effectText: "+6 max pop.", singular: "cottage", plural: "cottages" }
+ * @param {int} qty
+ * @param inTable
+ * @return {string}
+ */
 function getPurchaseCellText(purchaseObj, qty, inTable) {
-	if (inTable === undefined) { inTable = true; }
+
+	if (inTable === undefined) {
+    inTable = true;
+  }
+
 	// Internal utility functions.
-	function sgnchr(x) { return (x > 0) ? "+" : (x < 0) ? "&minus;" : ""; }
+	function sgnchr(x) {
+    return (x > 0) ? "+" : (x < 0) ? "-" : "";
+  }
+
 	//xxx Hack: Special formatting for booleans, Infinity and 1k.
-	function infchr(x) { return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x; }
+	function infchr(x) {
+    return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x;
+  }
+
 	function fmtbool(x) {
 		var neg = (sgn(x) < 0);
 		return (neg ? "(" : "") + purchaseObj.getQtyName(0) + (neg ? ")" : "");
 	}
-	function fmtqty(x) { return (typeof x == "boolean") ? fmtbool(x) : sgnchr(sgn(x))+infchr(abs(x)); }
+
+	function fmtqty(x) {
+    return (typeof x == "boolean") ? fmtbool(x) : sgnchr(sgn(x))+infchr(abs(x));
+  }
+
 	function allowPurchase() {
 		if (!qty) { return false; } // No-op
 
@@ -535,12 +559,22 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 	var tagName = inTable ? "td" : "span";
 	var className = (abs(qty) == "custom") ? "buy" : purchaseObj.type;  // 'custom' buttons all use the same class.
 
-	var s = "<"+tagName+" class='"+className+abs(qty)+"' data-quantity='"+qty+"' >";
-	if (allowPurchase()) 
-	{ 
-		s +="<button class='x"+abs(qty)+"' data-action='purchase'"+" disabled='disabled'>"+fmtqty(qty)+"</button>"; 
-	}
-	s += "</"+tagName+">";
+  var templateName = purchaseObj.type == 'upgrade' ?
+    '#purchase-upgrade-template' :
+    '#purchase-cell-template';
+
+  var s = Mustache.to_html(
+    $(templateName).html(),
+    {
+      qty:           qty,
+      absqty:        abs(qty),
+      fmtqty:        fmtqty(qty),
+      tagName:       tagName,
+      className:     className,
+      allowPurchase: allowPurchase(),
+      id:            purchaseObj.id
+    }
+  );
 	return s;
 }
 
@@ -557,7 +591,7 @@ function getPurchaseRowText (purchaseObj) {
 	.forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
 	var enemyFlag = (purchaseObj.alignment == "enemy") ? " enemy" : "";
-	s += "<td class='itemname"+enemyFlag+"'>"+purchaseObj.getQtyName(0)+": </td>";
+	s += "<td class='text-capitalize itemname"+enemyFlag+"'>"+purchaseObj.getQtyName(0)+": </td>";
 
 	var action = (isValid(population[objId])) ? "display_pop" : "display"; //xxx Hack
 	s += "<td class='number'><span data-action='"+action+"'>0</span></td>";
@@ -566,7 +600,7 @@ function getPurchaseRowText (purchaseObj) {
 	[1, 10, 100, "custom", ((purchaseObj.salable) ? Infinity : 1000)]
 	.forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
-	s += "<td>" + getCostNote(purchaseObj) + "</td>";
+	s += "<td class='cost'>" + getCostNote(purchaseObj) + "</td>";
 	s += "</tr>";
 
 	return s;
@@ -599,12 +633,18 @@ function addUITable(civObjs, groupElemName)
 }
 
 
-// We have a separate row generation function for upgrades, because their
-// layout is differs greatly from buildings/units:
-//  - Upgrades are boolean, so they don't need multi-purchase buttons.
-//  - Upgrades don't need quantity labels, and put the name in the button.
-//  - Upgrades are sometimes generated in a table with <tr>, but sometimes
-//    outside of one with <span>.
+/**
+ * We have a separate row generation function for upgrades, because their
+ * layout is differs greatly from buildings/units:
+ * - Upgrades are boolean, so they don't need multi-purchase buttons.
+ * - Upgrades don't need quantity labels, and put the name in the button.
+ * - Upgrades are sometimes generated in a table with <tr>, but sometimes
+ * outside of one with <span>.
+ *
+ * @param {object} upgradeObj
+ * @param {boolean|undefined} inTable
+ * @return {string}
+ */
 function getUpgradeRowText(upgradeObj, inTable)
 {
 	if (inTable === undefined) { inTable = true; }
@@ -633,7 +673,7 @@ function getPantheonUpgradeRowText(upgradeObj)
 	s +=     ((isValid(upgradeObj.prereqs) && isValid(upgradeObj.prereqs.devotion)) 
 			? (upgradeObj.prereqs.devotion +"d&nbsp;") : "") +"</td>";
 	//xxx The 'fooRow' id is added to make altars work, but should be redesigned.
-	s += "<td class='"+upgradeObj.type+"true'><button id='"+upgradeObj.id+"' class='xtrue'";
+	s += "<td class='"+upgradeObj.type+"true'><button id='"+upgradeObj.id+"' class='xtrue btn btn-default'";
 	s += " data-action='purchase' data-quantity='true' data-target="+upgradeObj.id;
 	s += " disabled='disabled' onmousedown=\"";
 	// The event handler can take three forms, depending on whether this is
@@ -836,19 +876,43 @@ function onIncrement(control) {
 	return increment(targetId);
 }
 
-// Buys or sells a unit, building, or upgrade.
-// Pass a positive number to buy, a negative number to sell.
-// If it can't add/remove as many as requested, does as many as it can.
-// Pass Infinity/-Infinity as the num to get the max possible.
-// Pass "custom" or "-custom" to use the custom increment.
-// Returns the actual number bought or sold (negative if fired).
-function doPurchase(objId,num){
+/**
+ * Buys or sells a unit, building, or upgrade.
+ * Pass a positive number to buy, a negative number to sell.
+ * If it can't add/remove as many as requested, does as many as it can.
+ * Pass Infinity/-Infinity as the num to get the max possible.
+ * Pass "custom" or "-custom" to use the custom increment.
+ * Returns the actual number bought or sold (negative if fired).
+ * @param {string} objId E.g. 'tent'
+ * @param {integer} num
+ * @return {integer}
+ */
+function doPurchase(objId, num) {
 	var purchaseObj = civData[objId];
-	if (!purchaseObj) { console.log("Unknown purchase: "+objId); return 0; }
-	if (num === undefined) { num = 1; }
-	if (abs(num) ==  "custom") { num =  sgn(num) * getCustomNumber(purchaseObj); }
 
-	num = canPurchase(purchaseObj,num);  // How many can we actually get?
+  // Abort if there's no corresponding object.
+	if (!purchaseObj) {
+    console.log("Unknown purchase: "+objId);
+    return 0;
+  }
+
+  // Don't allow purchase if progress is under way
+  if (purchaseObj.progressTimeLeft > 0) {
+    Logger.debug('progressTimeLeft > 0');
+    return 0;
+  }
+
+  // Default to amount 1.
+	if (num === undefined) {
+    num = 1;
+  }
+
+	if (abs(num) ==  "custom") {
+    num =  sgn(num) * getCustomNumber(purchaseObj);
+  }
+
+  // How many can we actually get?
+	num = canPurchase(purchaseObj,num);
 
 	// Pay for them
 	num = payFor(purchaseObj.require,num);
@@ -857,48 +921,108 @@ function doPurchase(objId,num){
 		return 0;
 	}
 
-	//Then increment the total number of that building
-	// Do the actual purchase; coerce to the proper type if needed
-	purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
-	if (purchaseObj.source) { civData[purchaseObj.source].owned -= num; }
+  function apply() {
+    // Then increment the total number of that building
+    // Do the actual purchase; coerce to the proper type if needed
+    purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
+    if (purchaseObj.source) {
+      civData[purchaseObj.source].owned -= num;
+    }
 
-	// Post-purchase triggers
-	if (isValid(purchaseObj.onGain)) { purchaseObj.onGain(num); } // Take effect
+    // Post-purchase triggers
+    if (isValid(purchaseObj.onGain)) {
+      purchaseObj.onGain(num);
+    } // Take effect
 
-	//Increase devotion if the purchase provides it.
-	if (isValid(purchaseObj.devotion)) { 
-		civData.devotion.owned += purchaseObj.devotion * num; 
-		// If we've exceeded this deity's prior max, raise it too.
-		if (curCiv.deities[0].maxDev < civData.devotion.owned) {
-			curCiv.deities[0].maxDev = civData.devotion.owned;
-			makeDeitiesTables();
-		}
-	}
+    // Increase devotion if the purchase provides it.
+    if (isValid(purchaseObj.devotion)) { 
+      civData.devotion.owned += purchaseObj.devotion * num; 
+      // If we've exceeded this deity's prior max, raise it too.
+      if (curCiv.deities[0].maxDev < civData.devotion.owned) {
+        curCiv.deities[0].maxDev = civData.devotion.owned;
+        makeDeitiesTables();
+      }
+    }
 
-	// If building, then you use up free land
-	if (purchaseObj.type == "building") {
-		civData.freeLand.owned -= num;
-		// check for overcrowding
-		if (civData.freeLand.owned < 0) {
-			gameLog("You are suffering from overcrowding.");  // I18N
-			adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
-		}
-	}
+    // If building, then you use up free land
+    if (purchaseObj.type == "building") {
+      civData.freeLand.owned -= num;
+      // Check for overcrowding
+      if (civData.freeLand.owned < 0) {
+        gameLog("You are suffering from overcrowding.");  // I18N
+        adjustMorale(Math.max(num,-civData.freeLand.owned) * -0.0025 * (civData.codeoflaws.owned ? 0.5 : 1.0));
+      }
+    }
 
-	updateRequirements(purchaseObj); //Increases buildings' costs
-	updateResourceTotals(); //Update page with lower resource values and higher building total
-	updatePopulation(); //Updates the army display
-	updateResourceRows(); //Update resource display
-	updateBuildingButtons(); //Update the buttons themselves
-	updateJobButtons(); //Update page with individual worker numbers, since limits might have changed.
-	updatePartyButtons(); 
-	updateUpgrades(); //Update which upgrades are available to the player
-	updateDevotion(); //might be necessary if building was an altar
-	updateTargets(); // might enable/disable raiding
+    updateRequirements(purchaseObj); //Increases buildings' costs
+    updateResourceTotals(); //Update page with lower resource values and higher building total
+    updatePopulation(); //Updates the army display
+    updateResourceRows(); //Update resource display
+    updateBuildingButtons(); //Update the buttons themselves
+    updateJobButtons(); //Update page with individual worker numbers, since limits might have changed.
+    updatePartyButtons(); 
+    updateUpgrades(); //Update which upgrades are available to the player
+    updateDevotion(); //might be necessary if building was an altar
+    updateTargets(); // might enable/disable raiding
 
-	return num;
+    return num;
+  }
+
+
+  var progressTime = purchaseObj.calculateProgressTime(num);
+
+  // No need to show progress bar if time is too small
+  if (purchaseObj.useProgressBar && progressTime > 200) {
+    purchaseObj.progressTimeLeft = progressTime;
+
+    Logger.debug(purchaseObj);
+
+    Logger.debug('progressTime', progressTime);
+    var cell = $('#' + objId + 'Row .number');
+    var cellHtml = $(cell).html();
+    $(cell).html(
+      Mustache.to_html(
+        $('#progress-bar-template').html(),
+        {
+          buildingName: purchaseObj.id
+        }
+      )
+    );
+
+    var progress = 0;
+    function progressBar() {
+      if (progress <= progressTime) {
+        var progressPercentage = Math.round((progress / progressTime) * 100);
+        $(cell).find('.progress-bar').css('width', progressPercentage + '%');
+        //$(cell).find('.progress-bar').html(progressPercentage + '%');
+        progress += 100;
+        purchaseObj.progressTimeLeft -= 100;
+        if (purchaseObj.progressTimeLeft <= 0) {
+          purchaseObj.progressTimeLeft = 1;  // Lock until done
+        }
+        setTimeout(progressBar, 100);
+      } else {
+        $(cell).find('.progress-bar').css('width', '100%');
+        purchaseObj.progressTimeLeft = 1;  // Lock until done
+        setTimeout(function() {
+          apply();
+          $(cell).html(cellHtml);
+          purchaseObj.progressTimeLeft = 0;  // Unlock
+        }, 500);
+      }
+    }
+    progressBar();
+  } else {
+    apply();
+  }
+
+  return num;
 }
 
+/**
+ * @param control
+ * @return {integer}
+ */
 function onPurchase(control) { 
 	// We need a valid target and a quantity to complete this action.
 	var targetId = dataset(control,"target");
@@ -1233,11 +1357,11 @@ function iconoclasmList(){
 		ui.find("#iconoclasm").disabled = true;
 		var append = "<br />";
 		for (i=1;i<curCiv.deities.length;++i){
-			append += '<button onclick="iconoclasm(' + i + ')">';
+			append += '<button class="btn btn-default" onclick="iconoclasm(' + i + ')">';
 			append += curCiv.deities[i].name;
 			append += '</button><br />';
 		}
-		append += '<br /><button onclick=\'iconoclasm("cancel")\'>Cancel</button>';
+		append += '<br /><button class="btn btn-default" onclick=\'iconoclasm("cancel")\'>Cancel</button>';
 		ui.find("#iconoclasmList").innerHTML = append;
 	}
 }
@@ -2275,7 +2399,7 @@ function renameDeity(newName){
 	makeDeitiesTables();
 }
 
-function reset(){
+function resetCivClicker() {
 	console.log("Reset");
 	//Resets the game, keeping some values but resetting most back to their initial values.
 	var msg = "Really reset? You will keep past deities and wonders (and cats)"; //Check player really wanted to do that.
@@ -2961,7 +3085,7 @@ function prettify(input){
 
 function setAutosave(value){ 
 	if (value !== undefined) { settings.autosave = value; } 
-	ui.find("#toggleAutosave").checked = settings.autosave;
+	$("#toggleAutosave").attr('checked', settings.autosave);
 }
 function onToggleAutosave(control){ return setAutosave(control.checked); }
 
@@ -2971,7 +3095,7 @@ function setCustomQuantities(value){
 	var curPop = population.current;
 
 	if (value !== undefined) { settings.customIncr = value; }
-	ui.find("#toggleCustomQuantities").checked = settings.customIncr;
+	$("#toggleCustomQuantities").attr('checked', settings.customIncr);
 
 	ui.show("#customJobQuantity",settings.customIncr);
 	ui.show("#customPartyQuantity",settings.customIncr);
@@ -3031,7 +3155,7 @@ function onToggleCustomQuantities(control){
 // Toggles the display of the .notes class
 function setNotes(value){
 	if (value !== undefined) { settings.notes = value; }
-	ui.find("#toggleNotes").checked = settings.notes;
+	$("#toggleNotes").attr('checked',  settings.notes);
 
 	var i;
 	var elems = document.getElementsByClassName("note");
@@ -3047,7 +3171,7 @@ function onToggleNotes(control){
 // value is the desired change in 0.1em units.
 function textSize(value){
 	if (value !== undefined) { settings.fontSize += 0.1 * value; }
-	ui.find("#smallerText").disabled = (settings.fontSize <= 0.5); 
+	$("#smallerText").attr('disabled',  settings.fontSize <= 0.5);
 
 	//xxx Should this be applied to the document instead of the body?
 	ui.body.style.fontSize = settings.fontSize + "em";
@@ -3055,7 +3179,7 @@ function textSize(value){
 
 function setShadow(value){
 	if (value !== undefined) { settings.textShadow = value; }
-	ui.find("#toggleShadow").checked = settings.textShadow;
+	$("#toggleShadow").attr('checked', settings.textShadow);
 	var shadowStyle = "3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff"
 					+ ", 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff";
 	ui.body.style.textShadow = settings.textShadow ? shadowStyle : "none";
@@ -3068,7 +3192,7 @@ function onToggleShadow(control){
 // as that's probably the simplest way to do this.
 function setIcons(value){ 
 	if (value !== undefined) { settings.useIcons = value; } 
-	ui.find("#toggleIcons").checked = settings.useIcons;
+	$("#toggleIcons").attr('checked', settings.useIcons);
 
 	var i;
 	var elems = document.getElementsByClassName("icon");
@@ -3083,7 +3207,7 @@ function onToggleIcons(control){
 
 function setDelimiters(value){
 	if (value !== undefined) { settings.delimiters = value; }
-	ui.find("#toggleDelimiters").checked = settings.delimiters;
+	$("#toggleDelimiters").attr('checked', settings.delimiters);
 	updateResourceTotals();
 }
 function onToggleDelimiters(control){ 
@@ -3092,7 +3216,7 @@ function onToggleDelimiters(control){
 
 function setWorksafe(value){
 	if (value !== undefined) { settings.worksafe = value; }
-	ui.find("#toggleWorksafe").checked = settings.worksafe;
+	$("#toggleWorksafe").attr('checked', settings.worksafe);
 
 	//xxx Should this be applied to the document instead of the body?
 	if (settings.worksafe){
@@ -3248,32 +3372,16 @@ function ruinFun(){
 //========== SETUP (Functions meant to be run once on the DOM)
 
 setup.all = function () {
-	ui.find("#main").style.display = "none";
-	setup.data();
-	setup.civSizes();
-	document.addEventListener("DOMContentLoaded", function(e){
-		setup.events();
-		setup.game();
-		setup.loop();
-		// Show the game
-		ui.find("#main").style.display = "block";
-	});
-};
-
-setup.events = function () {
-	var openSettingsElt = ui.find(".openSettings");
-
-	openSettingsElt.addEventListener("click", function () {
-		var settingsShown = ui.toggle("#settings");
-		var header = ui.find("#header");
-		if (settingsShown) {
-			header.className = "condensed";
-			openSettingsElt.className = "selected openSettings";
-		} else {
-			header.className = "";
-			openSettingsElt.className = "openSettings";
-		}
-	});
+  $('#main').css('display', 'none');
+  setup.data();
+  setup.navigation();
+  setup.civSizes();
+  document.addEventListener("DOMContentLoaded", function(e){
+    setup.game();
+    setup.loop();
+    // Show the game
+    $('#main').css('display', 'block');
+  });
 };
 
 setup.data = function () {
@@ -3329,7 +3437,87 @@ setup.loop = function () {
 	loopTimer = window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
 };
 
+/**
+ * Setup onclick events for navigation buttons.
+ */
+setup.navigation = function() {
+
+  // FAQ
+  $('#faq-modal').on('click', function() {
+    $.get('templates/faq.html', function(template) {
+      $('#civ-modal .modal-title').html('FAQ and instructions');
+      $('#civ-modal .modal-body').html(template);
+      $('#civ-modal').modal();
+    });
+  });
+
+  // Game updates
+  $('#updates-modal').on('click', function() {
+    $.get('templates/updates.html', function(template) {
+      $('#civ-modal .modal-title').html('Game updates');
+      $('#civ-modal .modal-body').html(template);
+      $('#civ-modal').modal();
+    });
+  });
+
+  // Game settings
+  $('#settings-modal').on('click', function() {
+
+    // Ajax still loading?
+    if (CivClicker.templates['settings.html'] == null) {
+      return;
+    }
+
+    $('#civ-modal .modal-title').html('Settings');
+    $('#civ-modal .modal-body').html(CivClicker.templates['settings.html']);
+
+    ui.find("#renameDeity").disabled = (!civData.worship.owned);
+    ui.find("#renameRuler").disabled = (curCiv.rulerName == "Cheater");
+
+    $('[data-toggle="tooltip"]').tooltip()
+
+    // Enable toggle selector
+    $('[data-toggle-selector]').on('click',function () {
+      $($(this).data('toggle-selector')).toggle(300);
+    })
+
+    $('#bs-theme-selector').bootstrapThemeSwitcher();
+
+    setDefaultSettings();
+
+    $('#civ-modal').modal();
+  });
+};
+
+/**
+ * Get templates from server using Ajax, and store
+ * them in CivClicker.templates object.
+ */
+setup.templates = function() {
+  CivClicker.templates = {};
+  var templateNames = [
+    'settings.html'
+  ];
+  templateNames.forEach(function(templateName) {
+    $.get('templates/' + templateName, function(template) {
+      CivClicker.templates[templateName] = template;
+    });
+  });
+}
+
 setup.all();
+
+$(function () {
+  // Enable Bootstrap tooltips
+  $('[data-toggle="tooltip"]').tooltip()
+
+  // Logger
+  // TODO: Use multiple logger for different categories.
+  Logger.useDefaults();
+  Logger.setLevel(Logger.ALL);
+
+  setup.templates();
+})
 
 
 /*

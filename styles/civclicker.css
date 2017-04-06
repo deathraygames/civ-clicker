@@ -654,15 +654,16 @@ button {
 #landBar > div {
 	background-color: #aca;
 }
+
 #progressContainer {
 	border: 1px solid rgba(0,0,0,0.2);
 }
+
 #progressBar {
 	height: 1em;
 	background-color: #3f6;
 	width: 0%;
 }
-
 
 .totalSick { 	background-color: #fcc; }
 .unemployed { 	background-color: #bbb; }

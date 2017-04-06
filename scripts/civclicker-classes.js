@@ -1,16 +1,42 @@
-
+/**
+ * Class for version.
+ *
+ * @param {number} major
+ * @param {number} minor
+ * @param {number} sub
+ * @param {string} mod
+ */
 function VersionData(major,minor,sub,mod) {
 	this.major = major;
 	this.minor = minor;
 	this.sub = sub;
 	this.mod = mod;
 }
-VersionData.prototype.toNumber = function() { return this.major*1000 + this.minor + this.sub/1000; };
-VersionData.prototype.toString = function() { return String(this.major) + "." 
-	+ String(this.minor) + "." + String(this.sub) + String(this.mod); };
 
-// TODO: Create a mechanism to automate the creation of a class hierarchy,
-// specifying base class, shared props, instance props.
+/**
+ * Returns number representation of number.
+ * @return {number}
+ */
+VersionData.prototype.toNumber = function() {
+  return this.major*1000 + this.minor + this.sub/1000;
+};
+
+/**
+ * Returns string of version.
+ * @return {string}
+ */
+VersionData.prototype.toString = function() {
+  return String(this.major) + "."
+    + String(this.minor) + "." + String(this.sub) + String(this.mod);
+};
+
+/**
+ * @constructor
+ * @param {object} props Properties
+ * @param {boolean} asProto
+ * @todo Create a mechanism to automate the creation of a class hierarchy,
+ *       specifying base class, shared props, instance props.
+ */
 function CivObj(props, asProto)
 {
 	if (!(this instanceof CivObj)) { return new CivObj(props); } // Prevent accidental namespace pollution
@@ -24,8 +50,21 @@ function CivObj(props, asProto)
 	return this;
 }
 
-// Common Properties: id, name, owned, prereqs, require, effectText,
-//xxx TODO: Add save/load methods.
+/**
+ * Common Properties: id, name, owned, prereqs, require, effectText,
+ * @todo Add save/load methods.
+ * @property {object} constructor     - ??
+ * @property {string} subType         - ??
+ * @property {object} prereqs         -
+ * @property {object} require         - Price
+ * @property {boolean} vulnerable     - If object can be destroyed?
+ * @property {string} effectText      - ??
+ * @property {boolean} prestige       - ??
+ * @property {number} initOwned       - ??
+ * @property {function} init          - ??
+ * @property {boolean} useProgressBar - If true, progress bar will be shown at purchase
+ * @property {function} calculateProgressTime
+ */
 CivObj.prototype = {
 	constructor: CivObj,
 	subType: "normal",
@@ -74,17 +113,75 @@ CivObj.prototype = {
 		if (qty === 1 && this.singular) { return this.singular; }
 		if (typeof qty == "number" && this.plural) { return this.plural; }
 		return this.name || this.singular || "(UNNAMED)";
-	}
+	},
+  useProgressBar: false,
+
+  /**
+   * Calculate the time it takes to build object.
+   * @param {number} quantity - Number of buildings
+   * @return {number}
+   */
+  calculateProgressTime: function(quantity) {
+
+    if (!this.useProgressBar) {
+      return 0;
+    }
+
+    if (this.require == {}) {
+      return 0;
+    }
+
+    // Assume at least one living person.
+    // But can't be 1, since log(1) = 0
+    var livingPopulation =
+      population.living > 1 ?  population.living : 1.1;
+
+    var sum = 0;
+
+    for (type in this.require) {
+      var resource = civData[type];
+      Logger.debug('resource', resource);
+      var resourceAmount = this.require[type];
+      Logger.debug('resourceAmount', resourceAmount);
+      sum += resourceAmount * resource.progressFactor;
+      Logger.debug('sum', sum);
+    }
+
+    sum = sum * quantity;
+
+    // More population -> less building time
+    sum = sum / livingPopulation;
+
+    Logger.debug('sum', sum);
+
+    sum = sum * 500;
+
+    Logger.debug('sum', sum);
+    
+    return sum;
+  }
 };
 
-function Resource(props) // props is an object containing the desired properties.
+/**
+ * Resource class
+ * @constructor
+ * @param {object} props - Properties
+ */
+function Resource(props)
 {
-	if (!(this instanceof Resource)) { return new Resource(props); } // Prevent accidental namespace pollution
+  // Prevent accidental namespace pollution
+	if (!(this instanceof Resource)) {
+    return new Resource(props);
+  }
 	CivObj.call(this,props);
 	copyProps(this,props,null,true);
 	// Occasional Properties: increment, specialChance, net
 	return this;
 }
+
+/**
+ * @property {number} progressFactor - With how much each resource element should be multiplied when calculating progress time
+ */
 Resource.prototype = new CivObj({
 	constructor: Resource,
 	type: "resource",
@@ -100,10 +197,15 @@ Resource.prototype = new CivObj({
 	increment: 0,
 	specialChance: 0,
 	specialMaterial: "",
-	activity: "gathering" //I18N
+	activity: "gathering", //I18N
+  progressFactor: 1
 },true);
 
-function Building(props) // props is an object containing the desired properties.
+/**
+ * @constructor
+ * @param {object} props - Properties
+ */
+function Building(props)
 {
 	if (!(this instanceof Building)) { return new Building(props); } // Prevent accidental namespace pollution
 	CivObj.call(this,props);
@@ -112,7 +214,17 @@ function Building(props) // props is an object containing the desired properties
 	// plural should get moved during I18N.
 	return this;
 }
-// Common Properties: type="building",customQtyId
+
+/**
+ * Common Properties: type="building",customQtyId
+ * @property {string} type      Always "building"
+ * @property {string} alignment Always "player"
+ * @property {string} place     Always "home"
+ * @property {function} vulnerable Returns boolean if this building can be sacked
+ * @property {customQtyId} string "buildingCustomQty" ?
+ * @property {boolean} useProgressBar If true, will display progress during building
+ * @property {number} progressTimeLeft Milliseconds of left building time. 0 means not building.
+ */
 Building.prototype = new CivObj({
 	constructor: Building,
 	type: "building",
@@ -120,7 +232,9 @@ Building.prototype = new CivObj({
 	place: "home",
 	get vulnerable() { return this.subType != "altar"; }, // Altars can't be sacked.
 	set vulnerable(value) { return this.vulnerable; }, // Only here for JSLint.
-	customQtyId: "buildingCustomQty"
+	customQtyId: "buildingCustomQty",
+  useProgressBar: true,
+  progressTimeLeft: 0
 },true);
 
 function Upgrade(props) // props is an object containing the desired properties.

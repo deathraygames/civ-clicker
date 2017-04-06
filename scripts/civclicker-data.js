@@ -13,29 +13,32 @@ function getCivData () {
 			var barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
 			return 200 + (civData.barn.owned * barnBonus); 
 		},
-		set limit(value) { return this.limit; } // Only here for JSLint.
+		set limit(value) { return this.limit; }, // Only here for JSLint.
+    progressFactor: 1
 	}),
 	new Resource({ 
 		id:"wood", name:"wood", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "herbs", verb: "cut", activity: "woodcutting", //I18N
 		get limit() { return 200 + (civData.woodstock.owned  * 200); },
-		set limit(value) { return this.limit; } // Only here for JSLint.
+		set limit(value) { return this.limit; }, // Only here for JSLint.
+    progressFactor: 10
 	}),
 	new Resource({ 
 		id:"stone", name:"stone", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "ore", verb: "mine", activity: "mining", //I18N
 		get limit() { return 200 + (civData.stonestock.owned  * 200); },
-		set limit(value) { return this.limit; } // Only here for JSLint.
+		set limit(value) { return this.limit; }, // Only here for JSLint.
+    progressFactor: 20
 	}),
-	new Resource({ id:"skins", singular:"skin", plural:"skins"}),
-	new Resource({ id:"herbs", singular:"herb", plural:"herbs" }),
-	new Resource({ id:"ore", name:"ore" }),
-	new Resource({ id:"leather", name:"leather" }),
-	new Resource({ id:"metal", name:"metal" }),
-	new Resource({ id:"piety", name:"piety", vulnerable:false }), // Can't be stolen
-	new Resource({ id:"gold", name:"gold", vulnerable:false }), // Can't be stolen
+	new Resource({ id:"skins", singular:"skin", plural:"skins", progressFactor: 10}),
+	new Resource({ id:"herbs", singular:"herb", plural:"herbs", progressFactor: 10}),
+	new Resource({ id:"ore", name:"ore", progressFactor: 30}),
+	new Resource({ id:"leather", name:"leather", progressFactor: 15}),
+	new Resource({ id:"metal", name:"metal", progressFactor: 40}),
+	new Resource({ id:"piety", name:"piety", vulnerable:false, progressFactor: 50}), // Can't be stolen
+	new Resource({ id:"gold", name:"gold", vulnerable:false, progressFactor: 100}), // Can't be stolen
 	new Resource({ id:"corpses", singular:"corpse", plural:"corpses", vulnerable:false }), // Can't be stolen
 	new Resource({ id:"devotion", name:"devotion", vulnerable:false }), // Can't be stolen
 	// Buildings
@@ -479,13 +482,13 @@ function getCivData () {
 		get rate() { return this.data.rate; }, // Sacrifice rate
 		set rate(value) { this.data.rate = value; },
 		effectText:"boost food production by sacrificing 1 worker/sec.",
-		extraText: "<br /><button id='ceaseWalk' onmousedown='walk(false)' disabled='disabled'>Cease Walking</button>" }),
+		extraText: "<br /><button class='btn btn-default' id='ceaseWalk' onmousedown='walk(false)' disabled='disabled'>Cease Walking</button>" }),
 	new Upgrade({ id:"raiseDead", name:"Raise Dead", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 20 },
 		require: { corpses: 1, piety: 4 }, //xxx Nonlinear cost
 		effectText:"Piety to raise the next zombie",
-		extraText:"<button onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'"
-				  +">+100</button><button onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>" }),
+		extraText:"<button class='btn btn-default' onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'"
+				  +">+100</button><button class='btn btn-default' onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>" }),
 	new Upgrade({ id:"summonShade", name:"Summon Shades", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 40 },
 		require: { piety: 1000 },  //xxx Also need slainEnemies

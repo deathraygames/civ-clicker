@@ -1,0 +1,199 @@
+.icon-lg {
+	height: 40px;
+	width: 40px;
+}
+
+.icon-sm {
+	height:16px;
+	width:16px;
+	margin: 2px 0 -2px 0;
+}
+
+.table tbody tr td {
+  border-top: 0;
+  vertical-align: middle;
+}
+
+ol.happinessRanks {
+  list-style: none;
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+ol.happinessRanks li {
+  color: #fff;
+  opacity: 0.5;
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.happy-1 li:nth-child(1) {  background-color: #3ac; opacity: 1; font-size: 1em; }
+.happy-2 li:nth-child(2) { 	background-color: #3a6; opacity: 1; font-size: 1em; }
+.happy-3 li:nth-child(3) { 	background-color: #6a3; opacity: 1; font-size: 1em; }
+.happy-4 li:nth-child(4) { 	background-color: #aa3; opacity: 1; font-size: 1em; }
+.happy-5 li:nth-child(5) { 	background-color: #c33; opacity: 1; font-size: 1em; }
+
+.bar {
+  margin: 1em 0;
+  height: 1em;
+  border: solid 1px rgba(0,0,0,0.2);
+}
+
+.bar div {
+  height: 100%;
+  width: 0;
+}
+
+.bar > div {
+  background-color: #bbb;
+}
+
+.bar > div > div {
+  float: left;
+}
+
+.bar span {
+  display: none;
+  position: relative;
+  top: 1.25em;
+  background-color: rgba(0,0,0,0.3);
+  color: white;
+  width: 10em;
+  font-size: 80%;
+  text-align: center;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.bar div:hover > span {
+  display: block;
+}
+
+.totalSick { 	background-color: #fcc; }
+.unemployed { 	background-color: #bbb; }
+.farmer { 		background-color: #CF9221; }
+.woodcutter { 	background-color: #016901; }
+.miner { 		background-color: #887878; }
+.tanner { 		background-color: #591B11; }
+.blacksmith { 	background-color: #525252; }
+.healer { 		background-color: #003B00; }
+.cleric { 		background-color: #CF6666; }
+.labourer { 	background-color: #9f9; }
+.soldier { 		background-color: #f99; }
+.cavalry { 		background-color: #ff9; }
+.cat { 			background-color: #ff2; }
+.shade { 		background-color: #333; }
+.wolf { 		background-color: #999; }
+.bandit { 		background-color: #666; }
+.barbarian { 	background-color: #f63; }
+.esiege { 		background-color: #99f; }
+.soldierParty { background-color: #9ff; }
+.cavalryParty { background-color: #f9f; }
+.siege { 		background-color: #cc3; }
+.esoldier { 	background-color: #c44; }
+.efort { 		background-color: #cc4; }
+
+.table tbody tr td {
+  padding: 4px;  /* Half of Bootstrap */
+}
+
+.raid-buttons .row {
+  margin-bottom: 4px;
+}
+
+#achievements {
+
+}
+#achievements:after /* clearfix */ { content: ""; display: table; clear: both; }
+.achievement{
+	display: block;
+	float: left;
+	width: 60px;
+	height: 60px;
+	background-color: #737373;
+	background-image: url('../images/achLocked.jpg');
+	background-position: center center;
+	background-repeat: no-repeat;
+	margin: 0.5em;
+	font-family: 'Suez One', serif;
+}
+
+.unlockedAch{
+	box-sizing: border-box;
+	border: 5px ridge #FBDA20;
+	width: 70px;
+	height: 70px;
+	padding: 0.2em;
+	margin: -5px 0 0 -5px;
+	font-size: 0.9em;
+	box-shadow: 0 0.25em 0.3em rgba(0,0,0,0.25), inset 0 0 0.5em rgba(0,0,0,0.25);
+	font-weight: normal;
+	background-color: #FBDA20;
+	display: none; /* Initially */
+}
+
+.progress {
+  margin-bottom: 0;
+  background-color: #ddd;
+}
+
+html {
+  font-size: 16px;
+}
+
+#panesSelectors .alert {
+	display: none;
+	position: absolute;
+	font-size: 1.2em;
+	top: -0.5em;
+	right: -0.25em;
+	width: 1.2em;
+	height: 1.2em;
+	line-height: 1.5em;
+	text-align: center;
+	background: #ffff99;
+	border: solid 2px white;
+	border-radius: 1.5em;
+	font-family: 'Suez One', serif;
+	color: #333;
+	box-shadow: 0 0.1em 0.1em rgba(0,0,0,0.2);
+	z-index: 2;
+}
+
+.civ-pane-alert {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 100%;
+}
+
+.number {
+  text-align: right;
+  padding-right: 0.3em;
+  font-size: 1.2em;
+}
+
+#wonderProgressContainer {
+	border: 1px solid rgba(0,0,0,0.2);
+}
+
+#wonderProgressBar {
+	height: 1em;
+	background-color: #3f6;
+	width: 0%;
+}
+
+.btn-default {
+  border-color: #999;
+}
+
+.btn-default[disabled] {
+  opacity: 0.3;
+}
+
+.tab-pane {
+  padding: 10px;
+}
