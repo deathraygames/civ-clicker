@@ -34,6 +34,9 @@
 	<script type="application/javascript" src="scripts/civclicker-classes.js" defer="defer"></script>
 	<script type="application/javascript" src="scripts/civclicker-data.js" defer="defer"></script>
 	<script type="application/javascript" src="scripts/civclicker-update.js" defer="defer"></script>
+	<script type="application/javascript" src="scripts/aidan/computer.js" defer="defer"></script>
+	<script type="application/javascript" src="scripts/aidan/tuning.js" defer="defer"></script>
+	<script type="application/javascript" src="scripts/aidan/autopilot.js" defer="defer"></script>
 	<script type="application/javascript" src="scripts/civclicker.js" defer="defer"></script>
 </head>
 <body class="hasBackground">
@@ -190,6 +193,12 @@
 			<tr id="log8"><td colspan="3"></td></tr>
 			<tr id="log9"><td colspan="3"></td></tr> -->
 		</table>
+	</div>
+
+	<div>
+		<h2>Autopilot</h2>
+		<p>Current mode: <span id="span_autopilot_span"></span></p>
+		<button onmousedown="">Reset</button>
 	</div>
 </div>
 
@@ -533,6 +542,17 @@
 		</div>
 	</div>
 
+	<div>
+		<h2>Tuning</h2>
+		<p>Current mode: <span id="span_tuning_span"></span></p>
+		<button onmousedown="tuner.set_mode('none')">Reset</button>
+		<button onmousedown="tuner.set_mode('food')">Tune for food production</button>
+		<button onmousedown="tuner.set_mode('wood')">Tune for wood production</button>
+		<button onmousedown="tuner.set_mode('stone')">Tune for stone production</button>
+		<button onmousedown="tuner.set_mode('resources')">Tune for resource production</button>
+		<button onmousedown="tuner.set_mode('balance')">Tune for balanced production</button>
+	</div>
+
 </div>
 </div>
 <footer>
@@ -545,9 +565,5 @@
 	<a href="https://www.reddit.com/r/CivClicker/">Reddit</a>
 	-->
 </footer>
-<div class="scripts">
-	<!-- Google Analytics. REMOVE this for your own forks. -->
-	<script src="../../js/ga.js"></script>
-</div>
 </body>
 </html>

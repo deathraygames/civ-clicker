@@ -2336,82 +2336,63 @@ function tickAutosave() {
 }
 
 // TODO: Need to improve 'net' handling.
+// TODO: Need to improve 'net' handling.
 function doFarmers() {
-	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
-	var millMod = 1;
-	if (population.current > 0) { 
-		millMod = population.living / population.current; 
-	}
-	civData.food.net = (
-		civData.farmer.owned 
-		* (1 + (civData.farmer.efficiency * curCiv.morale.efficiency)) 
-		* ((civData.pestControl.timer > 0) ? 1.01 : 1) 
-		* getWonderBonus(civData.food) 
-		* (1 + civData.walk.rate/120) 
-		* (1 + civData.mill.owned * millMod / 200) //Farmers farm food
-	);
-	civData.food.net -= population.living; //The living population eats food.
+	let nets = computer.calculate_farmers(true);
+	civData.food.net = nets.food_net;
+	civData.skins.net += nets.skins_net;
+
 	civData.food.owned += civData.food.net;
-	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
-		var skinsChance = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
-		var skinsEarned = rndRound(skinsChance);
-		civData.skins.net += skinsEarned;
-		civData.skins.owned += skinsEarned;
-	}
+	civData.skins.owned += civData.skins.net;
 }
 function doWoodcutters() {
-	civData.wood.net = civData.woodcutter.owned * (civData.woodcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wood); //Woodcutters cut wood
+	let nets = computer.calculate_woodcutters(true);
+	civData.wood.net = nets.wood_net;
+	civData.herbs.net += nets.herbs_net;
+
 	civData.wood.owned += civData.wood.net;
-	if (civData.harvesting.owned && civData.woodcutter.owned > 0){ //and sometimes get herbs
-		var herbsChance = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
-		var herbsEarned = rndRound(herbsChance);
-		civData.herbs.net += herbsEarned;
-		civData.herbs.owned += herbsEarned;
-	}
+	civData.herbs.owned += civData.herbs.net;
 }
 
 function doMiners() {
-	var specialChance = civData.stone.specialChance + (civData.macerating.owned ? 0.1 : 0);
-	civData.stone.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.stone); //Miners mine stone
+	let nets = computer.calculate_miners(true);
+	civData.stone.net = nets.stone_net;
+	civData.ore.net += nets.ore_net;
+
 	civData.stone.owned += civData.stone.net;
-	if (civData.prospecting.owned && civData.miner.owned > 0){ //and sometimes get ore
-		var oreChance = specialChance * (civData.stone.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
-		var oreEarned = rndRound(oreChance);
-		civData.ore.net += oreEarned;
-		civData.ore.owned += oreEarned;
-	}
+	civData.ore.owned += civData.ore.net;
 }
 
 function doBlacksmiths() {
-	var oreUsed = Math.min(civData.ore.owned, (civData.blacksmith.owned * civData.blacksmith.efficiency * curCiv.morale.efficiency));
-	var metalEarned = oreUsed * getWonderBonus(civData.metal);
-	civData.ore.net -= oreUsed;
-	civData.ore.owned -= oreUsed;
-	civData.metal.net += metalEarned;
-	civData.metal.owned += metalEarned;
+	let nets = computer.calculate_blacksmiths();
+	let ore_used = nets.ore_used;
+	let metal_earned = nets.metal_earned;
+
+	civData.ore.net -= ore_used;
+	civData.ore.owned -= ore_used;
+	civData.metal.net += metal_earned;
+	civData.metal.owned += metal_earned;
 }
 
 function doTanners() {
-	var skinsUsed = Math.min(civData.skins.owned, (civData.tanner.owned * civData.tanner.efficiency * curCiv.morale.efficiency));
-	var leatherEarned = skinsUsed * getWonderBonus(civData.leather);
-	civData.skins.net -= skinsUsed;
-	civData.skins.owned -= skinsUsed;
-	civData.leather.net += leatherEarned;
-	civData.leather.owned += leatherEarned;
+	let nets = computer.calculate_tanners();
+	let skins_used = nets.skins_used;
+	let leather_earned = nets.leather_earned;
+
+	civData.skins.net -= skins_used;
+	civData.skins.owned -= skins_used;
+	civData.leather.net += leather_earned;
+	civData.leather.owned += leather_earned;
 }
 
 function doClerics() {
-	var pietyEarned = (
-		civData.cleric.owned 
-		* (civData.cleric.efficiency + (civData.cleric.efficiency * (civData.writing.owned))) 
-		* (1 + ((civData.secrets.owned) 
-		* (1 - 100/(civData.graveyard.owned + 100)))) 
-		* curCiv.morale.efficiency 
-		* getWonderBonus(civData.piety)
-	);
-	civData.piety.net += pietyEarned;
-	civData.piety.owned += pietyEarned;
+	let nets = computer.calculate_clerics();
+	let piety_earned = nets.piety_earned;
+
+	civData.piety.net += piety_earned;
+	civData.piety.owned += piety_earned;
 }
+
 // Try to heal the specified number of people in the specified job
 // Makes them sick if the number is negative.
 function healByJob(job,num)
@@ -3171,6 +3152,9 @@ function gameLoop () {
 	// adjustments made each tick; as such they need to be zero'd out at the
 	// start of each new tick.
 	clearSpecialResourceNets();
+
+	doAutopilot();
+	doTuning();
 
 	// Production workers do their thing.
 	doFarmers();
