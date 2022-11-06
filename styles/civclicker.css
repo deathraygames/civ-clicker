@@ -577,9 +577,6 @@ button {
 #iconoclasmList{
 	padding-left:2em;
 }
-#versionAlert{
-	display:none;
-}
 #newVersionText{
 	color:#f00;
 	text-decoration:underline;

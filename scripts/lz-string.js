@@ -7,8 +7,10 @@
 // http://pieroxy.net/blog/pages/lz-string/testing.html
 //
 // LZ-based compression algorithm, version 1.3.3
-var LZString = {
-  
+//
+// Minor modifications to pass linting and export as default module
+
+const LZString = {
   
   // private property
   _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
@@ -70,7 +72,7 @@ var LZString = {
         enc1, enc2, enc3, enc4,
         i = 0, f=LZString._f;
     
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+    input = input.replace(/[^A-Za-z0-9+/=]/g, "");
     
     while (i < input.length) {
       
@@ -484,7 +486,8 @@ var LZString = {
     }
     
     // Flush the last char
-    while (true) {
+    const flushLastChar = true;
+    while (flushLastChar) {
       context_data_val = (context_data_val << 1);
       if (context_data_position == 15) {
         context_data_string += f(context_data_val);
@@ -499,7 +502,6 @@ var LZString = {
     if (compressed == null) return "";
     if (compressed == "") return null;
     var dictionary = [],
-        next,
         enlargeIn = 4,
         dictSize = 4,
         numBits = 3,
@@ -530,7 +532,7 @@ var LZString = {
       power <<= 1;
     }
     
-    switch (next = bits) {
+    switch (bits) {
       case 0: 
           bits = 0;
           maxpower = Math.pow(2,8);
@@ -568,7 +570,8 @@ var LZString = {
     }
     dictionary[3] = c;
     w = result = c;
-    while (true) {
+    const doStuff = true;
+    while (doStuff) {
       if (data.index > data.string.length) {
         return "";
       }
@@ -660,6 +663,4 @@ var LZString = {
   }
 };
 
-if( typeof module !== 'undefined' && module != null ) {
-  module.exports = LZString;
-}
+export default LZString;

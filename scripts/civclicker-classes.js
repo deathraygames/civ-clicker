@@ -1,3 +1,12 @@
+import { copyProps, isValid } from './jsutils.js';
+
+function getCurCiv() {
+	return window.cc.getCiv();
+}
+
+function getCivData() {
+	return window.cc.getCivData();
+}
 
 function VersionData(major,minor,sub,mod) {
 	this.major = major;
@@ -11,8 +20,7 @@ VersionData.prototype.toString = function() { return String(this.major) + "."
 
 // TODO: Create a mechanism to automate the creation of a class hierarchy,
 // specifying base class, shared props, instance props.
-function CivObj(props, asProto)
-{
+function CivObj(props, asProto) {
 	if (!(this instanceof CivObj)) { return new CivObj(props); } // Prevent accidental namespace pollution
 	//xxx Should these just be taken off the prototype's property names?
 	var names = asProto ? null : [
@@ -29,8 +37,12 @@ function CivObj(props, asProto)
 CivObj.prototype = {
 	constructor: CivObj,
 	subType: "normal",
-	get data() { return curCiv[this.id]; },
-	set data(value) { curCiv[this.id] = value; },
+	get data() {
+		return getCurCiv()[this.id];
+	},
+	set data(value) {
+		getCurCiv()[this.id] = value;
+	},
 	get owned() { return this.data.owned; },
 	set owned(value) { this.data.owned = value; },
 	prereqs: {},
@@ -40,7 +52,7 @@ CivObj.prototype = {
 	effectText: "",
 	prestige: false,
 	initOwned: 0,  // Override this to undefined to inhibit initialization.  Also determines the type of the 'owned' property.
-	init: function(fullInit) { 
+	init: function(fullInit) {
 		if (fullInit === undefined) { fullInit = true; }
 		if (fullInit || !this.prestige)  { 
 			this.data = {};
@@ -48,9 +60,13 @@ CivObj.prototype = {
 		} 
 		return true; 
 	},
-	reset: function() { return this.init(false); }, // Default reset behavior is to re-init non-prestige items.
-	get limit() { return (typeof this.initOwned == "number" ) ? Infinity // Default is no limit for numbers
-					   : (typeof this.initOwned == "boolean") ? true : 0; }, // true (1) for booleans, 0 otherwise.
+	reset: function() {
+		return this.init(false); // Default reset behavior is to re-init non-prestige items.
+	},
+	get limit() {
+		// Infinity for default - no limit for numbers, true (1) for booleans, 0 otherwise
+		return (typeof this.initOwned == "number" ) ? Infinity : (typeof this.initOwned == "boolean") ? true : 0;
+	},
 	set limit(value) { return this.limit; }, // Only here for JSLint.
 	//xxx This is a hack; it assumes that any CivObj with a getter for its
 	// 'require' has a variable cost.  Which is currently true, but might not
@@ -91,7 +107,7 @@ Resource.prototype = new CivObj({
 	// 'net' accessor always exists, even if the underlying value is undefined for most resources.
 	get net() { 
 		if (typeof this.data.net !== "number") {
-			console.warn(".net not a number");
+			// console.warn("this.data.net is not a number. this.data =", this.data);
 			return 0;
 		}
 		return this.data.net; 
@@ -188,30 +204,35 @@ Unit.prototype = new CivObj({
 	set isPopulation (v) {
 		return this.isPopulation;
 	},
-	init: function(fullInit) { 
+	init: function(fullInit) {
 		CivObj.prototype.init.call(this,fullInit);
 		// Right now, only vulnerable human units can get sick.
 		if (this.vulnerable && (this.species=="human")) {
-			this.illObj = { owned: 0 };
+			this.setIllObj({ owned: 0 });
 		} 
 		return true; 
 	},
 	//xxx Right now, ill numbers are being stored as a separate structure inside curCiv.
 	// It would probably be better to make it an actual 'ill' property of the Unit.
 	// That will require migration code.
-	get illObj() { 
+	getIllObj: function() {
+		const curCiv = getCurCiv();
 		return curCiv[this.id+"Ill"]; 
 	},
-	set illObj(value) { 
+	setIllObj: function(value) {
+		const curCiv = getCurCiv();
 		curCiv[this.id+"Ill"] = value; 
 	}, 
-	get ill() { 
-		return isValid(this.illObj) ? this.illObj.owned : undefined; 
+	get ill() {
+		const illObj = this.getIllObj();
+		return isValid(illObj) ? illObj.owned : undefined; 
 	},
-	set ill(value) { 
-		if (isValid(this.illObj)) { this.illObj.owned = value; } 
+	set ill(value) {
+		const illObj = this.getIllObj();
+		if (isValid(illObj)) { illObj.owned = value; } 
 	},
-	get partyObj() { 
+	get partyObj() {
+		const civData = getCivData();
 		return civData[this.id+"Party"]; 
 	},
 	set partyObj(value) { 
@@ -226,19 +247,21 @@ Unit.prototype = new CivObj({
 		} 
 	},
 	// Is this unit just some other sort of unit in a different place (but in the same limit pool)?
-	isDest: function() { 
+	isDest: function() {
+		const civData = getCivData();
 		return (this.source !== undefined) && (civData[this.source].partyObj === this); 
 	},
-	get limit() { 
-		return (this.isDest()) ? civData[this.source].limit 
-											 : Object.getOwnPropertyDescriptor(CivObj.prototype,"limit").get.call(this); 
+	get limit() {
+		const civData = getCivData();
+		return (this.isDest()) ? civData[this.source].limit : Object.getOwnPropertyDescriptor(CivObj.prototype,"limit").get.call(this); 
 	},
 	set limit(value) { 
 		return this.limit; 
 	}, // Only here for JSLint.
 
 	// The total quantity of this unit, regardless of status or place.
-	get total() { 
+	get total() {
+		const civData = getCivData();
 		return (this.isDest()) ? civData[this.source].total : (this.owned + (this.ill||0) + (this.party||0)); 
 	},
 	set total(value) { 
@@ -257,6 +280,7 @@ function Achievement(props) // props is an object containing the desired propert
 	// Occasional Properties: test
 	return this;
 }
+
 // Common Properties: type="achievement"
 Achievement.prototype = new CivObj({
 	constructor: Achievement,
@@ -267,3 +291,13 @@ Achievement.prototype = new CivObj({
 	get limit() { 		return 1; }, // Can't re-buy these.
 	set limit(value) { 	return this.limit; } // Only here for JSLint.
 },true);
+
+export {
+	VersionData,
+	CivObj,
+	Resource,
+	Building,
+	Upgrade,
+	Unit,
+	Achievement,
+};

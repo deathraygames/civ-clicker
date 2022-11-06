@@ -1,4 +1,3 @@
-"use strict";
 /**
     CivClicker
     Copyright (C) 2014; see the README.md file for authorship.
@@ -34,7 +33,7 @@ function ifValid(variable, defVal) {
 // Evaluates and returns variable if it's a function, otherwise just returns it.
 // Passes surplus arguments on to the function.
 // TODO: xxx argument forwarding needs testing.
-function valOf (variable) { 
+function valOf(variable) { 
     if (typeof variable == "function") {
         return variable.apply(this, Array.prototype.slice.call(arguments,1));
     } else {
@@ -42,14 +41,14 @@ function valOf (variable) {
     }
 }
 
-
-function bake_cookie(name, value) {
+function bakeCookie(name, value) {
     var exdate=new Date();
     exdate.setDate(exdate.getDate() + 30);
     var cookie = [name, "=", JSON.stringify(value),"; expires=.", exdate.toUTCString(), "; domain=.", window.location.host.toString(), "; path=/;"].join("");
     document.cookie = cookie;
 }
-function read_cookie(name) {
+
+function readCookie(name) {
     var result = document.cookie.match(new RegExp(name + "=([^;]+)"));
     if (result) { result = JSON.parse(result[1]); }
 
@@ -59,8 +58,7 @@ function read_cookie(name) {
 
 // Calculates the summation of elements (n...m] of the arithmetic sequence
 // with increment "incr".
-function calcArithSum(incr,n,m)
-{
+function calcArithSum(incr, n, m) {
     // Default to just element n+1, if m isn't given.
     if (m === undefined) { m = n + 1; }
     return (m-n)*((n*incr)+((m-1)*incr))/2;
@@ -70,8 +68,7 @@ function calcArithSum(incr,n,m)
 // Search for the largest integer X that generates func(X) < limitY.
 // func should be a continuous increasing numeric function.
 //xxx This would probably be more elegant written recursively.
-function logSearchFn(func, limitY)
-{
+function logSearchFn(func, limitY) {
     var minX = 0;
     var maxX = 0;
     var curX = 0;
@@ -100,14 +97,12 @@ function logSearchFn(func, limitY)
             maxX = curX; // Over limit; becomes new upper bound.
         }
     }
-
     return minX;
 }
 
 // Recursively merge the properties of one object into another.
 // Similar (though not identical) to jQuery.extend()
-function mergeObj(o1, o2) 
-{
+function mergeObj(o1, o2) {
     var i;
 
     if (o2 === undefined) { return o1; }
@@ -121,21 +116,20 @@ function mergeObj(o1, o2)
     }
 
     // Both are non-null objects.  Copy o2's properties to o1.
-    for (i in o2) { if (o2.hasOwnProperty(i)) 
-    {
-        o1[i] = mergeObj(o1[i], o2[i]);
-    }}
+    for (i in o2) {
+        if (Object.prototype.hasOwnProperty.call(o2, i)) { // fix for no-prototype-builtins
+            o1[i] = mergeObj(o1[i], o2[i]);
+        }
+    }
 
     return o1;
 }
-
 
 // Workaround for IE's lack of support for the dataset property.
 // Also searches up the DOM tree on lookups, to mimic inheritance.
 // Pass 'value' to set the value, otherwise returns the value.
 // Returns "true" and "false" as actual booleans.
-function dataset(elem,attr,value)
-{
+function dataset(elem,attr,value) {
     if (value !== undefined) { return elem.setAttribute("data-"+attr,value); }
 
     var val = null;
@@ -150,8 +144,7 @@ function dataset(elem,attr,value)
 
 
 // Probabilistic rounding function
-function rndRound(num)
-{
+function rndRound(num) {
     var baseVal = Math.floor(num);
     return baseVal + ((Math.random() < (num - baseVal)) ? 1 : 0)
 }
@@ -160,13 +153,12 @@ function rndRound(num)
 // Copy properties from to dest from src
 // If 'names' array supplied, only copies the named properties
 // If 'deleteOld' is true, deletes the properties from the old object
-function copyProps(dest,src,names,deleteOld)
-{
+function copyProps(dest,src,names,deleteOld) {
     if (!(names instanceof Array)) { names = Object.getOwnPropertyNames(src); }
     if (!isValid(deleteOld)) { deleteOld = false; }
 
     names.forEach(function(elem){
-        if (!src.hasOwnProperty(elem)) { return; }
+        if (! Object.prototype.hasOwnProperty.call(src, elem)) { return; } // fix for no-prototype-builtins
         // This syntax is needed to copy get/set properly; you can't just use '='.
         Object.defineProperty(dest,elem,Object.getOwnPropertyDescriptor(src,elem));
         if (deleteOld) { delete src[elem]; }
@@ -174,14 +166,16 @@ function copyProps(dest,src,names,deleteOld)
 }
 
 // Delete the specified named cookie
-function deleteCookie(cookieName)
-{
-    document.cookie = [cookieName, "=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.", window.location.host.toString()].join("");
+function deleteCookie(cookieName) {
+    document.cookie = [
+        cookieName,
+        "=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.",
+        window.location.host.toString()
+    ].join("");
 }
 
 // Get the fundamental object of the given type
-function getStdObj(typeName)
-{
+function getStdObj(typeName) {
     switch(typeName)
     {
         case "object": return Object;
@@ -194,8 +188,7 @@ function getStdObj(typeName)
 }
 
 // Return one variable, coerced to the type of another.
-function matchType(inVar, toMatch)
-{
+function matchType(inVar, toMatch) {
     return getStdObj(typeof toMatch)(inVar);
 }
 
@@ -209,5 +202,23 @@ function indexArrayByAttr(inArray, attr) {
             Object.defineProperty(arr, elem.id, { value : elem, enumerable:false });
         }
         else { console.log("Duplicate or missing "+attr+" attribute in array: "+elem[attr]); }
-}); }
+    }); 
+}
 
+export {
+    isValid,
+    ifValid,
+    valOf,
+    bakeCookie,
+    readCookie,
+    calcArithSum,
+    logSearchFn,
+    mergeObj,
+    dataset,
+    rndRound,
+    copyProps,
+    deleteCookie,
+    getStdObj,
+    matchType,
+    indexArrayByAttr,
+};

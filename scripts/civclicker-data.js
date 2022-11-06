@@ -1,7 +1,42 @@
+import { Resource, Building, Upgrade, Unit, Achievement } from './civclicker-classes.js';
+import { indexArrayByAttr } from './jsutils.js';
+import { CivObj } from './civclicker-classes.js';
 
-// Requires 
+const NEVER_CLICK_THRESHOLD = 22;
 
-function getCivData () {
+// Civ size category minimums
+const civSizes = [
+	{ min_pop :      0, name: "Thorp"       , id : "thorp"      },
+	{ min_pop :     20, name: "Hamlet"      , id : "hamlet"     },
+	{ min_pop :     60, name: "Village"     , id : "village"    },
+	{ min_pop :    200, name: "Small Town"  , id : "smallTown"  },
+	{ min_pop :   2000, name: "Large Town"  , id : "largeTown"  },
+	{ min_pop :   5000, name: "Small City"  , id : "smallCity"  },
+	{ min_pop :  10000, name: "Large City"  , id : "largeCity"  },
+	{ min_pop :  20000, name:"Metro&shy;polis",id : "metropolis" },
+	{ min_pop :  50000, name: "Small Nation", id : "smallNation"},
+	{ min_pop : 100000, name: "Nation"      , id : "nation"     },
+	{ min_pop : 200000, name: "Large Nation", id : "largeNation"},
+	{ min_pop : 500000, name: "Empire"      , id : "empire"     }
+];
+
+function typeToId(deityType) {
+	if (deityType == "Battle")         { return "battle"; }
+	if (deityType == "Cats")           { return "cats"; }
+	if (deityType == "the Fields")     { return "fields"; }
+	if (deityType == "the Underworld") { return "underworld"; }
+	return deityType;
+}
+
+function idToType(domainId) {
+	if (domainId == "battle")          { return "Battle"; }
+	if (domainId == "cats")            { return "Cats"; }
+	if (domainId == "fields")          { return "the Fields"; }
+	if (domainId == "underworld")      { return "the Underworld"; }
+	return domainId;
+}
+
+function makeCivData(curCiv, civInterface, population) {
 	// Initialize Data
 	var civData = [
 	// Resources
@@ -125,7 +160,7 @@ function getCivData () {
 		// If population is large, temples have less effect.
 		onGain: function(num) { 
 			if (civData.aesthetics && civData.aesthetics.owned && num) { 
-				adjustMorale(num * 25 / population.living); 
+				civInterface.adjustMorale(num * 25 / population.living); 
 			} 
 		}
 	}),
@@ -145,7 +180,11 @@ function getCivData () {
 		require:{ wood:50, stone:200, herbs:50 },
 		vulnerable: false, // Graveyards can't be sacked
 		effectText:"contains 100 graves",
-		onGain: function(num) { if (num === undefined) { num = 1; } digGraves(num); }}),
+		onGain: function(num) {
+			if (num === undefined) { num = 1; }
+			civInterface.digGraves(num);
+		}
+	}),
 	new Building({ 
 		id: "mill", singular:"mill", plural:"mills",
 		prereqs:{ wheel: true },
@@ -288,21 +327,21 @@ function getCivData () {
 		prereqs:{ construction: true },
 		require: { food: 200, wood: 500, stone: 500 },
 		effectText:"Houses support +2 workers",
-		onGain: function() { updatePopulation(); } //due to population limits changing
+		onGain: function() { civInterface.updateCivPopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "slums", name:"Slums", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { food: 500, wood: 1000, stone: 1000 },
 		effectText:"Houses support +2 workers",
-		onGain: function() { updatePopulation(); } //due to population limits changing
+		onGain: function() { civInterface.updateCivPopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "granaries", name:"Granaries", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { wood: 1000, stone: 1000 },
 		effectText:"Barns store double the amount of food",
-		onGain: function() { updateResourceTotals(); } //due to resource limits increasing
+		onGain: function() { civInterface.updateResourceTotals(); } //due to resource limits increasing
 	}),
 	new Upgrade({ 
 		id: "palisade", name:"Palisade", subType: "upgrade",
@@ -386,8 +425,8 @@ function getCivData () {
 		require: { piety: 1000 },
 		effectText:"Begin worshipping a deity (requires temple)",
 		onGain: function() {
-			updateUpgrades();
-			renameDeity(); //Need to add in some handling for when this returns NULL.
+			civInterface.updateUpgrades();
+			civInterface.renameDeity(); //Need to add in some handling for when this returns NULL.
 		} }),
 	// Pantheon Upgrades
 	new Upgrade({ id:"lure", name:"Lure of Civilisation", subType: "pantheon",
@@ -484,8 +523,9 @@ function getCivData () {
 		prereqs:{ deity: "underworld", devotion: 20 },
 		require: { corpses: 1, piety: 4 }, //xxx Nonlinear cost
 		effectText:"Piety to raise the next zombie",
-		extraText:"<button onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'"
-				  +">+100</button><button onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>" }),
+		extraText: `<button onmousedown='raiseDead(100)' id='raiseDead100' class='x100' disabled='disabled'">+100</button>
+				  <button onmousedown='raiseDead(Infinity)' id='raiseDeadMax' class='xInfinity' disabled='disabled'>+&infin;</button>`
+	}),
 	new Upgrade({ id:"summonShade", name:"Summon Shades", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 40 },
 		require: { piety: 1000 },  //xxx Also need slainEnemies
@@ -499,7 +539,7 @@ function getCivData () {
 		effectText:"Give temporary boost to food production" }),
 	new Upgrade({ id:"grace", name:"Grace", subType: "prayer",
 		prereqs:{ deity: "cats", devotion: 40 },
-		require: { piety: 1000 }, //xxx This is not fixed; see curCiv.graceCost
+		require: { piety: 1000 }, //xxx This is not fixed; see civInterface.graceCost
 		init: function(fullInit) { Upgrade.prototype.init.call(this,fullInit); this.cost = 1000; },
 		get cost() { return this.data.cost; }, // Increasing cost to use Grace to increase morale.
 		set cost(value) { this.data.cost = value; },
@@ -589,7 +629,9 @@ function getCivData () {
 		source:"unemployed",
 		combatType:"infantry", 
 		efficiency_base: 0.05,
-		get efficiency() { return this.efficiency_base + playerCombatMods(); },
+		get efficiency() {
+			return this.efficiency_base + civInterface.getPlayerCombatMods();
+		},
 		set efficiency(value) { this.efficiency_base = value; },
 		prereqs:{ barracks: 1 },
 		require:{ leather:10, metal:10 },
@@ -601,7 +643,9 @@ function getCivData () {
 		source:"unemployed",
 		combatType:"cavalry", 
 		efficiency_base: 0.08,
-		get efficiency() { return this.efficiency_base + playerCombatMods(); },
+		get efficiency() {
+			return this.efficiency_base + civInterface.getPlayerCombatMods();
+		},
 		set efficiency(value) { this.efficiency_base = value; },
 		prereqs:{ stable: 1 },
 		require:{ food:20, leather:20 },
@@ -629,7 +673,7 @@ function getCivData () {
 		combatType:"animal", 
 		prereqs: undefined, // Cannot be purchased.
 		efficiency: 0.05,
-		onWin: function() { doSlaughter(this); },
+		onWin: function() { civInterface.combat.doSlaughter(this); },
 		killFatigue:(1.0), // Max fraction that leave after killing the last person
 		killExhaustion:(1/2), // Chance of an attacker leaving after killing a person
 		species:"animal",
@@ -640,7 +684,7 @@ function getCivData () {
 		combatType:"infantry", 
 		prereqs: undefined, // Cannot be purchased.
 		efficiency: 0.07,
-		onWin: function() { doLoot(this); },
+		onWin: function() { civInterface.combat.doLoot(this); },
 		lootFatigue:(1/8), // Max fraction that leave after cleaning out a resource
 		effectText:"Steal your resources" }),
 	new Unit({ 
@@ -649,7 +693,7 @@ function getCivData () {
 		combatType:"infantry", 
 		prereqs: undefined, // Cannot be purchased.
 		efficiency: 0.09,
-		onWin: function() { doHavoc(this); },
+		onWin: function() { civInterface.combat.doHavoc(this); },
 		lootFatigue:(1/24), // Max fraction that leave after cleaning out a resource
 		killFatigue:(1/3), // Max fraction that leave after killing the last person
 		killExhaustion:(1.0), // Chance of an attacker leaving after killing a person
@@ -666,7 +710,7 @@ function getCivData () {
 		source:"soldier",
 		combatType:"infantry", 
 		efficiency_base: 0.05,
-		get efficiency() { return this.efficiency_base + playerCombatMods(); },
+		get efficiency() { return this.efficiency_base + civInterface.getPlayerCombatMods(); },
 		set efficiency(value) { this.efficiency_base = value; },
 		prereqs:{ standard: true, barracks: 1 },
 		place: "party",
@@ -676,7 +720,7 @@ function getCivData () {
 		source:"cavalry",
 		combatType:"cavalry", 
 		efficiency_base: 0.08,
-		get efficiency() { return this.efficiency_base + playerCombatMods(); },
+		get efficiency() { return this.efficiency_base + civInterface.getPlayerCombatMods(); },
 		set efficiency(value) { this.efficiency_base = value; },
 		prereqs:{ standard: true, stable: 1 },
 		place: "party",
@@ -718,7 +762,7 @@ function getCivData () {
 	// Achievements
 		//conquest
 	new Achievement({id:"raiderAch", name:"Raider", 
-		test:function() { return curCiv.raid.victory; }
+		test:function() { return civInterface.getRaid().victory; }
 	}),
 		//xxx Technically this also gives credit for capturing a siege engine.
 	new Achievement({id:"engineerAch", name:"Engi&shy;neer", 
@@ -726,14 +770,17 @@ function getCivData () {
 	}),
 		// If we beat the largest possible opponent, grant bonus achievement.
 	new Achievement({id:"dominationAch", name:"Domi&shy;nation", 
-		test:function() { return curCiv.raid.victory && (curCiv.raid.last == civSizes[civSizes.length-1].id); }
+		test:function() {
+			const raid = civInterface.getRaid();
+			return raid.victory && (raid.last == civSizes[civSizes.length-1].id);
+		}
 	}),
 		//Morale
 	new Achievement({id:"hatedAch", name:"Hated", 
-		test:function() { return curCiv.morale.efficiency <= 0.5; }
+		test:function() { return civInterface.getMoraleEfficiency() <= 0.5; }
 	}),
 	new Achievement({id:"lovedAch", name:"Loved", 
-		test:function() { return curCiv.morale.efficiency >= 1.5; }
+		test:function() { return civInterface.getMoraleEfficiency() >= 1.5; }
 	}),
 		//cats
 	new Achievement({id:"catAch", name:"Cat!", 
@@ -756,16 +803,16 @@ function getCivData () {
 		//deities
 		//xxx TODO: Should make this loop through the domains
 	new Achievement({id:"battleAch", name:"Battle", 
-		test:function() { return getCurDeityDomain() == "battle"; }
+		test:function() { return civInterface.getCurDeityDomain() == "battle"; }
 	}),
 	new Achievement({id:"fieldsAch", name:"Fields", 
-		test:function() { return getCurDeityDomain() == "fields"; }
+		test:function() { return civInterface.getCurDeityDomain() == "fields"; }
 	}),
 	new Achievement({id:"underworldAch", name:"Under&shy;world", 
-		test:function() { return getCurDeityDomain() == "underworld"; }
+		test:function() { return civInterface.getCurDeityDomain() == "underworld"; }
 	}),
 	new Achievement({id:"catsAch", name:"Cats", 
-		test:function() { return getCurDeityDomain() == "cats"; }
+		test:function() { return civInterface.getCurDeityDomain() == "cats"; }
 	}),
 		//xxx It might be better if this checked for all domains in the Pantheon at once (no iconoclasming old ones away).
 	new Achievement({id:"fullHouseAch", name:"Full House", 
@@ -773,21 +820,21 @@ function getCivData () {
 	}),
 		//wonders
 	new Achievement({id:"wonderAch", name:"Wonder", 
-		test:function() { return curCiv.curWonder.stage === 3; }
+		test:function() { return civInterface.getCurrentWonder().stage === 3; }
 	}),
 	new Achievement({id:"sevenAch", name:"Seven!", 
-		test:function() { return curCiv.wonders.length >= 7; }
+		test:function() { return civInterface.getWonders().length >= 7; }
 	}),
 		//trading
 	new Achievement({id:"merchantAch", name:"Merch&shy;ant"  , 
 		test:function() { return civData.gold.owned > 0; }
 	}),
 	new Achievement({id:"rushedAch", name:"Rushed", 
-		test:function() { return curCiv.curWonder.rushed; }
+		test:function() { return civInterface.getCurrentWonder().rushed; }
 	}),
 		//other
 	new Achievement({id:"neverclickAch", name:"Never&shy;click", 
-		test:function() { return curCiv.curWonder.stage === 3 && curCiv.resourceClicks <= 22; 
+		test:function() { return civInterface.getCurrentWonder().stage === 3 && civInterface.getResourceClicks() <= NEVER_CLICK_THRESHOLD; 
 		}})
 	];
 
@@ -810,17 +857,18 @@ function getCivData () {
 	indexArrayByAttr(civData,"id");
 
 	// Initialize our data. 
-	civData.forEach(function(elem){ 
-		if (elem instanceof CivObj) { elem.init(); } 
+	civData.forEach(function(item){ 
+		if (item instanceof CivObj) {
+			item.init();
+		} 
 	});
 
 	return civData;
 }
 
-
-function getWonderResources (civData) {
+function getWonderResources(civData) {
 	// The resources that Wonders consume, and can give bonuses for.
-	return wonderResources = [
+	return [
 		civData.food,
 		civData.wood,
 		civData.stone,
@@ -832,3 +880,11 @@ function getWonderResources (civData) {
 		civData.piety
 	];
 }
+
+export {
+	civSizes,
+	typeToId,
+	idToType,
+	makeCivData,
+	getWonderResources,
+};
