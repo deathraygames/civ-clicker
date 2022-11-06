@@ -1,9 +1,9 @@
 const ajax = {};
 ajax.get = function ajaxGet(url, callback) {
 	const req = new XMLHttpRequest();
-	req.onreadystatechange = function() {
-		if (req.readyState == XMLHttpRequest.DONE ) {
-			if (req.status == 200) {
+	req.onreadystatechange = function ajaxOnReadyStateChange() {
+		if (req.readyState === XMLHttpRequest.DONE) {
+			if (req.status === 200) {
 				let response = null;
 				try {
 					response = JSON.parse(req.responseText);
@@ -11,14 +11,14 @@ ajax.get = function ajaxGet(url, callback) {
 					console.warn(err);
 				}
 				callback(req.responseText, response);
-			} else if (req.status == 400) {
-				console.error("Ajax 400 error", req);
+			} else if (req.status === 400) {
+				console.error('Ajax 400 error', req);
 			} else {
-				console.error("Ajax non-200 error", req);
+				console.error('Ajax non-400 error', req);
 			}
 		}
 	};
-	req.open("GET", url, true);
+	req.open('GET', url, true);
 	req.send();
 };
 

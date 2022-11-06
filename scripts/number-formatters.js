@@ -5,11 +5,12 @@
 //   decrease in quantity (from 1 to 0).
 
 function sgnnum(x) {
-	return (x > 0) ? 1 : (x < 0) ? -1 : 0;
+	if (x > 0) return 1;
+	return (x < 0) ? -1 : 0;
 }
 
 function sgnstr(x) {
-	return (x.length === 0) ? 0 : (x[0] == "-") ? -1 : 1;
+	return (x.length === 0) ? 0 : (x[0] === '-') ? -1 : 1;
 }
 
 function sgnbool(x) {
@@ -17,15 +18,18 @@ function sgnbool(x) {
 }
 
 function absstr(x) {
-	return (x.length === 0) ? "" : (x[0] == "-") ? x.slice(1) : x;
+	return (x.length === 0) ? '' : (x[0] === '-') ? x.slice(1) : x;
 }
 
 function sgn(x) {
-	return (typeof x == "number") ? sgnnum(x) : (typeof x == "string") ? sgnstr(x) : (typeof x == "boolean") ? sgnbool(x) : 0;
+	if (typeof x === 'number') return sgnnum(x);
+	if (typeof x === 'string') return sgnstr(x);
+	return (typeof x === 'boolean') ? sgnbool(x) : 0;
 }
 
 function abs(x) {
-	return (typeof x == "number") ? Math.abs(x) : (typeof x == "string") ? absstr(x) : x;
+	if (typeof x === 'number') return Math.abs(x);
+	return (typeof x === 'string') ? absstr(x) : x;
 }
 
 export {

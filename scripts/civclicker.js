@@ -1,13 +1,15 @@
 import { CivObj, VersionData } from './civclicker-classes.js';
-import { makeCivData, civSizes, getWonderResources, typeToId } from './civclicker-data.js';
+import {
+	makeCivData, civSizes, getWonderResources, typeToId,
+} from './civclicker-data.js';
 import ui from './ui.js';
 import {
 	dataset, indexArrayByAttr, isValid, valOf, rndRound, mergeObj, readCookie, deleteCookie,
-	logSearchFn, calcArithSum, matchType
+	logSearchFn, calcArithSum, matchType,
 } from './jsutils.js';
 import { updater } from './civclicker-update.js';
 import { sgn, abs } from './number-formatters.js';
-import LZString from './lz-string.js';
+import LZString from './libs/lz-string.js';
 
 /**
 	CivClicker
@@ -26,7 +28,7 @@ import LZString from './lz-string.js';
 	You should have received a copy of the GNU General Public License
 	along with this program in the LICENSE file.
 	If it is not there, see <http://www.gnu.org/licenses/>.
-**/
+*/
 
 // TODO: Update the version numbering internally
 // var version = 19; // This is an ordinal used to trigger reloads.
@@ -42,7 +44,7 @@ var PATIENT_LIST = [
 	"woodcutter","miner","tanner","blacksmith","unemployed"
 ];
 
-// Declare variables here so they can be referenced later.  
+// Declare variables here so they can be referenced later.
 const curCiv = {
 	civName: "Woodstock",
 	rulerName: "Orteil",
@@ -78,18 +80,18 @@ const curCiv = {
 		name: "",
 		stage: 0, // 0 = Not started, 1 = Building, 2 = Built, awaiting selection, 3 = Finished.
 		progress: 0, // Percentage completed.
-		rushed: false
+		rushed: false,
 	},
-	wonders:[],  // Array of {name: name, resourceId: resourceId} for all wonders.
+	wonders: [], // Array of {name: name, resourceId: resourceId} for all wonders.
 
 	// Known deities.  The 0th element is the current game's deity.
 	// If the name is "", no deity has been created (can also check for worship upgrade)
 	// If the name is populated but the domain is not, the domain has not been selected.
-	deities: [ { name:"", domain:"", maxDev:0 } ],  // array of { name, domain, maxDev }
+	deities: [{ name: "", domain: "", maxDev: 0 }], // array of { name, domain, maxDev }
 
-	//xxx We're still accessing many of the properties put here by civData
-	//elements without going through the civData accessors.  That should
-	//change.
+	// FIXME: We're still accessing many of the properties put here by civData
+	// elements without going through the civData accessors.  That should
+	// change.
 };
 
 // These are not saved, but we need them up here for the asset data to init properly.
@@ -239,7 +241,7 @@ curCiv.data = civData;
 var resourceData	= []; // All resources
 var buildingData	= []; // All buildings
 const upgradeData 	= []; // All upgrades
-var powerData 		= []; // All 'powers' //xxx This needs refinement.
+var powerData 		= []; // All 'powers' // FIXME: This needs refinement.
 var unitData 		= []; // All units
 var achData 		= []; // All achievements
 var sackable		= []; // All buildings that can be destroyed
@@ -382,10 +384,10 @@ function calculatePopulation() {
 
 function getCivType () {
 	var civType = civSizes.getCivSize(population.living).name;
-	if (population.living === 0 && population.limit >= 1000){
+	if (population.living === 0 && population.limit >= 1000) {
 		civType = "Ghost Town";
 	}
-	if (population.zombie >= 1000 && population.zombie >= 2 * population.living){ //easter egg
+	if (population.zombie >= 1000 && population.zombie >= 2 * population.living) { // easter egg
 		civType = "Necropolis";
 	}
 	return civType;
@@ -402,14 +404,10 @@ function tallyWonderCount() {
 }
 
 // Return the production multiplier from wonders for a resource.
-function getWonderBonus(resourceObj)
-{
+function getWonderBonus(resourceObj) {
 	if (!resourceObj) { return 1; }
 	return (1 + (wonderCount[resourceObj.id]||0)/10);
 }
-
-
-
 
 // Reset the raid data.
 function resetRaiding()
@@ -422,19 +420,16 @@ function resetRaiding()
 
 	// Also reset the enemy party units.
 	unitData.filter(function(elem) { return ((elem.alignment == "enemy") && (elem.place == "party")); })
-			.forEach(function(elem) { elem.reset(); });
+		.forEach(function(elem) { elem.reset(); });
 }
 
-
-
-function getPlayerCombatMods() { 
-	return (0.01 * ((civData.riddle.owned) + (civData.weaponry.owned) + (civData.shields.owned))); 
+function getPlayerCombatMods() {
+	return (0.01 * ((civData.riddle.owned) + (civData.weaponry.owned) + (civData.shields.owned)));
 }
 
 // Get an object's requirements in text form.
 // Pass it a cost object and optional quantity
-function getReqText(costObj, qty)
-{
+function getReqText(costObj, qty) {
 	if (!isValid(qty)) { qty = 1; }
 	costObj = valOf(costObj,qty); // valOf evals it if it's a function
 	if (!isValid(costObj)) { return ""; }
@@ -459,8 +454,7 @@ function getReqText(costObj, qty)
 function meetsUpgradePrereqs(prereqObj) {
 	if (!isValid(prereqObj)) { return false; }
 	var i;
-	for(i in prereqObj)
-	{
+	for (i in prereqObj) {
 		//xxx HACK:  Ugly special checks for non-upgrade pre-reqs.
 		// This should be simplified/eliminated once the resource
 		// system is unified.
@@ -472,10 +466,8 @@ function meetsUpgradePrereqs(prereqObj) {
 			if (civData[i].owned < prereqObj[i]) { return false; }
 		}
 	}
-
 	return true;
 }
-
 
 // Returns how many of this item the player can afford.
 // Looks only at the item's cost and the player's resources, and not
@@ -485,8 +477,7 @@ function meetsUpgradePrereqs(prereqObj) {
 // A boolean quantity is converted to +1 (true) -1 (false)
 //xxx Caps nonlinear purchases at +1, blocks nonlinear sales. TODO: fix this
 // costObj - The cost substructure of the object to purchase
-function canAfford(costObj, qty)
-{
+function canAfford(costObj, qty) {
 	if (!isValid(costObj)) { return 0; }
 	if (qty === undefined) { qty = Infinity; } // default to as many as we can
 	if (qty === false) { qty = -1; } // Selling back a boolean item.
@@ -503,7 +494,6 @@ function canAfford(costObj, qty)
 		qty = Math.min(qty,Math.floor(civData[i].owned/valOf(costObj[i])));
 		if (qty === 0) { return qty; }
 	}
-
 	return qty;
 }
 
@@ -511,8 +501,7 @@ function canAfford(costObj, qty)
 // Pays for fewer if the whole amount cannot be paid.
 // Return the quantity that could be afforded.
 //xxx DOES NOT WORK for nonlinear building cost items!
-function payFor(costObj, qty)
-{
+function payFor(costObj, qty) {
 	if (qty === undefined) { qty = 1; } // default to 1
 	if (qty === false) { qty = -1; } // Selling back a boolean item.
 	costObj = valOf(costObj,qty); // valOf evals it if it's a function
@@ -530,7 +519,6 @@ function payFor(costObj, qty)
 		if (!num) { continue; }
 		civData[i].owned -= num;
 	}
-
 	return qty;
 }
 
@@ -544,7 +532,7 @@ function canPurchase (purchaseObj, qty) {
 	if (qty === false) { qty = -1; } // Selling back a boolean item.
 
 	// Can't buy if we don't meet the prereqs.
-	if (!meetsUpgradePrereqs(purchaseObj.prereqs)) { 
+	if (!meetsUpgradePrereqs(purchaseObj.prereqs)) {
 		qty = Math.min(qty, 0); 
 	}
 
@@ -553,13 +541,13 @@ function canPurchase (purchaseObj, qty) {
 
 	// If this is a relocation, can't shift more than our source pool.
 	if (purchaseObj.source) { 
-		qty = Math.min(qty, civData[purchaseObj.source].owned); 
+		qty = Math.min(qty, civData[purchaseObj.source].owned);
 	}
 
 	// If this is a destination item, it's just a relocation of an existing
 	// item, so we ignore purchase limits.  Otherwise we check them.
-	if (purchaseObj.isDest && !purchaseObj.isDest()) { 
-		qty = Math.min(qty, purchaseObj.limit - purchaseObj.total); 
+	if (purchaseObj.isDest && !purchaseObj.isDest()) {
+		qty = Math.min(qty, purchaseObj.limit - purchaseObj.total);
 	}
 
 	// See if we can afford them; return fewer if we can't afford them all
@@ -579,7 +567,6 @@ function getCostNote(civObj)
 		+ "<span id='"+civObj.id+"Note' class='note'>" + separator + civObj.effectText + "</span>"
 	);
 }
-
 
 // Pass this the item definition object.
 // Or pass nothing, to create a blank row.
@@ -679,8 +666,7 @@ function getPurchaseRowText (purchaseObj) {
 // For efficiency, we set up a single bulk listener for all of the buttons, rather
 // than putting a separate listener on each button.
 function onBulkEvent(e) {
-	switch (dataset(e.target,"action")) 
-	{
+	switch (dataset(e.target,"action")) {
 		case "increment": return onIncrement(e.target);
 		case "purchase" : return onPurchase(e.target);
 		case "raid"     : return onInvade(e.target);
@@ -688,8 +674,7 @@ function onBulkEvent(e) {
 	return false;
 }
 
-function addUITable(civObjs, groupElemName)
-{
+function addUITable(civObjs, groupElemName) {
 	var s="";
 	civObjs.forEach(function(elem) { 
 		s += elem.type == "resource" ? getResourceRowText(elem) 
@@ -2225,7 +2210,7 @@ function save(savetype) {
 	return true;
 }
 
-function deleteSave(){
+function deleteSave() {
 	//Deletes the current savegame by setting the game's cookies to expire in the past.
 	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return; } //Check the player really wanted to do that.
 
@@ -2245,13 +2230,12 @@ function deleteSave(){
 	}
 }
 
-function renameCiv(newName){
-	//Prompts player, uses result as new civName
+function renameCiv(newName) {
+	// Prompts player, uses result as new civName
 	while (!newName) {
-		newName = 'XXX'; // prompt("Please name your civilization",(newName || curCiv.civName || "Woodstock")); // TODO
+		newName = prompt("Please name your civilization",(newName || curCiv.civName || "Woodstock")); // TODO
 		if ((newName === null)&&(curCiv.civName)) { return; } // Cancelled
 	}
-
 	curCiv.civName = newName;
 	ui.find("#civName").innerHTML = curCiv.civName;
 }
@@ -2269,9 +2253,9 @@ function haveDeity(name)
 
 function renameRuler(newName){
 	if (curCiv.rulerName == "Cheater") { return; } // Reputations suck, don't they?
-	//Prompts player, uses result as rulerName
+	// Prompts player, uses result as rulerName
 	while (!newName || haveDeity(newName)!==false) {
-		newName = 'XXX'; // prompt("What is your name?",(newName || curCiv.rulerName || "Orteil")); // TODO
+		newName = prompt("What is your name?",(newName || curCiv.rulerName || "Orteil")); // TODO
 		if ((newName === null)&&(curCiv.rulerName)) { return; } // Cancelled
 		if (haveDeity(newName)!==false) {
 			alert("That would be a blasphemy against the deity "+newName+".");
@@ -3000,9 +2984,9 @@ function setAutosave(value){
 	if (value !== undefined) { settings.autosave = value; } 
 	ui.find("#toggleAutosave").checked = settings.autosave;
 }
-function onToggleAutosave(control){ return setAutosave(control.checked); }
+function onToggleAutosave(control) { return setAutosave(control.checked); }
 
-function setCustomQuantities(value){
+function setCustomQuantities(value) {
 	var i;
 	var elems;
 	var curPop = population.current;
@@ -3368,7 +3352,7 @@ setup.game = function setupGame() {
 	updater.makeDeitiesTables(curCiv.deities);
 
 	if (!load("localStorage")) { //immediately attempts to load
-		//Prompt player for names
+		// Prompt player for names
 		renameCiv();
 		renameRuler();
 	}

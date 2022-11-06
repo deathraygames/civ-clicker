@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program in the LICENSE file.
 	If it is not there, see <http://www.gnu.org/licenses/>.
-**/
+*/
 
 const ui = {
 	findAll: function (selector) {
@@ -25,7 +25,7 @@ const ui = {
 			return selector;
 		} else {
 			return undefined;
-		}			
+		}
 	},
 	find: function (selector) {
 		if (typeof selector === 'string') {
@@ -43,11 +43,11 @@ const ui = {
 	},
 	isHidden: function (selector) {
 		// NOTE: This does not work for fixed-position elements
-		var elt = ui.find(selector);
+		const elt = ui.find(selector);
 		return (elt.offsetParent === null);
 	},
 	toggle: function (selector /*, force*/) {
-		var elt = ui.find(selector);
+		const elt = ui.find(selector);
 		if (ui.isHidden(elt)) {
 			elt.style.display = "block";
 			return true;
@@ -66,10 +66,9 @@ const ui = {
 	// May not support all HTML elements.
 	// Returns the input visibility state, or undefined on an error.
 	show: function (selector, visible) {
-
-		var elt = ui.find(selector);
-		var displayVal;
-		var tagName;
+		const elt = ui.find(selector);
+		let displayVal;
+		let tagName;
 
 		if (!elt) {
 			return undefined;
