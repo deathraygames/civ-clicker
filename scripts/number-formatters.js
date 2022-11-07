@@ -10,7 +10,8 @@ function sgnnum(x) {
 }
 
 function sgnstr(x) {
-	return (x.length === 0) ? 0 : (x[0] === '-') ? -1 : 1;
+	if (x.length === 0) return 0;
+	return (x[0] === '-') ? -1 : 1;
 }
 
 function sgnbool(x) {
@@ -18,7 +19,8 @@ function sgnbool(x) {
 }
 
 function absstr(x) {
-	return (x.length === 0) ? '' : (x[0] === '-') ? x.slice(1) : x;
+	if (x.length === 0) return '';
+	return (x[0] === '-') ? x.slice(1) : x;
 }
 
 function sgn(x) {

@@ -17,17 +17,35 @@
 	If it is not there, see <http://www.gnu.org/licenses/>.
 */
 
+const TAG_DISPLAY = {
+	SPAN: 'inline',
+	BUTTON: 'inline-block',
+	DIV: 'block',
+	UL: 'block',
+	OL: 'block',
+	P: 'block',
+	TABLE: 'table',
+	CAPTION: 'table-caption',
+	THEAD: 'table-header-group',
+	TBODY: 'table-row-group',
+	TFOOT: 'table-footer-group',
+	TR: 'table-row',
+	COL: 'table-column',
+	TD: 'table-cell',
+	LI: 'list-item',
+};
+
 const ui = {
-	findAll: function (selector) {
+	findAll(selector) {
 		if (typeof selector === 'string') {
 			return document.querySelectorAll(selector);
-		} else if (typeof selector === 'object') {
-			return selector;
-		} else {
-			return undefined;
 		}
+		if (typeof selector === 'object') {
+			return selector;
+		}
+		return undefined;
 	},
-	find: function (selector) {
+	find(selector) {
 		if (typeof selector === 'string') {
 			/*
 			if (selector.substr(0,1) === "#") {
@@ -35,28 +53,26 @@ const ui = {
 			}
 			*/
 			return document.querySelectorAll(selector)[0];
-		} else if (typeof selector === 'object') {
-			return selector;
-		} else {
-			return undefined;
 		}
+		if (typeof selector === 'object') {
+			return selector;
+		}
+		return undefined;
 	},
-	isHidden: function (selector) {
+	isHidden(selector) {
 		// NOTE: This does not work for fixed-position elements
 		const elt = ui.find(selector);
 		return (elt.offsetParent === null);
 	},
-	toggle: function (selector /*, force*/) {
+	toggle(selector /* , force */) {
 		const elt = ui.find(selector);
 		if (ui.isHidden(elt)) {
-			elt.style.display = "block";
+			elt.style.display = 'block';
 			return true;
-		} else {
-			elt.style.display = "none";
-			return false;
 		}
+		elt.style.display = 'none';
+		return false;
 	},
-
 	// Moved from jsutils.js, setElemDisplay function, and refactored ...
 	// Wrapper to set an HTML element's visibility.
 	// Pass the element object or ID as the 1st param.
@@ -65,77 +81,48 @@ const ui = {
 	// Compensates for IE's lack of support for the "initial" property value.
 	// May not support all HTML elements.
 	// Returns the input visibility state, or undefined on an error.
-	show: function (selector, visible) {
+	show(selector, visibleParam) {
 		const elt = ui.find(selector);
+		if (!elt) return undefined;
 		let displayVal;
-		let tagName;
-
-		if (!elt) {
-			return undefined;
-		}
-
 		// If the visibility is unspecified, toggle it.
-		if (visible === undefined) { 
-			visible = (elt.style.display == "none"); 
-		}
-
-		tagName = elt.tagName.toUpperCase();
+		const visible = (visibleParam === undefined) ? (elt.style.display === 'none') : visibleParam;
+		const tagName = elt.tagName.toUpperCase();
 
 		/* xxx This is disabled because browser support for visibility: collapse is too inconsistent.
 			// If it's a <col> element, use visibility: collapse instead.
 			if (tagName == "COL") {
-				elt.style.visibility = visible ? "inherit" : "collapse"; 
+				elt.style.visibility = visible ? "inherit" : "collapse";
 				return;
 			}
 		*/
 
 		if (visible) {
-			displayVal = "initial";
+			displayVal = 'initial';
 			// Note that HTML comes in upper case, XML in lower.
-			switch (tagName) {
-				case "SPAN": displayVal = "inline"; break;
-				case "BUTTON": displayVal = "inline-block"; break;
-				case "DIV": 
-				case "UL":
-				case "OL":
-				case "P":
-					displayVal = "block"; 
-					break;
-				case "TABLE": displayVal = "table"; break;
-				case "CAPTION": displayVal = "table-caption"; break;
-				case "THEAD": displayVal = "table-header-group"; break;
-				case "TBODY": displayVal = "table-row-group"; break;
-				case "TFOOT": displayVal = "table-footer-group"; break;
-				case "TR": displayVal = "table-row"; break;
-				case "COL": displayVal = "table-column"; break;
-				case "TD": displayVal = "table-cell"; break;
-				case "LI": displayVal = "list-item"; break;
-				default: console.warn("Unsupported tag <"+tagName+"> passed to ui.show"); break;
-			}
+			const tagDisplay = TAG_DISPLAY[tagName];
+			if (!tagDisplay) console.warn('Unsupported tag <', tagName, '> passed to ui.show');
 		} else {
-			displayVal = "none";
+			displayVal = 'none';
 		}
 		elt.style.display = displayVal;
-
 		return visible;
 	},
-	hide: function (selector, notVisible) {
-		if (notVisible === undefined) { 
-			notVisible = true; 
-		}
+	hide(selector, notVisible = true) {
 		return this.show(selector, !notVisible);
 	},
 	body: null,
-	setup: function () {
-		this.body = document.getElementsByTagName("body")[0];
-	}
+	setup() {
+		// eslint-disable-next-line prefer-destructuring
+		this.body = document.getElementsByTagName('body')[0];
+	},
 };
 
 export default ui;
 
-if (window) { 
+if (window) {
 	window.ui = ui;
-	document.addEventListener("DOMContentLoaded", () => { ui.setup(); });
-} else { 
-	console.error("ui instantiation failed"); 
+	document.addEventListener('DOMContentLoaded', () => { ui.setup(); });
+} else {
+	console.error('ui instantiation failed');
 }
