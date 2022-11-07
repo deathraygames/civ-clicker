@@ -39,6 +39,12 @@ function idToType(domainId) {
 	return domainId;
 }
 
+/** Merging causes setting some values even though they are not saved */
+// eslint-disable-next-line no-unused-vars
+function uselessSet(val, obj) {
+	// console.warn('Useless set', val, 'for this:', obj);
+}
+
 // populate can be mutated
 function makeCivData(curCiv, civInterface, population) {
 	// Initialize Data
@@ -57,7 +63,7 @@ function makeCivData(curCiv, civInterface, population) {
 				const barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
 				return 200 + (civData.barn.owned * barnBonus);
 			},
-			// set limit(value) { return this.limit; } // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 		}),
 		new Resource({
 			id: "wood",
@@ -69,7 +75,7 @@ function makeCivData(curCiv, civInterface, population) {
 			verb: "cut",
 			activity: "woodcutting", // I18N
 			get limit() { return 200 + (civData.woodstock.owned * 200); },
-			// set limit(value) { return this.limit; } // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 		}),
 		new Resource({
 			id: "stone",
@@ -81,7 +87,7 @@ function makeCivData(curCiv, civInterface, population) {
 			verb: "mine",
 			activity: "mining", // I18N
 			get limit() { return 200 + (civData.stonestock.owned * 200); },
-			// set limit(value) { return this.limit; } // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 		}),
 		new Resource({ id: "skins", singular: "skin", plural: "skins" }),
 		new Resource({ id: "herbs", singular: "herb", plural: "herbs" }),
@@ -141,7 +147,7 @@ function makeCivData(curCiv, civInterface, population) {
 				const maxPop = 10 + 2 * (civData.slums.owned + civData.tenements.owned);
 				return `+${maxPop} max pop.`;
 			},
-			// set effectText(value) { return this.require; }, // Only here for JSLint.
+			set effectText(value) { uselessSet(value, this); },
 			update: function updateHouse() {
 				// TODO: need better way to do this
 				document.getElementById(`${this.id}Note`).innerHTML = `: ${this.effectText}`;
@@ -164,7 +170,7 @@ function makeCivData(curCiv, civInterface, population) {
 				const barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
 				return `+${barnBonus} food storage`;
 			},
-			// set effectText(value) { return this.effectText; },
+			set effectText(value) { uselessSet(value, this); },
 			update: function updateBarn() {
 				// TODO: need better way to do this
 				document.getElementById(`${this.id}Note`).innerHTML = `: ${this.effectText}`;
@@ -265,7 +271,7 @@ function makeCivData(curCiv, civInterface, population) {
 					stone: 100 * (this.owned + 1) * (1.05 ** this.owned),
 				};
 			},
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "improves farmers",
 		}),
 		new Building({
@@ -283,7 +289,7 @@ function makeCivData(curCiv, civInterface, population) {
 					}.bind(this),
 				};
 			},
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "helps protect against attack",
 		}),
 		// Altars
@@ -298,7 +304,7 @@ function makeCivData(curCiv, civInterface, population) {
 			devotion: 1,
 			prereqs: { deity: "battle" },
 			get require() { return { stone: 200, piety: 200, metal: 50 + (50 * this.owned) }; },
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "+1 Devotion",
 		}),
 		new Building({
@@ -317,7 +323,7 @@ function makeCivData(curCiv, civInterface, population) {
 					wood: 500 + (250 * this.owned),
 				};
 			},
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "+1 Devotion",
 		}),
 		new Building({
@@ -329,7 +335,7 @@ function makeCivData(curCiv, civInterface, population) {
 			devotion: 1,
 			prereqs: { deity: "underworld" },
 			get require() { return { stone: 200, piety: 200, corpses: 1 + this.owned }; },
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "+1 Devotion",
 		}),
 		new Building({
@@ -341,7 +347,7 @@ function makeCivData(curCiv, civInterface, population) {
 			devotion: 1,
 			prereqs: { deity: "cats" },
 			get require() { return { stone: 200, piety: 200, herbs: 100 + (50 * this.owned) }; },
-			// set require(value) { return this.require; }, // Only here for JSLint.
+			set require(value) { uselessSet(value, this); },
 			effectText: "+1 Devotion",
 		}),
 		// Upgrades
@@ -928,7 +934,7 @@ function makeCivData(curCiv, civInterface, population) {
 			efficiency: 0.5,
 			prereqs: { tannery: 1 },
 			get limit() { return civData.tannery.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			effectText: "Convert skins to leather",
 		}),
 		new Unit({
@@ -939,7 +945,7 @@ function makeCivData(curCiv, civInterface, population) {
 			efficiency: 0.5,
 			prereqs: { smithy: 1 },
 			get limit() { return civData.smithy.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			effectText: "Convert ore to metal",
 		}),
 		new Unit({
@@ -950,12 +956,13 @@ function makeCivData(curCiv, civInterface, population) {
 			efficiency: 0.1,
 			prereqs: { apothecary: 1 },
 			init: function initHealer(fullInit) {
-				Unit.prototype.init.call(this, fullInit); this.cureCount = 0;
+				Unit.prototype.init.call(this, fullInit);
+				this.cureCount = 0;
 			},
 			get limit() { return civData.apothecary.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			get cureCount() { return this.data.cureCount; }, // Carryover fractional healing
-			// set cureCount(value) { this.data.cureCount = value; }, // Only here for JSLint.
+			set cureCount(value) { this.data.cureCount = value; },
 			effectText: "Cure sick workers",
 		}),
 		new Unit({
@@ -966,7 +973,7 @@ function makeCivData(curCiv, civInterface, population) {
 			efficiency: 0.05,
 			prereqs: { temple: 1 },
 			get limit() { return civData.temple.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			effectText: "Generate piety, bury corpses",
 		}),
 		new Unit({
@@ -992,7 +999,7 @@ function makeCivData(curCiv, civInterface, population) {
 			prereqs: { barracks: 1 },
 			require: { leather: 10, metal: 10 },
 			get limit() { return 10 * civData.barracks.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			effectText: "Protect from attack",
 		}),
 		new Unit({
@@ -1009,7 +1016,7 @@ function makeCivData(curCiv, civInterface, population) {
 			prereqs: { stable: 1 },
 			require: { food: 20, leather: 20 },
 			get limit() { return 10 * civData.stable.owned; },
-			// set limit(value) { return this.limit; }, // Only here for JSLint.
+			set limit(value) { uselessSet(value, this); },
 			effectText: "Protect from attack",
 		}),
 		new Unit({

@@ -47,7 +47,6 @@ function updateReset() {
 	const { civInterface, ui } = this;
 	const worshipOwned = Boolean(civInterface.getWorshipOwned());
 	const curWonder = civInterface.getCurrentWonder();
-	console.log(worshipOwned);
 	ui.show("#resetNote", (worshipOwned || curWonder.stage === 3));
 	ui.show("#resetDeity", (worshipOwned));
 	ui.show("#resetWonder", (curWonder.stage === 3));
