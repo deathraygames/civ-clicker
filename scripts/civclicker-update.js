@@ -575,24 +575,24 @@ function updateTargets() {
 	}
 }
 
+/** Updates morale (aka. happiness) */
 function updateMorale(population, moraleEfficiency) {
 	const { ui } = this;
-	//updates the morale stat
-	var happinessRank; // Lower is better
-	var elt = ui.find("#morale");
-	//first check there's someone to be happy or unhappy, not including zombies
-	if (population.living < 1) { 
-		elt.className = "";
-		return;
-	}
-
-	if (moraleEfficiency > 1.4) { 		happinessRank = 1; }
-	else if (moraleEfficiency > 1.2) { 	happinessRank = 2; }
-	else if (moraleEfficiency > 0.8) { 	happinessRank = 3; }
-	else if (moraleEfficiency > 0.6) { 	happinessRank = 4; }
-	else                              { happinessRank = 5; }
-
-	elt.className = "happy-" + happinessRank;
+	let happinessRank; // Lower is better
+	if (population.living < 1) { happinessRank = null; }
+	else if (moraleEfficiency > 1.4) { happinessRank = 1; }
+	else if (moraleEfficiency > 1.2) { happinessRank = 2; }
+	else if (moraleEfficiency > 0.8) { happinessRank = 3; }
+	else if (moraleEfficiency > 0.6) { happinessRank = 4; }
+	else { happinessRank = 5; }
+	// Loop through possible ranks
+	[1, 2, 3, 4, 5].forEach((rank) => {
+		const active = (rank === happinessRank);
+		const elt = ui.find(`.happy-${rank}`);
+		elt.classList[active ? 'add' : 'remove']('happy-active');
+		// Hide inactive ranks so they're not spoken by screen readers
+		elt.ariaHidden = !active;
+	});
 }
 
 function addWonderSelectText(wonderResources) {

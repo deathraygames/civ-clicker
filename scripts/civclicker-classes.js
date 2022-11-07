@@ -117,13 +117,12 @@ Resource.prototype = new CivObj({
 	specialChance: 0,
 	specialMaterial: "",
 	activity: "gathering" //I18N
-},true);
+}, true);
 
-function Building(props) // props is an object containing the desired properties.
-{
+function Building(props) { // props is an object containing the desired properties.
 	if (!(this instanceof Building)) { return new Building(props); } // Prevent accidental namespace pollution
-	CivObj.call(this,props);
-	copyProps(this,props,null,true);
+	CivObj.call(this, props);
+	copyProps(this, props, null, true);
 	// Occasional Properties: subType, efficiency, devotion
 	// plural should get moved during I18N.
 	return this;
