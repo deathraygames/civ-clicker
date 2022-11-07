@@ -48,32 +48,31 @@ var PATIENT_LIST = [
 const curCiv = {
 	civName: "Woodstock",
 	rulerName: "Orteil",
-
-	zombie: { owned:0 },
-	grave: { owned:0 },
-	enemySlain: { owned:0 },
-	morale: { 
-		mod: 		1.0,
-		efficiency: 1.0
+	zombie: { owned: 0 },
+	grave: { owned: 0 },
+	enemySlain: { owned: 0 },
+	morale: {
+		mod: 1.0,
+		efficiency: 1.0,
 	},
 
-	resourceClicks : 0, // For NeverClick
-	attackCounter : 0, // How long since last attack?
+	resourceClicks: 0, // For NeverClick
+	attackCounter: 0, // How long since last attack?
 
-	trader : {
+	trader: {
 		materialId: "",
-		requested: 	0,
-		timer: 		0, // How many seconds will the trader be around
-		counter: 	0 // How long since last trader?
+		requested: 0,
+		timer: 0, // How many seconds will the trader be around
+		counter: 0, // How long since last trader?
 	},
 
 	raid: {
 		raiding: false, // Are we in a raid right now?
 		victory: false, // Are we in a "raid succeeded" (Plunder-enabled) state right now?
-		epop: 0,  // Population of enemy we're raiding.
+		epop: 0, // Population of enemy we're raiding.
 		plunderLoot: {}, // Loot we get if we win.
-		last: "",
-		targetMax: civSizes[0].id // Largest target allowed
+		last: '',
+		targetMax: civSizes[0].id, // Largest target allowed
 	},
 
 	curWonder: {
@@ -144,7 +143,7 @@ const civInterface = {
 		return curCiv.resourceClicks;
 	},
 	getLandTotals() {
-		//Update land values
+		// Update land values
 		var ret = { lands: 0, buildings: 0, free: 0 };
 		buildingData.forEach(function(elem) { 
 			if (elem.subType == "land") { ret.free     += elem.owned; }
@@ -188,54 +187,6 @@ const civInterface = {
 	getCombatants,
 };
 
-const pageActions = {
-	paneSelect,
-	speedWonder,
-	trade,
-	buy,
-	reset,
-	deleteSave,
-	plunder,
-	spawn,
-	startWonder,
-	wonderSelect,
-	// Actions tied to upgrades (?)
-	raiseDead,
-	summonShade,
-	wickerman,
-	walk,
-	pestControl,
-	iconoclasmList,
-	iconoclasm,
-	smite,
-	glory,
-	grace,
-	// Togglers
-	onToggleAutosave,
-	onToggleCustomQuantities,
-	onToggleDelimiters,
-	onToggleIcons,
-	onToggleNotes,
-	onToggleShadow,
-	onToggleWorksafe,
-	// Cheat
-	ruinFun,
-};
-
-// "Export" via exposing on the window
-if (window) {
-	const cc = { // "Global interface" necessary for civclicker-classes - TODO: fix this
-		getCiv() { return curCiv; },
-		getCivData() { return civData; },
-	};
-	Object.assign(window, pageActions, { cc });
-} else {
-	console.error('window is needed');
-}
-
-const civData = makeCivData(curCiv, civInterface, population); // Giant array of data, defined in "data" js
-curCiv.data = civData;
-
 // Build a variety of additional indices so that we can iterate over specific
 // subsets of our civ objects.
 var resourceData	= []; // All resources
@@ -253,24 +204,20 @@ var armyUnits		= []; // All units to be displayed in the army area
 var basicResources	= []; // All basic (click-to-get) resources
 var normalUpgrades	= []; // All upgrades to be listed in the normal upgrades area
 
-// The resources that Wonders consume, and can give bonuses for.
-var wonderResources = getWonderResources(civData); // defined in "data" js
-
 // These are settings that should probably be tied to the browser.
 var settings = {
 	autosave: 			true,
 	autosaveCounter: 	1,
-	autosaveTime: 		60, //Currently autosave is every minute. Might change to 5 mins in future.
+	autosaveTime: 		60, // Currently autosave is every minute. Might change to 5 mins in future.
 	customIncr: 		false,
 	fontSize: 			1.0,
 	delimiters: 		true,
+	darkMode: false,
 	textShadow: 		false,
 	notes: 				true,
 	worksafe: 			false,
 	useIcons: 			true
 };
-
-updater.setup({ civInterface, ui, prettify, achData, settings });
 
 function setIndexArrays (civData) {
 	civData.forEach(function(elem){ 
@@ -333,7 +280,7 @@ function calculatePopulation() {
 	clearPopulation(population);
 	population.zombie = curCiv.zombie.owned;
 
-	//Update population limit by multiplying out housing numbers
+	// Update population limit by multiplying out housing numbers
 	population.limit = (
 		civData.tent.owned 
 		+ (civData.hut.owned * 3) 
@@ -343,7 +290,7 @@ function calculatePopulation() {
 	);
 	population.limitIncludingUndead = population.limit + population.zombie;
 
-	//Update sick workers
+	// Update sick workers
 	unitData.forEach(function(unit) { 
 		if (unit.isPopulation) { // has to be a player, non-special, non-mechanical
 			population.current += unit.owned;
@@ -367,12 +314,12 @@ function calculatePopulation() {
 	// TODO: Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
 	population.healthy = Math.max(0, population.healthy - population.zombie);
 
-	//Zombie soldiers dying can drive population.current negative if they are 
+	// Zombie soldiers dying can drive population.current negative if they are 
 	// killed and zombies are the only thing left.
 	// TODO: This seems like a hack that should be given a real fix.
 	if (population.current < 0){
 		if (curCiv.zombie.owned > 0){
-			//This fixes that by removing zombies and setting to zero.
+			// This fixes that by removing zombies and setting to zero.
 			curCiv.zombie.owned += population.current;
 			population.current = 0;
 		} else {
@@ -380,7 +327,6 @@ function calculatePopulation() {
 		}
 	}	
 }
-
 
 function getCivType () {
 	var civType = civSizes.getCivSize(population.living).name;
@@ -455,12 +401,12 @@ function meetsUpgradePrereqs(prereqObj) {
 	if (!isValid(prereqObj)) { return false; }
 	var i;
 	for (i in prereqObj) {
-		//xxx HACK:  Ugly special checks for non-upgrade pre-reqs.
+		// xxx HACK:  Ugly special checks for non-upgrade pre-reqs.
 		// This should be simplified/eliminated once the resource
 		// system is unified.
 		if (i === "deity") { // Deity
 			if (civInterface.getCurDeityDomain() != prereqObj[i]) { return false; }
-		} else if (i === "wonderStage") { //xxx Hack to check if we're currently building a wonder.
+		} else if (i === "wonderStage") { // xxx Hack to check if we're currently building a wonder.
 			if (curCiv.curWonder.stage !== prereqObj[i]) { return false; }
 		} else if (isValid(civData[i]) && isValid(civData[i].owned)) { // Resource/Building/Upgrade
 			if (civData[i].owned < prereqObj[i]) { return false; }
@@ -475,7 +421,7 @@ function meetsUpgradePrereqs(prereqObj) {
 // Negative quantities are always fully permitted.
 // An undefined cost structure is assumed to mean it cannot be purchased.
 // A boolean quantity is converted to +1 (true) -1 (false)
-//xxx Caps nonlinear purchases at +1, blocks nonlinear sales. TODO: fix this
+// xxx Caps nonlinear purchases at +1, blocks nonlinear sales. TODO: fix this
 // costObj - The cost substructure of the object to purchase
 function canAfford(costObj, qty) {
 	if (!isValid(costObj)) { return 0; }
@@ -486,7 +432,7 @@ function canAfford(costObj, qty) {
 	{
 		if (costObj[i] === 0) { continue; }
 
-		//xxx We don't handle nonlinear costs here yet.
+		// xxx We don't handle nonlinear costs here yet.
 		// Cap nonlinear purchases to one at a time.
 		// Block nonlinear sales.
 		if (typeof costObj[i] == "function") { qty = Math.max(0,Math.min(1,qty)); }
@@ -500,7 +446,7 @@ function canAfford(costObj, qty) {
 // Tries to pay for the specified quantity of the given cost object.
 // Pays for fewer if the whole amount cannot be paid.
 // Return the quantity that could be afforded.
-//xxx DOES NOT WORK for nonlinear building cost items!
+// xxx DOES NOT WORK for nonlinear building cost items!
 function payFor(costObj, qty) {
 	if (qty === undefined) { qty = 1; } // default to 1
 	if (qty === false) { qty = -1; } // Selling back a boolean item.
@@ -597,7 +543,7 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 	if (inTable === undefined) { inTable = true; }
 	// Internal utility functions.
 	function sgnchr(x) { return (x > 0) ? "+" : (x < 0) ? "&minus;" : ""; }
-	//xxx Hack: Special formatting for booleans, Infinity and 1k.
+	// xxx Hack: Special formatting for booleans, Infinity and 1k.
 	function infchr(x) { return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x; }
 	function fmtbool(x) {
 		var neg = (sgn(x) < 0);
@@ -617,7 +563,7 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
 		if ((sgn(qty) > 0) && (purchaseObj.require === undefined)) { return false; }
 		if ((sgn(qty) < 0) && (!purchaseObj.salable)) { return false; }
 
-		//xxx Right now, variable-cost items can't be sold, and are bought one-at-a-time.
+		// xxx Right now, variable-cost items can't be sold, and are bought one-at-a-time.
 		if ((qty != 1) && purchaseObj.hasVariableCost()) { return false; }
 
 		return true;
@@ -650,7 +596,7 @@ function getPurchaseRowText (purchaseObj) {
 	var enemyFlag = (purchaseObj.alignment == "enemy") ? " enemy" : "";
 	s += "<td class='itemname"+enemyFlag+"'>"+purchaseObj.getQtyName(0)+": </td>";
 
-	var action = (isValid(population[objId])) ? "display_pop" : "display"; //xxx Hack
+	var action = (isValid(population[objId])) ? "display_pop" : "display"; // xxx Hack
 	s += "<td class='number'><span data-action='"+action+"'>0</span></td>";
 
 	// Don't allow Infinite (max) purchase on things we can't sell back.
@@ -717,11 +663,11 @@ function getPantheonUpgradeRowText(upgradeObj)
 
 	var s = "<tr id='"+upgradeObj.id+"Row' class='purchaseRow'>";
 	// Don't include devotion if it isn't valid.
-	//xxx Should write a chained dereference eval
+	// xxx Should write a chained dereference eval
 	s += "<td class='devcost'>";
 	s +=     ((isValid(upgradeObj.prereqs) && isValid(upgradeObj.prereqs.devotion)) 
 			? (upgradeObj.prereqs.devotion +"d&nbsp;") : "") +"</td>";
-	//xxx The 'fooRow' id is added to make altars work, but should be redesigned.
+	// xxx The 'fooRow' id is added to make altars work, but should be redesigned.
 	s += "<td class='"+upgradeObj.type+"true'><button id='"+upgradeObj.id+"' class='xtrue'";
 	s += " data-action='purchase' data-quantity='true' data-target="+upgradeObj.id;
 	s += " disabled='disabled' onmousedown=\"";
@@ -804,6 +750,7 @@ function setDefaultSettings() {
 	setCustomQuantities();
 	textSize(0);
 	setDelimiters();
+	setDarkMode();
 	setShadow();
 	setNotes();
 	setWorksafe();
@@ -812,7 +759,7 @@ function setDefaultSettings() {
 
 // Game functions
 
-//This function is called every time a player clicks on a primary resource button
+// This function is called every time a player clicks on a primary resource button
 function increment (objId) {
 	var purchaseObj = civData[objId];
 	var numArmy = 0;
@@ -834,7 +781,7 @@ function increment (objId) {
 		+ ((civData.nationalism.owned) * Math.floor(Math.log(numArmy * 10 + 1)))
 	);
 
-	//Handles random collection of special resources.
+	// Handles random collection of special resources.
 	var specialChance = purchaseObj.specialChance;
 	if (specialChance && purchaseObj.specialMaterial && civData[purchaseObj.specialMaterial]) {
 		if ((purchaseObj === civData.food) && (civData.flensing.owned))    { specialChance += 0.1; }
@@ -846,11 +793,11 @@ function increment (objId) {
 			gameLog("Found " + specialMaterial.getQtyName(specialQty) + " while " + purchaseObj.activity); // I18N
 		}
 	}
-	//Checks to see that resources are not exceeding their limits
+	// Checks to see that resources are not exceeding their limits
 	if (purchaseObj.owned > purchaseObj.limit) { purchaseObj.owned = purchaseObj.limit; }
 
 	ui.find("#clicks").innerHTML = prettify(Math.round(++curCiv.resourceClicks));
-	updater.updateResourceTotals(); //Update the page with totals
+	updater.updateResourceTotals(); // Update the page with totals
 }
 
 function onIncrement(control) { 
@@ -882,7 +829,7 @@ function doPurchase(objId,num){
 		return 0;
 	}
 
-	//Then increment the total number of that building
+	// Then increment the total number of that building
 	// Do the actual purchase; coerce to the proper type if needed
 	purchaseObj.owned = matchType(purchaseObj.owned + num,purchaseObj.initOwned);
 	if (purchaseObj.source) { civData[purchaseObj.source].owned -= num; }
@@ -890,7 +837,7 @@ function doPurchase(objId,num){
 	// Post-purchase triggers
 	if (isValid(purchaseObj.onGain)) { purchaseObj.onGain(num); } // Take effect
 
-	//Increase devotion if the purchase provides it.
+	// Increase devotion if the purchase provides it.
 	if (isValid(purchaseObj.devotion)) { 
 		civData.devotion.owned += purchaseObj.devotion * num; 
 		// If we've exceeded this deity's prior max, raise it too.
@@ -910,15 +857,15 @@ function doPurchase(objId,num){
 		}
 	}
 
-	updater.updateRequirements(purchaseObj); //Increases buildings' costs
-	updater.updateResourceTotals(); //Update page with lower resource values and higher building total
-	updater.updatePopulation(population, homeUnits, armyUnits, unitData); //Updates the army display
-	updater.updateResourceRows(basicResources); //Update resource display
-	updater.updateBuildingButtons(homeBuildings); //Update the buttons themselves
-	updater.updateJobButtons(homeUnits); //Update page with individual worker numbers, since limits might have changed.
+	updater.updateRequirements(purchaseObj); // Increases buildings' costs
+	updater.updateResourceTotals(); // Update page with lower resource values and higher building total
+	updater.updatePopulation(population, homeUnits, armyUnits, unitData); // Updates the army display
+	updater.updateResourceRows(basicResources); // Update resource display
+	updater.updateBuildingButtons(homeBuildings); // Update the buttons themselves
+	updater.updateJobButtons(homeUnits); // Update page with individual worker numbers, since limits might have changed.
 	updater.updatePartyButtons(armyUnits); 
-	updater.updateUpgrades(upgradeData); //Update which upgrades are available to the player
-	updater.updateDevotion(population, buildingData, powerData); //might be necessary if building was an altar
+	updater.updateUpgrades(upgradeData); // Update which upgrades are available to the player
+	updater.updateDevotion(population, buildingData, powerData); // might be necessary if building was an altar
 	updater.updateTargets(); // might enable/disable raiding
 
 	return num;
@@ -946,21 +893,21 @@ function getCustomNumber(civObj){
 	// Check the above operations haven't returned NaN
 	// Also don't allow negative increments.
 	if (isNaN(num) || num < 0){
-		elem.style.background = "#f99"; //notify user that the input failed
+		elem.style.background = "#f99"; // notify user that the input failed
 		return 0;
 	} 
 
 	num = Math.floor(num); // Round down
 
-	elem.value = num; //reset fractional numbers, check nothing odd happened
+	elem.value = num; // reset fractional numbers, check nothing odd happened
 	elem.style.background = "#fff";
 
 	return num;
 }
 
 
-//Calculates and returns the cost of adding a certain number of workers at the present population
-//xxx Make this work for negative numbers
+// Calculates and returns the cost of adding a certain number of workers at the present population
+// xxx Make this work for negative numbers
 function calcWorkerCost(num, curPop){
 	if (curPop === undefined) { 
 		curPop = population.living;
@@ -1003,12 +950,12 @@ function spawn(num){
 	} else { 
 		bums.owned += num; 
 	}
-	calculatePopulation(); //Run through the population->job update cycle
+	calculatePopulation(); // Run through the population->job update cycle
 
-	//This is intentionally independent of the number of workers spawned
+	// This is intentionally independent of the number of workers spawned
 	if (Math.random() * 100 < 1 + (civData.lure.owned)) { spawnCat(); }
 
-	updater.updateResourceTotals(); //update with new resource number
+	updater.updateResourceTotals(); // update with new resource number
 	updater.updatePopulation(population, homeUnits, armyUnits, unitData);
 	
 	return num;
@@ -1020,7 +967,7 @@ function spawn(num){
 function pickStarveTarget() {
 	var modNum,jobNum;
 	var modList=["ill","owned"]; // The sick starve first
-	//xxx Remove this hard-coded list.
+	// xxx Remove this hard-coded list.
 	var jobList=["unemployed","blacksmith","tanner","miner","woodcutter",
 		"cleric","cavalry","soldier","healer","labourer","farmer"];
 
@@ -1062,7 +1009,7 @@ function doStarve() {
 	}
 
 	if (civData.food.owned < 0) { // starve if there's not enough food.
-		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
+		// xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
 		numberStarve = starve(Math.ceil(population.living/1000));
 		if (numberStarve == 1) { 
 			gameLog("A citizen starved to death"); 
@@ -1081,8 +1028,8 @@ function killUnit (unit) {
 	if (unit.ill) { unit.ill -= 1; }
 	else          { unit.owned -= 1; }
 	
-	civData.corpses.owned += 1; //Increments corpse number
-	//Workers dying may trigger Book of the Dead
+	civData.corpses.owned += 1; // Increments corpse number
+	// Workers dying may trigger Book of the Dead
 	if (civData.book.owned) { civData.piety.owned += 10; }
 	calculatePopulation();
 	return 1;
@@ -1106,21 +1053,21 @@ function raiseDead(num){
 	num = Math.max(num, -curCiv.zombie.owned);  // Cap firing by # in that job.
 	num = Math.min(num, logSearchFn(calcZombieCost,civData.piety.owned));
 
-	//Update numbers and resource levels
+	// Update numbers and resource levels
 	civData.piety.owned -= calcZombieCost(num);
 	curCiv.zombie.owned += num;
 	civData.unemployed.owned += num;
 	civData.corpses.owned -= num;
 
-	//Notify player
+	// Notify player
 	if      (num ==  1) { gameLog("A corpse rises, eager to do your bidding."); } 
 	else if (num  >  1) { gameLog("The corpses rise, eager to do your bidding."); }
 	else if (num == -1) { gameLog("A zombie crumples to the ground, inanimate."); }
 	else if (num  < -1) { gameLog("The zombies fall, mere corpses once again."); }
 
-	calculatePopulation(); //Run through population->jobs cycle to update page with zombie and corpse totals
+	calculatePopulation(); // Run through population->jobs cycle to update page with zombie and corpse totals
 	updater.updatePopulation(population, homeUnits, armyUnits, unitData);
-	updater.updateResourceTotals(); //Update any piety spent
+	updater.updateResourceTotals(); // Update any piety spent
 
 	return num;
 }
@@ -1136,7 +1083,7 @@ function summonShade(){
 	return num;
 }
 
-//Deity Domains upgrades
+// Deity Domains upgrades
 function selectDeity(domain,force){
 	if (!force) {
 		if (civData.piety.owned < 500) { return; } // Can't pay
@@ -1149,15 +1096,15 @@ function selectDeity(domain,force){
 }
 
 function digGraves(num){
-	//Creates new unfilled graves.
+	// Creates new unfilled graves.
 	curCiv.grave.owned += 100 * num;
-	updater.updatePopulation(population, homeUnits, armyUnits, unitData); //Update page with grave numbers
+	updater.updatePopulation(population, homeUnits, armyUnits, unitData); // Update page with grave numbers
 }
 
-//Selects a random healthy worker based on their proportions in the current job distribution.
-//xxx Doesn't currently pick from the army
-//xxx Take a parameter for how many people to pick.
-//xxx Make this able to return multiples by returning a cost structure.
+// Selects a random healthy worker based on their proportions in the current job distribution.
+// xxx Doesn't currently pick from the army
+// xxx Take a parameter for how many people to pick.
+// xxx Make this able to return multiples by returning a cost structure.
 function randomHealthyWorker(){
 	var num = Math.random() * population.healthy;
 	var chance = 0;
@@ -1171,23 +1118,23 @@ function randomHealthyWorker(){
 	return "";
 }
 
-//Selects a random worker, kills them, and then adds a random resource
-//xxx This should probably scale based on population (and maybe devotion).
+// Selects a random worker, kills them, and then adds a random resource
+// xxx This should probably scale based on population (and maybe devotion).
 function wickerman() {
-	//Select a random worker
+	// Select a random worker
 	var job = randomHealthyWorker();
 	if (!job) { return; }
 
-	//Pay the price
+	// Pay the price
 	if (!payFor(civData.wickerman.require)) { return; }
 	--civData[job].owned;
-	calculatePopulation(); //Removes killed worker
+	calculatePopulation(); // Removes killed worker
 
-	//Select a random lootable resource
+	// Select a random lootable resource
 	var rewardObj = lootable[Math.floor(Math.random() * lootable.length)];
 
 	var qty = Math.floor(Math.random() * 1000);
-	//xxx Note that this presumes the price is 500 wood.
+	// xxx Note that this presumes the price is 500 wood.
 	if (rewardObj.id == "wood") { qty = (qty/2) + 500; } // Guaranteed to at least restore initial cost.
 	rewardObj.owned += qty;
 
@@ -1204,7 +1151,7 @@ function wickerman() {
 	} }
 
 	gameLog("Burned a " + civData[job].getQtyName(1) + ". " + getRewardMessage(rewardObj));
-	updater.updateResourceTotals(); //Adds new resources
+	updater.updateResourceTotals(); // Adds new resources
 	updater.updatePopulation(population, homeUnits, armyUnits, unitData);
 }
 
@@ -1214,7 +1161,7 @@ function walk(increment) {
 
 	civData.walk.rate += increment;
 
-	//xxx This needs to move into the main loop in case it's reloaded.
+	// xxx This needs to move into the main loop in case it's reloaded.
 	ui.find("#walkStat").innerHTML = prettify(civData.walk.rate);
 	ui.find("#ceaseWalk").disabled = (civData.walk.rate === 0);
 	ui.show("#walkGroup",(civData.walk.rate > 0)); 
@@ -1230,7 +1177,7 @@ function tickWalk() {
 	if (civData.walk.rate <= 0) { return; }
 
 	for (i=0;i<civData.walk.rate;++i){
-		target = randomHealthyWorker(); //xxx Need to modify this to do them all at once.
+		target = randomHealthyWorker(); // xxx Need to modify this to do them all at once.
 		if (!target){ break; } 
 		--civData[target].owned;
 	}
@@ -1251,7 +1198,7 @@ function pestControl(length){
 
 function iconoclasmList(){
 	var i;
-	//Lists the deities for removing
+	// Lists the deities for removing
 	if (civData.piety.owned >= 1000){
 		civData.piety.owned -= 1000;
 		updater.updateResourceTotals();
@@ -1268,19 +1215,19 @@ function iconoclasmList(){
 }
 
 function iconoclasm(index){
-	//will splice a deity from the deities array unless the user has cancelled
+	// will splice a deity from the deities array unless the user has cancelled
 	ui.find("#iconoclasmList").innerHTML = "";
 	ui.find("#iconoclasm").disabled = false;
 	if ((index == "cancel")||(index >= curCiv.deities.length)){
-		//return the piety
+		// return the piety
 		civData.piety.owned += 1000;
 		return;
 	} 
 
-	//give gold
+	// give gold
 	civData.gold.owned += Math.floor(Math.pow(curCiv.deities[index].maxDev,1/1.25));
 
-	//remove the deity
+	// remove the deity
 	curCiv.deities.splice(index,1);
 
 	updater.makeDeitiesTables(curCiv.deities);
@@ -1304,8 +1251,8 @@ function spawnMob(mobObj, num){
 	mobObj.owned += num;
 	civData.esiege.owned += num_sge;
 
-	msg = prettify(num) + " " + mobObj.getQtyName(num) + " attacked";  //xxx L10N
-	if (num_sge > 0) { msg += ", with " + prettify(num_sge) + " " + civData.esiege.getQtyName(num_sge); }  //xxx L10N 
+	msg = prettify(num) + " " + mobObj.getQtyName(num) + " attacked";  // xxx L10N
+	if (num_sge > 0) { msg += ", with " + prettify(num_sge) + " " + civData.esiege.getQtyName(num_sge); }  // xxx L10N 
 	gameLog(msg);
 
 	return num;
@@ -1316,7 +1263,7 @@ function smiteMob(mobObj) {
 	var num = Math.min(mobObj.owned,Math.floor(civData.piety.owned/100));
 	civData.piety.owned -= num * 100;
 	mobObj.owned -= num;
-	civData.corpses.owned += num; //xxx Should dead wolves count as corpses?
+	civData.corpses.owned += num; // xxx Should dead wolves count as corpses?
 	curCiv.enemySlain.owned += num;
 	if (civData.throne.owned) { civData.throne.count += num; }
 	if (civData.book.owned) { civData.piety.owned += num * 10; }
@@ -1335,14 +1282,14 @@ function smite(){
 /* War Functions */
 
 function invade(ecivtype){
-	//invades a certain type of civilisation based on the button clicked
+	// invades a certain type of civilisation based on the button clicked
 	curCiv.raid.raiding = true;
 	curCiv.raid.last = ecivtype;
 
 	curCiv.raid.epop = civSizes[ecivtype].max_pop + 1;
 	// If no max pop, use 2x min pop.
 	if (curCiv.raid.epop === Infinity ) { curCiv.raid.epop = civSizes[ecivtype].min_pop * 2; }
-	if (civData.glory.timer > 0) { curCiv.raid.epop *= 2; } //doubles soldiers fought
+	if (civData.glory.timer > 0) { curCiv.raid.epop *= 2; } // doubles soldiers fought
 
 	// 5-25% of enemy population is soldiers.
 	civData.esoldier.owned += (curCiv.raid.epop/20) + Math.floor(Math.random() * (curCiv.raid.epop/5));
@@ -1352,14 +1299,14 @@ function invade(ecivtype){
 	var baseLoot = curCiv.raid.epop / (1 + (civData.glory.timer <= 0));
 
 	// Set rewards of land and other random plunder.
-	//xxx Maybe these should be partially proportionate to the actual number of defenders?
+	// xxx Maybe these should be partially proportionate to the actual number of defenders?
 	curCiv.raid.plunderLoot = { 
 		freeLand: Math.round(baseLoot * (1 + (civData.administration.owned))) 
 	};
 	lootable.forEach(function(elem){ curCiv.raid.plunderLoot[elem.id] = Math.round(baseLoot * Math.random()); });
 
 	ui.hide("#raidNews");
-	updater.updateTargets(); //Hides raid buttons until the raid is finished
+	updater.updateTargets(); // Hides raid buttons until the raid is finished
 	updater.updatePartyButtons(armyUnits); 
 }
 function onInvade(control) { return invade(dataset(control,"target")); }
@@ -1399,11 +1346,11 @@ function plunder () {
 
 function glory(time){
 	if (time === undefined) { time = 180; }
-	if (!payFor(civData.glory.require)) { return; } //check it can be bought
+	if (!payFor(civData.glory.require)) { return; } // check it can be bought
 
-	civData.glory.timer = time; //set timer
-	//xxx This needs to move into the main loop in case it's reloaded.
-	ui.find("#gloryTimer").innerHTML = civData.glory.timer; //update timer to player
+	civData.glory.timer = time; // set timer
+	// xxx This needs to move into the main loop in case it's reloaded.
+	ui.find("#gloryTimer").innerHTML = civData.glory.timer; // update timer to player
 	ui.find("#gloryGroup").style.display = "block";
 }
 
@@ -1419,27 +1366,27 @@ function grace(delta){
 	}
 }
 
-//xxx Eventually, we should have events like deaths affect morale (scaled by %age of total pop)
+// xxx Eventually, we should have events like deaths affect morale (scaled by %age of total pop)
 function adjustMorale(delta) {
-	//Changes and updates morale given a delta value
+	// Changes and updates morale given a delta value
 	if (delta > 1000) {
-		//console.warn("Cannot adjust morale by so much", delta);
+		// console.warn("Cannot adjust morale by so much", delta);
 		return false;
 	}
-	if (population.current > 0) { //dividing by zero is bad for hive
-		//calculates zombie proportion (zombies do not become happy or sad)
+	if (population.current > 0) { // dividing by zero is bad for hive
+		// calculates zombie proportion (zombies do not become happy or sad)
 		var fraction = population.living / population.current;
 		var max = 1 + (0.5 * fraction);
 		var min = 1 - (0.5 * fraction);
-		//alters morale
+		// alters morale
 		curCiv.morale.efficiency += delta * fraction;
-		//Then check limits (50 is median, limits are max 0 or 100, but moderated by fraction of zombies)
+		// Then check limits (50 is median, limits are max 0 or 100, but moderated by fraction of zombies)
 		if (curCiv.morale.efficiency > max){
 			curCiv.morale.efficiency = max;
 		} else if (curCiv.morale.efficiency < min){
 			curCiv.morale.efficiency = min;
 		}
-		updater.updateMorale(population, curCiv.morale.efficiency); //update to player
+		updater.updateMorale(population, curCiv.morale.efficiency); // update to player
 	}
 }
 
@@ -1484,7 +1431,7 @@ function startTrader(){
 	// Set timer length (12 sec + 5 sec/upgrade)
 	curCiv.trader.timer = 12 + (5 * (civData.currency.owned + civData.commerce.owned + civData.stay.owned));
 
-	//then set material and requested amount
+	// then set material and requested amount
 	var tradeItems = [ // Item and base amount
 		{ materialId: "food",    requested: 5000 },
 		{ materialId: "wood",    requested: 5000 },
@@ -1505,13 +1452,13 @@ function startTrader(){
 }
 
 function trade(){
-	//check we have enough of the right type of resources to trade
+	// check we have enough of the right type of resources to trade
 	if (!curCiv.trader.materialId || (curCiv.trader.materialId.owned < curCiv.trader.requested)) {
 		gameLog("Not enough resources to trade.");
 		return;
 	}
 
-	//subtract resources, add gold
+	// subtract resources, add gold
 	var material = civData[curCiv.trader.materialId];
 
 	material.owned -= curCiv.trader.requested;
@@ -1856,7 +1803,7 @@ function migrateGameData(loadVar, settingsVarReturn)
 		delete loadVar.resourceClicks;
 	}
 	if (!isValid(loadVar.curCiv.resourceClicks)){
-		loadVar.curCiv.resourceClicks = 999; //stops people getting the achievement with an old save version
+		loadVar.curCiv.resourceClicks = 999; // stops people getting the achievement with an old save version
 	}
 	if (isValid(loadVar.graceCost)){ 
 		loadVar.curCiv.graceCost = loadVar.graceCost;
@@ -1877,22 +1824,19 @@ function migrateGameData(loadVar, settingsVarReturn)
 		delete loadVar.deityArray;
 	}
 
-	if (isValid(loadVar.deity) && isValid(loadVar.curCiv.devotion))
-	{
+	if (isValid(loadVar.deity) && isValid(loadVar.curCiv.devotion)) {
 		loadVar.curCiv.deities.unshift({ name: loadVar.deity.name, domain: typeToId(loadVar.deity.type), maxDev: loadVar.curCiv.devotion.owned });
 		delete loadVar.deity;
 	}
 
 	// v1.1.39: Settings moved to their own variable
-	if (isValid(loadVar.settings))
-	{
+	if (isValid(loadVar.settings)) {
 		settingsVarReturn.val = loadVar.settings;
 		delete loadVar.settings;
 	}
 
 	// v1.1.39: Raiding now stores enemy population instead of 'iterations'.
-	if (isValid(loadVar.raiding) && isValid(loadVar.raiding.iterations))
-	{
+	if (isValid(loadVar.raiding) && isValid(loadVar.raiding.iterations)) {
 		loadVar.raiding.epop = loadVar.raiding.iterations * 20;
 		// Plunder calculations now moved to the start of the raid.
 		// This should rarely happen, but give a consolation prize.
@@ -1900,8 +1844,7 @@ function migrateGameData(loadVar, settingsVarReturn)
 		delete loadVar.raiding.iterations;
 	}
 
-	if (isValid(loadVar.throneCount)) // v1.1.55: Moved to substructure
-	{
+	if (isValid(loadVar.throneCount)) { // v1.1.55: Moved to substructure
 		if (!isValid(loadVar.curCiv.throne)) { loadVar.curCiv.throne = {}; }
 		loadVar.curCiv.throne.count = loadVar.throneCount||0;
 		delete loadVar.throneCount;
@@ -2002,26 +1945,26 @@ function migrateGameData(loadVar, settingsVarReturn)
 		if (!isValid(loadVar.curCiv.curWonder)) { loadVar.curCiv.curWonder = loadVar.wonder; }
 		delete loadVar.wonder;
 	}
-	////////////////////////////////////////////////////
+	/// /////////////////////////////////////////////////
 }
 
 // Load in saved data
 function load (loadType) {
-	//define load variables
+	// define load variables
 	var loadVar = {},
 		loadVar2 = {},
 		settingsVar = {};
 	var saveVersion = new VersionData(1,0,0,"legacy");
 
 	if (loadType === "cookie") {
-		//check for cookies
+		// check for cookies
 		if (readCookie(saveTag) && readCookie(saveTag2)){
-			//set variables to load from
+			// set variables to load from
 			loadVar = readCookie(saveTag);
 			loadVar2 = readCookie(saveTag2);
 			loadVar = mergeObj(loadVar, loadVar2);
 			loadVar2 = undefined;
-			//notify user
+			// notify user
 			gameLog("Loaded saved game from cookie");
 			gameLog("Save system switching to localStorage.");
 		} else {
@@ -2031,7 +1974,7 @@ function load (loadType) {
 	}
 	
 	if (loadType === "localStorage") {
-		//check for local storage
+		// check for local storage
 		var string1;
 		var string2;
 		var settingsString;
@@ -2065,7 +2008,7 @@ function load (loadType) {
 			return load("cookie");
 		}
 
-		//notify user
+		// notify user
 		gameLog("Loaded saved game from localStorage");
 	}
 	
@@ -2127,11 +2070,11 @@ function load (loadType) {
 }
 
 function importByInput (elt) {
-	//take the import string, decompress and parse it
+	// take the import string, decompress and parse it
 	var compressed = elt.value;
 	var decompressed = LZString.decompressFromBase64(compressed);
 	var revived = JSON.parse(decompressed);
-	//set variables to load from
+	// set variables to load from
 	var loadVar = revived[0];
 	var loadVar2;
 	if (isValid(revived[1])) {
@@ -2144,10 +2087,10 @@ function importByInput (elt) {
 		return false;
 	}
 
-	//notify user
+	// notify user
 	gameLog("Imported saved game");
-	//close import/export dialog
-	//impexp();	
+	// close import/export dialog
+	// impexp();	
 	return loadVar;
 }
 
@@ -2161,7 +2104,7 @@ function save(savetype) {
 
 	var settingsVar = settings; // UI Settings are saved separately.
 
-	////////////////////////////////////////////////////
+	/// /////////////////////////////////////////////////
 
 	// Handle export
 	if (savetype == "export") {
@@ -2173,7 +2116,7 @@ function save(savetype) {
 		return true;
 	}
 
-	//set localstorage
+	// set localstorage
 	try {
 		// Delete the old cookie-based save to avoid mismatched saves
 		deleteCookie(saveTag);
@@ -2184,7 +2127,7 @@ function save(savetype) {
 		// We always save the game settings.
 		localStorage.setItem(saveSettingsTag, JSON.stringify(settingsVar));
 
-		//Update console for debugging, also the player depending on the type of save (manual/auto)
+		// Update console for debugging, also the player depending on the type of save (manual/auto)
 		if (savetype == "auto"){
 			console.log("Autosave");
 			gameLog("Autosaved");
@@ -2211,8 +2154,8 @@ function save(savetype) {
 }
 
 function deleteSave() {
-	//Deletes the current savegame by setting the game's cookies to expire in the past.
-	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return; } //Check the player really wanted to do that.
+	// Deletes the current savegame by setting the game's cookies to expire in the past.
+	if (!confirm("All progress and achievements will be lost.\nReally delete save?")) { return; } // Check the player really wanted to do that.
 
 	try {
 		deleteCookie(saveTag);
@@ -2304,8 +2247,8 @@ function renameDeity(newName){
 
 function reset(){
 	console.log("Reset");
-	//Resets the game, keeping some values but resetting most back to their initial values.
-	var msg = "Really reset? You will keep past deities and wonders (and cats)"; //Check player really wanted to do that.
+	// Resets the game, keeping some values but resetting most back to their initial values.
+	var msg = "Really reset? You will keep past deities and wonders (and cats)"; // Check player really wanted to do that.
 	if (!confirm(msg)) { return false; } // declined
 
 	// Let each data subpoint re-init.
@@ -2341,7 +2284,7 @@ function reset(){
 	curCiv.curWonder.progress = 0;
 
 	updater.updateAfterReset(getUpdateAllInput());
-	gameLog("Game Reset"); //Inform player.
+	gameLog("Game Reset"); // Inform player.
 
 	renameCiv();
 	renameRuler();
@@ -2370,11 +2313,11 @@ function doFarmers() {
 		* ((civData.pestControl.timer > 0) ? 1.01 : 1) 
 		* getWonderBonus(civData.food) 
 		* (1 + civData.walk.rate/120) 
-		* (1 + civData.mill.owned * millMod / 200) //Farmers farm food
+		* (1 + civData.mill.owned * millMod / 200) // Farmers farm food
 	);
-	civData.food.net -= population.living; //The living population eats food.
+	civData.food.net -= population.living; // The living population eats food.
 	civData.food.owned += civData.food.net;
-	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
+	if (civData.skinning.owned && civData.farmer.owned > 0){ // and sometimes get skins
 		var skinsChance = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
 		var skinsEarned = rndRound(skinsChance);
 		civData.skins.net += skinsEarned;
@@ -2382,9 +2325,9 @@ function doFarmers() {
 	}
 }
 function doWoodcutters() {
-	civData.wood.net = civData.woodcutter.owned * (civData.woodcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wood); //Woodcutters cut wood
+	civData.wood.net = civData.woodcutter.owned * (civData.woodcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wood); // Woodcutters cut wood
 	civData.wood.owned += civData.wood.net;
-	if (civData.harvesting.owned && civData.woodcutter.owned > 0){ //and sometimes get herbs
+	if (civData.harvesting.owned && civData.woodcutter.owned > 0){ // and sometimes get herbs
 		var herbsChance = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
 		var herbsEarned = rndRound(herbsChance);
 		civData.herbs.net += herbsEarned;
@@ -2394,9 +2337,9 @@ function doWoodcutters() {
 
 function doMiners() {
 	var specialChance = civData.stone.specialChance + (civData.macerating.owned ? 0.1 : 0);
-	civData.stone.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.stone); //Miners mine stone
+	civData.stone.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.stone); // Miners mine stone
 	civData.stone.owned += civData.stone.net;
-	if (civData.prospecting.owned && civData.miner.owned > 0){ //and sometimes get ore
+	if (civData.prospecting.owned && civData.miner.owned > 0){ // and sometimes get ore
 		var oreChance = specialChance * (civData.stone.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
 		var oreEarned = rndRound(oreChance);
 		civData.ore.net += oreEarned;
@@ -2450,7 +2393,7 @@ function healByJob(job,num)
 	return num;
 }
 
-//Selects random workers, transfers them to their Ill variants
+// Selects random workers, transfers them to their Ill variants
 function spreadPlague(sickNum){
 	var actualNum = 0;
 	var i;
@@ -2531,7 +2474,7 @@ function doPlague () {
 function doGraveyards() {
 	var i;
 	if (civData.corpses.owned > 0 && curCiv.grave.owned > 0){
-		//Clerics will bury corpses if there are graves to fill and corpses lying around
+		// Clerics will bury corpses if there are graves to fill and corpses lying around
 		for (i=0;i<civData.cleric.owned;i++){
 			if (civData.corpses.owned > 0 && curCiv.grave.owned > 0){
 				civData.corpses.owned -= 1;
@@ -2560,7 +2503,7 @@ function doCorpses() {
 	infected = spreadPlague(infected);
 	if (infected > 0) {
 		calculatePopulation();
-		gameLog(prettify(infected) + " citizens got sick"); //notify player
+		gameLog(prettify(infected) + " citizens got sick"); // notify player
 	}
 
 	// Corpse has a 50-50 chance of decaying (at least there is a bright side)
@@ -2609,13 +2552,13 @@ function doFight(attacker,defender) {
 	// Give player credit for kills.
 	var playerCredit = ((attacker.alignment == "player") ? defenderCas : (isPlayerDefending) ? attackerCas : 0);
 
-	//Increments enemies slain, corpses, and piety
+	// Increments enemies slain, corpses, and piety
 	curCiv.enemySlain.owned += playerCredit;
 	if (civData.throne.owned) { civData.throne.count += playerCredit; }
 	civData.corpses.owned += (attackerCas + defenderCas);
 	if (civData.book.owned) { civData.piety.owned += (attackerCas + defenderCas) * 10; }
 
-	//Updates population figures (including total population)
+	// Updates population figures (including total population)
 	calculatePopulation();
 }
 
@@ -2623,7 +2566,7 @@ function doFight(attacker,defender) {
 function doSlaughter(attacker)
 {
 	var killVerb = (attacker.species == "animal") ? "eaten" : "killed";
-	var target = randomHealthyWorker(); //Choose random worker
+	var target = randomHealthyWorker(); // Choose random worker
 	var targetUnit = civData[target];
 	if (target) { 
 		if (targetUnit.owned >= 1) {
@@ -2648,7 +2591,7 @@ function doLoot(attacker)
 {
 	// Select random resource, steal random amount of it.
 	var target = lootable[Math.floor(Math.random() * lootable.length)];
-	var stolenQty = Math.floor((Math.random() * 1000)); //Steal up to 1000.
+	var stolenQty = Math.floor((Math.random() * 1000)); // Steal up to 1000.
 	stolenQty = Math.min(stolenQty,target.owned);
 	if (stolenQty > 0) { 
 		gameLog(
@@ -2658,7 +2601,7 @@ function doLoot(attacker)
 	}
 	target.owned -= stolenQty;
 	if (target.owned <= 0) {
-		//some will leave
+		// some will leave
 		var leaving = Math.ceil(attacker.owned * Math.random() * attacker.lootFatigue);
 		attacker.owned -= leaving;
 	}
@@ -2669,7 +2612,7 @@ function doLoot(attacker)
 
 function doSack(attacker)
 {
-	//Destroy buildings
+	// Destroy buildings
 	var target = sackable[Math.floor(Math.random() * sackable.length)];
 
 	// Slightly different phrasing for fortifications
@@ -2681,7 +2624,7 @@ function doSack(attacker)
 		++civData.freeLand.owned;
 		gameLog(target.getQtyName(1) + " " + destroyVerb + " by " + attacker.getQtyName(attacker.owned));
 	} else {
-		//some will leave
+		// some will leave
 		var leaving = Math.ceil(attacker.owned * Math.random() * (1/112));
 		attacker.owned -= leaving;
 	}
@@ -2694,7 +2637,7 @@ function doSack(attacker)
 
 function doHavoc(attacker)
 {
-	var havoc = Math.random(); //barbarians do different things
+	var havoc = Math.random(); // barbarians do different things
 	if      (havoc < 0.3) { doSlaughter(attacker); } 
 	else if (havoc < 0.6) { doLoot(attacker); } 
 	else                  { doSack(attacker); }
@@ -2708,7 +2651,7 @@ function doShades()
 	// Attack each enemy in turn.
 	getCombatants(defender.place, "enemy").forEach(function(attacker) { 
 		var num = Math.floor(Math.min((attacker.owned/4),defender.owned));
-		//xxx Should we give book and throne credit here?
+		// xxx Should we give book and throne credit here?
 		defender.owned -= num;
 		attacker.owned -= num;
 	});
@@ -2722,15 +2665,15 @@ function doEsiege(siegeObj, targetObj)
 {
 	if (siegeObj.owned <= 0) { return; }
 
-	//First check there are enemies there defending them
+	// First check there are enemies there defending them
 	if (!getCombatants(siegeObj.place,  siegeObj.alignment).length &&
 		getCombatants(targetObj.place, targetObj.alignment).length
 	)
 	{
-		//the siege engines are undefended; maybe capture them.
-		if ((targetObj.alignment == "player") && civData.mathematics.owned){ //Can we use them?
+		// the siege engines are undefended; maybe capture them.
+		if ((targetObj.alignment == "player") && civData.mathematics.owned){ // Can we use them?
 			gameLog("Captured " + prettify(siegeObj.owned) + " enemy siege engines.");
-			civData.siege.owned += siegeObj.owned; //capture them
+			civData.siege.owned += siegeObj.owned; // capture them
 		}
 		siegeObj.owned = 0;
 	}
@@ -2762,7 +2705,7 @@ function doSiege(siegeObj, targetObj)
 }
 
 
-//Handling raids
+// Handling raids
 function doRaid(place, attackerID, defenderID) {
 	if (!curCiv.raid.raiding){ return; } // We're not raiding right now.
 
@@ -2771,7 +2714,7 @@ function doRaid(place, attackerID, defenderID) {
 
 	if (attackers.length && !defenders.length) { // Win check.
 		// Slaughter any losing noncombatant units.
-		//xxx Should give throne and corpses for any human ones?
+		// xxx Should give throne and corpses for any human ones?
 		unitData
 			.filter(function(elem) { return ((elem.alignment == defenderID) && (elem.place == place)); })
 			.forEach(function(elem) { elem.owned = 0; });
@@ -2782,7 +2725,7 @@ function doRaid(place, attackerID, defenderID) {
 
 	if (!attackers.length && defenders.length) { // Loss check.
 		// Slaughter any losing noncombatant units.
-		//xxx Should give throne and corpses for any human ones?
+		// xxx Should give throne and corpses for any human ones?
 		unitData
 			.filter(function(elem) { return ((elem.alignment == attackerID) && (elem.place == place)); })
 			.forEach(function(elem) { elem.owned = 0; });
@@ -2808,26 +2751,26 @@ function doLabourers() {
 	var prod = 0;
 
 	if (curCiv.curWonder.progress >= 100) {
-		//Wonder is finished! First, send workers home
+		// Wonder is finished! First, send workers home
 		civData.unemployed.owned += civData.labourer.owned;
 		civData.unemployed.ill += civData.labourer.ill;
 		civData.labourer.owned = 0;
 		civData.labourer.ill = 0;
 		calculatePopulation();
 		
-		//then set wonder.stage so things will be updated appropriately
+		// then set wonder.stage so things will be updated appropriately
 		++curCiv.curWonder.stage;
-	} else { //we're still building
+	} else { // we're still building
 		
 		prod = getWonderProduction();
 
-		//remove resources
+		// remove resources
 		wonderResources.forEach(function(resource){ 
 			resource.owned -= prod;
 			resource.net -= prod;
 		});
 
-		//increase progress
+		// increase progress
 		curCiv.curWonder.progress += prod / (1000000 * getWonderCostMultiplier());
 	}
 }
@@ -2862,16 +2805,16 @@ function isWonderLimited () {
 }
 
 function doMobs() {
-	//Checks when mobs will attack
-	//xxx Perhaps this should go after the mobs attack, so we give 1 turn's warning?
+	// Checks when mobs will attack
+	// xxx Perhaps this should go after the mobs attack, so we give 1 turn's warning?
 	var mobType, choose;
 	if (population.current > 0) { // No attacks if deserted.
 		++curCiv.attackCounter; 
 	} 
-	if (population.current > 0 && curCiv.attackCounter > (60 * 5)){ //Minimum 5 minutes
+	if (population.current > 0 && curCiv.attackCounter > (60 * 5)){ // Minimum 5 minutes
 		if (600*Math.random() < 1) {
 			curCiv.attackCounter = 0;
-			//Choose which kind of mob will attack
+			// Choose which kind of mob will attack
 			mobType = "wolf"; // Default to wolves
 			if (population.current >= 10000) {
 				choose = Math.random();
@@ -2884,7 +2827,7 @@ function doMobs() {
 		}
 	}
 
-	//Handling mob attacks
+	// Handling mob attacks
 	getCombatants("home", "enemy").forEach(function(attacker) { 
 		if (attacker.owned <= 0) { return; } // In case the last one was killed in an earlier iteration.
 
@@ -2898,7 +2841,7 @@ function doMobs() {
 function tickTraders() {
 	var delayMult = 60 * (3 - ((civData.currency.owned)+(civData.commerce.owned)));
 	var check;
-	//traders occasionally show up
+	// traders occasionally show up
 	if (population.current > 0) { 
 		++curCiv.trader.counter; 
 	}
@@ -2917,12 +2860,12 @@ function tickTraders() {
 
 
 function doPestControl() {
-	//Decrements the pestControl Timer
+	// Decrements the pestControl Timer
 	if (civData.pestControl.timer > 0) { --civData.pestControl.timer; }
 }
 	
 function tickGlory() {
-	//Handles the Glory bonus
+	// Handles the Glory bonus
 	if (civData.glory.timer > 0){
 		ui.find("#gloryTimer").innerHTML = civData.glory.timer--;
 	} else {
@@ -2931,9 +2874,9 @@ function tickGlory() {
 }
 function doThrone() {
 	if (civData.throne.count >= 100){
-		//If sufficient enemies have been slain, build new temples for free
+		// If sufficient enemies have been slain, build new temples for free
 		civData.temple.owned += Math.floor(civData.throne.count/100);
-		civData.throne.count = 0; //xxx This loses the leftovers.
+		civData.throne.count = 0; // xxx This loses the leftovers.
 		updater.updateResourceTotals();
 	}
 }
@@ -2945,7 +2888,7 @@ function tickGrace() {
 	}
 }
 
-//========== UI functions
+//= ========= UI functions
 
 // Called when user switches between the various panes on the left hand side of the interface
 // Returns the target pane element.
@@ -2975,7 +2918,7 @@ function paneSelect(control){
 }
 
 function prettify(input){
-	//xxx TODO: Add appropriate format options
+	// xxx TODO: Add appropriate format options
 	return (settings.delimiters) ? Number(input).toLocaleString() : input.toString();
 }
 
@@ -3050,7 +2993,7 @@ function onToggleCustomQuantities(control){
 }
 
 // Toggles the display of the .notes class
-function setNotes(value){
+function setNotes(value) {
 	if (value !== undefined) { settings.notes = value; }
 	ui.find("#toggleNotes").checked = settings.notes;
 
@@ -3061,27 +3004,36 @@ function setNotes(value){
 	}
 }
 
-function onToggleNotes(control){ 
+function onToggleNotes(control) {
 	return setNotes(control.checked); 
 }
 
 // value is the desired change in 0.1em units.
-function textSize(value){
+function textSize(value) {
 	if (value !== undefined) { settings.fontSize += 0.1 * value; }
 	ui.find("#smallerText").disabled = (settings.fontSize <= 0.5); 
 
-	//xxx Should this be applied to the document instead of the body?
+	// xxx Should this be applied to the document instead of the body?
 	ui.body.style.fontSize = settings.fontSize + "em";
 }
 
-function setShadow(value){
+function setDarkMode(value) {
+	if (value !== undefined) { settings.darkMode = value; }
+	ui.find('#toggleDarkMode').checked = settings.darkMode;
+	ui.body.classList[settings.darkMode ? 'add' : 'remove']('dark-mode');
+}
+
+function onToggleDarkMode(control) {
+	return setDarkMode(control.checked);
+}
+
+function setShadow(value) {
 	if (value !== undefined) { settings.textShadow = value; }
 	ui.find("#toggleShadow").checked = settings.textShadow;
-	var shadowStyle = "3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff"
-					+ ", 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff";
-	ui.body.style.textShadow = settings.textShadow ? shadowStyle : "none";
+	ui.body.classList[settings.textShadow ? 'add' : 'remove']('shadow-text');
 }
-function onToggleShadow(control){ 
+
+function onToggleShadow(control) { 
 	return setShadow(control.checked); 
 }
 
@@ -3115,7 +3067,7 @@ function setWorksafe(value){
 	if (value !== undefined) { settings.worksafe = value; }
 	ui.find("#toggleWorksafe").checked = settings.worksafe;
 
-	//xxx Should this be applied to the document instead of the body?
+	// xxx Should this be applied to the document instead of the body?
 	if (settings.worksafe){
 		ui.body.classList.remove("hasBackground");
 	} else {
@@ -3129,22 +3081,22 @@ function onToggleWorksafe(control){
 }
 
 
-//Not strictly a debug function so much as it is letting the user know when 
-//something happens without needing to watch the console.
+// Not strictly a debug function so much as it is letting the user know when 
+// something happens without needing to watch the console.
 function gameLog(message){
-	//get the current date, extract the current time in HH.MM format
-	//xxx It would be nice to use Date.getLocaleTimeString(locale,options) here, but most browsers don't allow the options yet.
+	// get the current date, extract the current time in HH.MM format
+	// xxx It would be nice to use Date.getLocaleTimeString(locale,options) here, but most browsers don't allow the options yet.
 	var d = new Date();
 	var curTime = d.getHours() + ":" + ((d.getMinutes() < 10) ? "0": "") + d.getMinutes();
 
-	//Check to see if the last message was the same as this one, if so just increment the (xNumber) value
+	// Check to see if the last message was the same as this one, if so just increment the (xNumber) value
 	if (ui.find("#logL").innerHTML != message) {
-		logRepeat = 0; //Reset the (xNumber) value
+		logRepeat = 0; // Reset the (xNumber) value
 
-		//Go through all the logs in order, moving them down one and successively overwriting them.
+		// Go through all the logs in order, moving them down one and successively overwriting them.
 		var i = 7; // Number of lines of log to keep.
 		while (--i > 1) { ui.find("#log"+i).innerHTML = ui.find("#log"+(i-1)).innerHTML; }
-		//Since ids need to be unique, log1 strips the ids from the log0 elements when copying the contents.
+		// Since ids need to be unique, log1 strips the ids from the log0 elements when copying the contents.
 		ui.find("#log1").innerHTML = (
 			"<td>" + ui.find("#logT").innerHTML 
 			+ "</td><td>" + ui.find("#logL").innerHTML 
@@ -3171,8 +3123,8 @@ function clearSpecialResourceNets () {
 }
 
 function checkResourceLimits () {
-	//Resources occasionally go above their caps.
-	//Cull the excess /after/ other workers have taken their inputs.
+	// Resources occasionally go above their caps.
+	// Cull the excess /after/ other workers have taken their inputs.
 	resourceData.forEach(function(resource){ 
 		if (resource.owned > resource.limit) { 
 			resource.owned = resource.limit; 
@@ -3181,8 +3133,8 @@ function checkResourceLimits () {
 }
 
 function gameLoop () {
-	//debugging - mark beginning of loop execution
-	//var start = new Date().getTime();
+	// debugging - mark beginning of loop execution
+	// var start = new Date().getTime();
 	
 	tickAutosave();
 
@@ -3207,7 +3159,7 @@ function gameLoop () {
 
 	checkResourceLimits();
 
-	//Timers - routines that do not occur every second
+	// Timers - routines that do not occur every second
 	doMobs();
 	doPestControl();
 	tickGlory();
@@ -3215,7 +3167,7 @@ function gameLoop () {
 	doEsiege(civData.esiege, civData.fortification);
 	doRaid("party", "player", "enemy");
 
-	//Population-related
+	// Population-related
 	doGraveyards();
 	doHealers();
 	doPlague(); 
@@ -3226,16 +3178,16 @@ function gameLoop () {
 	doLabourers();
 	tickTraders();
 	
-	updater.updateResourceTotals(); //This is the point where the page is updated with new resource totals
+	updater.updateResourceTotals(); // This is the point where the page is updated with new resource totals
 	testAchievements();
 	
-	//Data changes should be done; now update the UI.
+	// Data changes should be done; now update the UI.
 	updater.updateAll(getUpdateAllInput());
 	
-	//Debugging - mark end of main loop and calculate delta in milliseconds
-	//var end = new Date().getTime();
-	//var time = end - start;
-	//console.log("Main loop execution time: " + time + "ms");
+	// Debugging - mark end of main loop and calculate delta in milliseconds
+	// var end = new Date().getTime();
+	// var time = end - start;
+	// console.log("Main loop execution time: " + time + "ms");
 }
 
 function getUpdateAllInput() {
@@ -3250,10 +3202,10 @@ function getUpdateAllInput() {
 }
 
 
-//========== TESTING (cheating)
+//= ========= TESTING (cheating)
 
 function ruinFun() {
-	//Debug function adds loads of stuff for free to help with testing.
+	// Debug function adds loads of stuff for free to help with testing.
 	civData.food.owned += 1000000;
 	civData.wood.owned += 1000000;
 	civData.stone.owned += 1000000;
@@ -3273,7 +3225,7 @@ function ruinFun() {
 }
 
 
-//========== SETUP (Functions meant to be run once on the DOM)
+//= ========= SETUP (Functions meant to be run once on the DOM)
 
 const setup = {};
 // let loopTimer = 0;
@@ -3338,7 +3290,7 @@ setup.civSizes = function setupCivSizes() {
 
 setup.game = function setupGame() {
 	console.log("Setting up game");
-	//document.title = "CivClicker ("+versionData+")"; //xxx Not in XML DOM.
+	// document.title = "CivClicker ("+versionData+")"; //xxx Not in XML DOM.
 
 	addUITable(basicResources, "basicResources"); // Dynamically create the basic resource table.
 	addUITable(homeBuildings, "buildings"); // Dynamically create the building controls table.
@@ -3351,7 +3303,7 @@ setup.game = function setupGame() {
 	updater.addWonderSelectText(wonderResources);
 	updater.makeDeitiesTables(curCiv.deities);
 
-	if (!load("localStorage")) { //immediately attempts to load
+	if (!load("localStorage")) { // immediately attempts to load
 		// Prompt player for names
 		renameCiv();
 		renameRuler();
@@ -3365,11 +3317,71 @@ setup.loop = function setupLoop() {
 	console.log("Setting up Main Loop");
 	gameLoop();
 	// loopTimer = window.setInterval(gameLoop, 1000);
-	window.setInterval(gameLoop, 1000); //updates once per second (1000 milliseconds)
+	window.setInterval(gameLoop, 1000); // updates once per second (1000 milliseconds)
 };
 
-setup.all();
+const pageActions = {
+	paneSelect,
+	speedWonder,
+	trade,
+	buy,
+	plunder,
+	spawn,
+	startWonder,
+	wonderSelect,
+	// Actions tied to upgrades (?)
+	raiseDead,
+	summonShade,
+	wickerman,
+	walk,
+	pestControl,
+	iconoclasmList,
+	iconoclasm,
+	smite,
+	glory,
+	grace,
+	// Save & Load
+	save,
+	reset,
+	deleteSave,
+	load,
+	// Naming
+	renameCiv,
+	renameRuler,
+	renameDeity,
+	// Display
+	textSize,
+	// Togglers
+	onToggleAutosave,
+	onToggleCustomQuantities,
+	onToggleDelimiters,
+	onToggleIcons,
+	onToggleNotes,
+	onToggleShadow,
+	onToggleWorksafe,
+	onToggleDarkMode,
+	// Cheat
+	ruinFun,
+};
 
+// "Export" via exposing on the window
+if (window) {
+	const cc = { // "Global interface" necessary for civclicker-classes - TODO: fix this
+		getCiv() { return curCiv; },
+		getCivData() { return civData; },
+	};
+	Object.assign(window, pageActions, { cc });
+} else {
+	console.error('window is needed');
+}
+
+const civData = makeCivData(curCiv, civInterface, population); // Giant array of data, defined in "data" js
+curCiv.data = civData;
+// The resources that Wonders consume, and can give bonuses for.
+var wonderResources = getWonderResources(civData); // defined in "data" js
+updater.setup({ civInterface, ui, prettify, achData, settings });
+
+setup.all();
 
 /*
  * If you're reading this, thanks for playing!

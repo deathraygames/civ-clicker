@@ -22,7 +22,7 @@ body {
 	font-family: 'Lato', Arial, sans-serif;
 	/*font-weight:600;*/
 	/*text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;*/
-	text-shadow:none;
+	text-shadow: none;
 	padding: 0;
 	margin: 0;
 }
@@ -264,8 +264,8 @@ button {
 #deityPane button.xInfinity, /* Needed for Raise Dead */
 #deityPane button.x100{
 	min-width: 2.5em;
-	text-shadow:none;
-	font-weight:normal;
+	text-shadow: none;
+	font-weight: normal;
 	font-size: 0.9em;
 	margin: 0.1em 0;
 	padding: 0.2em 0.4em;
@@ -751,6 +751,69 @@ footer .title {
 		padding: 0.5em;
 		margin: 0 1em;
 	}
+
+/* Dark Mode */
+
+.dark-mode,
+body.dark-mode {
+	background-color: #111;
+	color: #eee;
+}
+
+.dark-mode .drawer,
+#strip a.selected {
+	background: rgba(255,255,255,0.1);
+}
+
+.dark-mode #header {
+	color: rgba(255,255,255,0.65);
+}
+
+.dark-mode .paneSelector {
+	border: 1px solid rgba(255,255,255,0.3);
+    background-color: rgba(255,255,255,0.05);
+	color: #eee;
+}
+
+.dark-mode .selectPane {
+	background-color: rgba(255,255,255,0.1);
+}
+
+.dark-mode .cost {
+	color: rgba(255,255,255,0.5);
+}
+
+.dark-mode #newSpawnJobSelection {
+	background-color: rgba(255,255,255,0.2);
+}
+
+.dark-mode button:disabled {
+	background-color: rgba(255,255,255,0.1);
+}
+
+.dark-mode a {
+	color: #2255ee;
+}
+
+.dark-mode textarea {
+	background: rgba(255,255,255,0.1);
+	color: #fff;
+	border: solid 1px #eee;
+}
+
+/* Text Shadow */
+
+.shadow-text,
+body.shadow-text {
+	text-shadow: 3px 0 0 #fff, -3px 0 0 #fff, 0 3px 0 #fff, 0 -3px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+}
+
+.dark-mode.shadow-text,
+body.dark-mode.shadow-text,
+.shadow-text ol.happinessRanks,
+body.shadow-text ol.happinessRanks {
+	text-shadow: 3px 0 0 #000, -3px 0 0 #000, 0 3px 0 #000, 0 -3px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+}
 
 
 

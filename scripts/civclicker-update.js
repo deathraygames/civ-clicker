@@ -44,16 +44,17 @@ function updateWonderList(wonders) {
 
 function updateReset() {
 	const { civInterface, ui } = this;
-	const worshipOwned = civInterface.getWorshipOwned();
+	const worshipOwned = Boolean(civInterface.getWorshipOwned());
 	const curWonder = civInterface.getCurrentWonder();
-	ui.show("#resetNote"  , (worshipOwned || curWonder.stage === 3));
-	ui.show("#resetDeity" , (worshipOwned));
+	console.log(worshipOwned);
+	ui.show("#resetNote", (worshipOwned || curWonder.stage === 3));
+	ui.show("#resetDeity", (worshipOwned));
 	ui.show("#resetWonder", (curWonder.stage === 3));
-	ui.show("#resetBoth"  , (worshipOwned && curWonder.stage === 3));
+	ui.show("#resetBoth", (worshipOwned && curWonder.stage === 3));
 }
 
 function updateAfterReset(inputData) {
-	const { 
+	const {
 		upgradeData,
 		homeUnits, armyUnits,
 		population,

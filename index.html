@@ -56,6 +56,7 @@
 			<br />
 			<label><input id="toggleCustomQuantities" type="checkbox" onclick="onToggleCustomQuantities(this)" title="Custom Quantity"/>Use Custom Quantities</label><br />
 			<label><input id="toggleDelimiters" type="checkbox" onclick="onToggleDelimiters(this)" title="Toggle Delimiters"/>Number Delimiters</label><br />
+			<label><input id="toggleDarkMode" type="checkbox" onclick="onToggleDarkMode(this)" title="Toggle Dark Mode"/>Dark Mode</label><br />
 			<label><input id="toggleShadow" type="checkbox" onclick="onToggleShadow(this)" title="Toggle Text Shadow"/>Text Shadows</label><br />
 			<label><input id="toggleNotes" type="checkbox" onclick="onToggleNotes(this)" title="Toggle Notes"/>Show Notes</label><br />
 			<label><input id="toggleWorksafe" type="checkbox" onclick="onToggleWorksafe(this)" title="Toggle Worksafe Mode"/>Worksafe Mode</label><br />
@@ -66,7 +67,14 @@
 			<h2>Save &amp; Load Controls</h2>
 			<button onmousedown="save('manual')" title="Save your current stats">Manual Save</button><br />
 			<label><input id="toggleAutosave" type="checkbox" onclick="onToggleAutosave(this)" title="Autosave"/>Autosave</label><br />
-			<button onmousedown="reset()" title="Reset your game">Reset Game</button><span class="note"><span id="resetNote"><br/>Resetting allows you to </span><span id="resetDeity">gain another deity</span><span id="resetBoth"><br/> and </span><span id="resetWonder">build another Wonder</span></span><br />
+			<button onmousedown="reset()" title="Reset your game">Reset Game</button>
+			<span class="note">
+				<span id="resetNote">Resetting allows you to </span>
+				<span id="resetDeity">gain another deity</span>
+				<span id="resetBoth"><br/> and </span>
+				<span id="resetWonder">build another Wonder</span>
+			</span>
+			<br />
 			<br />
 			<button onmousedown="deleteSave()" title="Delete your saved stats">Delete Save File</button><br />
 			<br />
@@ -526,7 +534,7 @@
 <footer>
 	<!--
 	<span class="title">CivClicker v1.2</span>
-	<a href="http://dhmstark.co.uk/games/civclicker/">Original 1.0 Game</a>
+	<a href="https://kastark.co.uk/games/civclicker/">Original 1.0 Game</a>
 	<a href="faq.html">FAQ</a>
 	<a href="updates.html">Updates</a>
 	<a href="https://github.com/deathraygames/civ-clicker/">Source</a>
