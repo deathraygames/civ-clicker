@@ -102,6 +102,7 @@ const ui = {
 			// Note that HTML comes in upper case, XML in lower.
 			const tagDisplay = TAG_DISPLAY[tagName];
 			if (!tagDisplay) console.warn('Unsupported tag <', tagName, '> passed to ui.show');
+			else displayVal = tagDisplay;
 		} else {
 			displayVal = 'none';
 		}
@@ -115,6 +116,16 @@ const ui = {
 	setup() {
 		// eslint-disable-next-line prefer-destructuring
 		this.body = document.getElementsByTagName('body')[0];
+	},
+	// Interface for browser prompt and alert in case we want to make custom dialogs later
+	async prompt(text, defaultText) {
+		return new Promise((resolve) => {
+			const ret = window.prompt(text, defaultText);
+			resolve(ret);
+		});
+	},
+	alert(text) {
+		window.alert(text);
 	},
 };
 

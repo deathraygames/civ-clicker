@@ -606,7 +606,7 @@ function onBulkEvent(e) {
 	case "increment": return onIncrement(e.target);
 	case "purchase": return onPurchase(e.target);
 	case "raid": return onInvade(e.target);
-	default: console.warn('???');
+	default: console.warn('onBulkEvent', e);
 	}
 	return false;
 }
@@ -1401,15 +1401,15 @@ function startWonder() {
 	updater.updateWonder(curCiv.curWonder, curCiv.wonders);
 }
 
-function renameWonder() {
+async function renameWonder() {
 	// Can't rename before you start, or after you finish.
 	if (curCiv.curWonder.stage === 0 || curCiv.curWonder.stage > 2) { return; }
-	var n = window.prompt("Please name your Wonder:", curCiv.curWonder.name);
+	const n = await ui.prompt('Please name your Wonder:', curCiv.curWonder.name);
 	if (!n) { return; }
 	curCiv.curWonder.name = n;
-	var wp = ui.find("#wonderNameP");
+	const wp = ui.find("#wonderNameP");
 	if (wp) { wp.innerHTML = curCiv.curWonder.name; }
-	var wc = ui.find("#wonderNameC");
+	const wc = ui.find("#wonderNameC");
 	if (wc) { wc.innerHTML = curCiv.curWonder.name; }
 }
 
@@ -2196,14 +2196,13 @@ function deleteSave() {
 	}
 }
 
-function renameCiv(newName) {
-	// Prompts player, uses result as new civName
-	while (!newName) {
-		newName = prompt("Please name your civilization", (newName || curCiv.civName || "Woodstock")); // TODO
-		if ((newName === null) && (curCiv.civName)) { return; } // Cancelled
-	}
-	curCiv.civName = newName;
-	ui.find("#civName").innerHTML = curCiv.civName;
+/** Prompts player, uses result as new civName */
+async function renameCiv(newNameParam) {
+	const defaultCivName = newNameParam || curCiv.civName || 'Woodstock';
+	const newName = await ui.prompt('Please name your civilization', defaultCivName);
+	if ((newName === null) && (curCiv.civName)) { return; } // Cancelled
+	curCiv.civName = newName || defaultCivName;
+	ui.find('#civName').innerHTML = curCiv.civName;
 }
 
 // Note:  Returns the index (which could be 0), or 'false'.
@@ -2215,20 +2214,15 @@ function haveDeity(name) {
 	return false;
 }
 
-function renameRuler(newName) {
-	if (curCiv.rulerName == "Cheater") { return; } // Reputations suck, don't they?
-	// Prompts player, uses result as rulerName
-	while (!newName || haveDeity(newName) !== false) {
-		newName = prompt("What is your name?", (newName || curCiv.rulerName || "Orteil")); // TODO
-		if ((newName === null) && (curCiv.rulerName)) { return; } // Cancelled
-		if (haveDeity(newName) !== false) {
-			alert("That would be a blasphemy against the deity " + newName + ".");
-			newName = "";
-		}
+async function renameRuler(newNameParam) {
+	if (curCiv.rulerName === 'Cheater') { return; } // Reputations suck, don't they?
+	const defaultName = newNameParam || curCiv.rulerName || 'Orteil';
+	let newName = await ui.prompt("What is your name?", defaultName);
+	if (haveDeity(newName) !== false) {
+		ui.alert(`That would be a blasphemy against the deity ${newName}.`);
+		newName = 'Blasphemer';
 	}
-
 	curCiv.rulerName = newName;
-
 	ui.find("#rulerName").innerHTML = curCiv.rulerName;
 }
 
