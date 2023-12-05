@@ -150,11 +150,14 @@ function updatePurchaseRow(purchaseObj) {
 	let havePrereqs = (purchaseObj.owned > 0)
 		|| civInterface.meetsUpgradePrereqs(purchaseObj.prereqs);
 
+	let isOwned = typeof purchaseObj.owned === 'boolean'
+		? purchaseObj.owned
+		: purchaseObj.owned === purchaseObj.limit;
 	// Special check: Hide one-shot upgrades after purchase; they're
 	// redisplayed elsewhere.
 	let hideBoughtUpgrade = (
 		(purchaseObj.type === "upgrade")
-		&& (purchaseObj.owned === purchaseObj.limit)
+		&& (isOwned)
 		&& !purchaseObj.salable
 	);
 
