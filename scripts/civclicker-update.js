@@ -168,7 +168,7 @@ function updatePurchaseRow(purchaseObj) {
 		// Treat 'custom' or Infinity as +/-1.
 		// xxx Should we treat 'custom' as its appropriate value instead?
 		let absQty = abs(purchaseQty);
-		if ((absQty === "custom") || (absQty === Infinity)) {
+		if ((absQty === "custom") || (absQty === "Infinity")) {
 			purchaseQty = sgn(purchaseQty);
 		}
 		elt.disabled = ((purchaseQty > maxQty) || (purchaseQty < minQty));
