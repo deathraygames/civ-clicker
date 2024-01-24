@@ -3350,6 +3350,8 @@ const pageActions = {
 	startWonder,
 	wonderSelect,
 	// Actions tied to upgrades (?)
+	selectDeity,
+	onPurchase,
 	raiseDead,
 	summonShade,
 	wickerman,

@@ -442,7 +442,7 @@ function updateUpgrades(upgradeData) {
 	const civData = civInterface.getCivData();
 	const worshipOwned = civInterface.getWorshipOwned();
 	let domain = civInterface.getCurDeityDomain();
-	let hasDomain = Boolean(domain === "");
+	let hasDomain = Boolean(domain !== "");
 	let canSelectDomain = Boolean(worshipOwned && !hasDomain);
 
 	// Update all of the upgrades
